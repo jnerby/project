@@ -9,13 +9,12 @@ app = Flask(__name__)
 app.jinja_env.undefined = StrictUndefined
 app.jinja_env.auto_reload = True
 
-# key = os.environ.get("API_KEY")
+key = os.environ.get('API_KEY')
 
-
-@app.route("/")
+@app.route('/')
 def render_homepage():
     search_results = get_film_obj()
-    return render_template("base.html", search_results=search_results)
+    return render_template('home.html', search_results=search_results)
 
 
 if __name__ == "__main__":

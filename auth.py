@@ -15,13 +15,13 @@ def get_film_obj():
     """Renders and jsonifies film objects from the Movie DB API"""
 
     # get api key from environment
-    key = os.environ.get("API_KEY")
+    key = os.environ.get('API_KEY')
     # params = {"api-key": API_KEY}
-    url = "https://api.themoviedb.org/3/search/movie?api_key=" + key + "&query=Sound+Music"
+    url = 'https://api.themoviedb.org/3/search/movie?api_key=' + key + '&query=Sound+Music'
 
     res = requests.get(url)
     data = res.json()
-    search_results = data["results"]
+    search_results = data['results']
     return search_results
 
 
