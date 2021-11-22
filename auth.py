@@ -1,6 +1,5 @@
 """
 Authentication from the MovieDB
-
 https://developers.themoviedb.org/3/getting-started/authentication
 """
 
@@ -22,8 +21,8 @@ def get_film_obj():
 
     res = requests.get(url)
     data = res.json()
-    standard_obj = data["results"][0]["overview"]
-    print(standard_obj)
+    search_results = data["results"]
+    return search_results
 
 
 get_film_obj()
