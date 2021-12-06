@@ -3,6 +3,7 @@ from jinja2 import StrictUndefined
 from random import choice
 from auth import get_film_obj
 import os
+import hashlib
 
 
 app = Flask(__name__)
@@ -13,9 +14,17 @@ key = os.environ.get('API_KEY')
 
 @app.route('/')
 def render_homepage():
-    search_results = get_film_obj()
-    print(search_results[0].keys())
-    return render_template('home.html', search_results=search_results, key=key)
+    return render_template('base.html')
+
+@app.route('/search', methods=['POST'])
+def render_search():
+    """Searches TMDB for movie title"""
+    # get value user searched for
+    user_search = request.form['search']
+
+    # get search_results obj from API in auth.py
+    search_results = get_film_obj(user_search)
+    return render_template('search.html', search_results=search_results, key=key)
 
 
 if __name__ == "__main__":
