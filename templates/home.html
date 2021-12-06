@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% for item in search_results %}
+        <!-- <a href="https://api.themoviedb.org/3/movie/{{ item['id']  }}/images?api_key={{ key }}&language=en-US" img></a> -->
+        <!-- <img src="https://api.themoviedb.org/3/movie/{{ item['id']  }}/images?api_key={{ key }}&language=en-US" alt="poster"> -->
+        <!-- <img src="https://api.themoviedb.org/3/movie/images?api_key={{ key }}/{{ item['poster_path'] }}" alt="poster"> -->
+        <img src="https://image.tmdb.org/t/p/w500/{{ item['poster_path'] }}">
+        {{ item['title'] }} - {{ item['vote_average'] }} 
+        <br>
+    {% endfor %}
+{% endblock %}

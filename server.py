@@ -14,7 +14,8 @@ key = os.environ.get('API_KEY')
 @app.route('/')
 def render_homepage():
     search_results = get_film_obj()
-    return render_template('home.html', search_results=search_results)
+    print(search_results[0].keys())
+    return render_template('home.html', search_results=search_results, key=key)
 
 
 if __name__ == "__main__":
