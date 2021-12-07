@@ -32,19 +32,6 @@ function populateSearch() {
             while(lastSearch[0]) {
                 lastSearch[0].parentNode.removeChild(lastSearch[0]);
             }
-            // for (item of lastSearch){
-            //     body.removeChild(item);
-            // }
-            // while(lastSearch.firstChild){
-            //     lastSearch.remove(lastSearch.firstChild);
-            // }  
-
-            // while(lastSearch.firstChild){
-            //     lastSearch.remove(lastSearch.firstChild);
-            // }         
-            // document.getElementsByClassName('search-result').innerHTML = "";
-            // document.getElementById(search-body).innerHTML = "";
-
 
             // add divs for new search results
             for (item of apiResults){
