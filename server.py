@@ -1,9 +1,11 @@
 from flask import Flask, redirect, request, render_template, session, flash
 from jinja2 import StrictUndefined
 from random import choice
-from auth import get_film_obj
+from werkzeug.security import generate_password_hash, check_password_hash
 import os
-import hashlib
+import crud
+from model import connect_to_db, User
+
 
 
 app = Flask(__name__)
@@ -22,36 +24,53 @@ def render_homepage():
 def render_registration():
     """Register new user if username available and password valid and direct to login"""
     if request.method == 'POST':
+
+        fname = request.form['fname']
+        lname = request.form['lname']
+        email = request.form['email']
+        username = request.form['username']
+        password = request.form['password']
+        password_conf = request.form['password-conf']
+
         # check all required fields entered
-        if request.form['fname'] == "":
+        if not fname:
             flash('Enter First Name')
             return redirect('/register')
-        elif not request.form.get("lname"):
+        elif not lname:
             flash('Enter Last Name')
             return redirect('/register')
-        elif not request.form.get("email"):
+        elif not email:
             flash('Enter Email')
             return redirect('/register')
-        elif not request.form.get("username"):
+        elif not username:
             flash('Enter Username')
             return redirect('/register')
-        elif not request.form.get("password"):
+        elif not password:
             flash('Enter Password')
             return redirect('/register')
-        elif not request.form.get("password-conf"):
+        elif not password_conf:
             flash('Confirm Password')
             return redirect('/register')
         # check password and confirm password match
-        elif request.form.get("password") != request.form.get("password-conf"):
+        elif password != password_conf:
             flash('Passwords Must Match')
             return redirect('/register')
+
+        # try inserting username into table
+        try:
+            new_user = crud.register_user(fname, lname, email, username, password)
+            flash('Registration successful!')
+            return redirect('/')
+        except:
+            flash('Username unavailable. Please try again.')
+            return redirect('/register')
         # on success, direct to login
-        return redirect('/')
     else:
         return render_template('registration.html')
 
 
 if __name__ == "__main__":
+    connect_to_db(app)
     app.run(
         host="0.0.0.0",
         use_reloader=True,
