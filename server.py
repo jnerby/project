@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request, render_template, session
+from flask import Flask, redirect, request, render_template, session, flash
 from jinja2 import StrictUndefined
 from random import choice
 from auth import get_film_obj
@@ -7,6 +7,8 @@ import hashlib
 
 
 app = Flask(__name__)
+app.secret_key = "dev"
+app.jinja_env.undefined = StrictUndefined
 app.jinja_env.undefined = StrictUndefined
 app.jinja_env.auto_reload = True
 
@@ -16,23 +18,37 @@ key = os.environ.get('API_KEY')
 def render_homepage():
     return render_template('base.html')
 
-# @app.route('/search', methods=['POST'])
-# def render_search():
-    # """Searches TMDB for movie title"""
-    # # get value user searched for
-    # user_search = request.form['search']
-
-    # # get search_results obj from API in auth.py
-    # search_results = get_film_obj(user_search)
-    # return render_template('search.html', search_results=search_results, key=key)
-
-
-# @app.route('/search', methods=['POST'])
-# def render_search():
-#     """Search route using AJAX"""
-    
-#     return render_template('search.html')
-
+@app.route('/register', methods=['GET', 'POST'])
+def render_registration():
+    """Register new user if username available and password valid and direct to login"""
+    if request.method == 'POST':
+        # check all required fields entered
+        if request.form['fname'] == "":
+            flash('Enter First Name')
+            return redirect('/register')
+        elif not request.form.get("lname"):
+            flash('Enter Last Name')
+            return redirect('/register')
+        elif not request.form.get("email"):
+            flash('Enter Email')
+            return redirect('/register')
+        elif not request.form.get("username"):
+            flash('Enter Username')
+            return redirect('/register')
+        elif not request.form.get("password"):
+            flash('Enter Password')
+            return redirect('/register')
+        elif not request.form.get("password-conf"):
+            flash('Confirm Password')
+            return redirect('/register')
+        # check password and confirm password match
+        elif request.form.get("password") != request.form.get("password-conf"):
+            flash('Passwords Must Match')
+            return redirect('/register')
+        # on success, direct to login
+        return redirect('/')
+    else:
+        return render_template('registration.html')
 
 
 if __name__ == "__main__":

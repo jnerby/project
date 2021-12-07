@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title%}User Registration{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <form id="registration-form" action="/register" method="POST">
+            <input placeholder="First Name" name="fname">
+            <input placeholder="Last Name" name="lname">
+            <input placeholder="Email" name="email">
+            <input placeholder="Username" name="username">
+            <input placeholder="Password" type="password" name="password">
+            <input placeholder="Confirm Password" type="password" name="password-conf">
+            <button class="btn btn-outline-secondary" type="submit">Register</button>
+        </form>
+    </div>
+{% endblock %}
