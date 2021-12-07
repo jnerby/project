@@ -56,6 +56,11 @@ def render_registration():
             flash('Passwords Must Match')
             return redirect('/register')
 
+        # check username available
+        if crud.validate_username(username) == False:
+            flash('Username unavailable.')
+            return redirect('/register')
+
         # try inserting username into table
         try:
             new_user = crud.register_user(fname, lname, email, username, password)

@@ -23,7 +23,8 @@ class User(db.Model):
     fname = db.Column(db.String(25))
     lname = db.Column(db.String(25))
     email = db.Column(db.String(30))
-    username = db.Column(db.String(25))
+    username = db.Column(db.String(25),
+                        unique=True)
     password_hash = db.Column(db.String(128))
 
     clubs = db.relationship('Club', secondary='club_users', back_populates='users')
