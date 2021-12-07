@@ -6,8 +6,6 @@ import os
 import crud
 from model import connect_to_db, User
 
-
-
 app = Flask(__name__)
 app.secret_key = "dev"
 app.jinja_env.undefined = StrictUndefined
@@ -17,8 +15,45 @@ app.jinja_env.auto_reload = True
 key = os.environ.get('API_KEY')
 
 @app.route('/')
+@crud.login_required
 def render_homepage():
     return render_template('base.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    # clear existing session
+    session.clear()
+
+    # if login form submitted
+    if request.method == 'POST':
+
+        # vars from login-form
+        username = request.form['login_username']
+        password = request.form['login_password']
+
+        # get first user w/ username = username entered on login form
+        user = User.query.filter_by(username=username).first()
+        # get user's user_id to set session
+        user_id = user.user_id
+
+        # check password hash with pw user entered
+        if crud.validate_pw(username, password):
+            flash('Welcome!')
+            # set user_id in session
+            session['user_id'] = user_id
+            return redirect('/')
+        else:
+            flash('Invalid Password')
+    # render template if method == get/not redirected to homepage
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    """Log user out"""
+    # clear session
+    session.clear()
+
+    return redirect('/')
 
 @app.route('/register', methods=['GET', 'POST'])
 def render_registration():
@@ -32,46 +67,20 @@ def render_registration():
         password = request.form['password']
         password_conf = request.form['password-conf']
 
-        # check all required fields entered
-        if not fname:
-            flash('Enter First Name')
-            return redirect('/register')
-        elif not lname:
-            flash('Enter Last Name')
-            return redirect('/register')
-        elif not email:
-            flash('Enter Email')
-            return redirect('/register')
-        elif not username:
-            flash('Enter Username')
-            return redirect('/register')
-        elif not password:
-            flash('Enter Password')
-            return redirect('/register')
-        elif not password_conf:
-            flash('Confirm Password')
-            return redirect('/register')
-        # check password and confirm password match
-        elif password != password_conf:
+        # check password and password_conf match
+        if password != password_conf:
             flash('Passwords Must Match')
-            return redirect('/register')
-
         # check username available
-        if crud.validate_username(username) == False:
+        elif crud.validate_username(username) == False:
             flash('Username unavailable.')
-            return redirect('/register')
-
-        # try inserting username into table
-        try:
+        else:
+            # add user
             new_user = crud.register_user(fname, lname, email, username, password)
             flash('Registration successful!')
-            return redirect('/')
-        except:
-            flash('Username unavailable. Please try again.')
-            return redirect('/register')
-        # on success, direct to login
-    else:
-        return render_template('registration.html')
+            # on success, direct to login
+            return redirect('/login')
+    # render reg template if method == get/user not redirected to login
+    return render_template('registration.html')
 
 
 if __name__ == "__main__":

@@ -4,12 +4,12 @@
 {% block content %}
     <div class="container-fluid">
         <form id="registration-form" action="/register" method="POST">
-            <input placeholder="First Name" name="fname">
-            <input placeholder="Last Name" name="lname">
-            <input placeholder="Email" name="email">
-            <input placeholder="Username" name="username">
-            <input placeholder="Password" type="password" name="password">
-            <input placeholder="Confirm Password" type="password" name="password-conf">
+            <input placeholder="First Name" autofocus required name="fname">
+            <input placeholder="Last Name" required name="lname">
+            <input placeholder="Email" required name="email">
+            <input placeholder="Username" required name="username">
+            <input placeholder="Password" required type="password" name="password">
+            <input placeholder="Confirm Password" required type="password" name="password-conf">
             <button class="btn btn-outline-secondary" type="submit">Register</button>
         </form>
     </div>

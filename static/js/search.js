@@ -28,7 +28,6 @@ function populateSearch() {
             // remove all elements from last search
             const body = document.querySelector('body');
             const lastSearch = document.getElementsByClassName('search-result');
-
             while(lastSearch[0]) {
                 lastSearch[0].parentNode.removeChild(lastSearch[0]);
             }
