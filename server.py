@@ -16,15 +16,23 @@ key = os.environ.get('API_KEY')
 def render_homepage():
     return render_template('base.html')
 
-@app.route('/search', methods=['POST'])
-def render_search():
-    """Searches TMDB for movie title"""
-    # get value user searched for
-    user_search = request.form['search']
+# @app.route('/search', methods=['POST'])
+# def render_search():
+    # """Searches TMDB for movie title"""
+    # # get value user searched for
+    # user_search = request.form['search']
 
-    # get search_results obj from API in auth.py
-    search_results = get_film_obj(user_search)
-    return render_template('search.html', search_results=search_results, key=key)
+    # # get search_results obj from API in auth.py
+    # search_results = get_film_obj(user_search)
+    # return render_template('search.html', search_results=search_results, key=key)
+
+
+# @app.route('/search', methods=['POST'])
+# def render_search():
+#     """Search route using AJAX"""
+    
+#     return render_template('search.html')
+
 
 
 if __name__ == "__main__":

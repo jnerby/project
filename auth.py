@@ -15,11 +15,16 @@ def get_film_obj(user_search):
 
     # get api key from environment
     key = os.environ.get('API_KEY')
-    # params = {"api-key": API_KEY}
-    url = 'https://api.themoviedb.org/3/search/movie?api_key=' + key + '&query=' + user_search
-
-    res = requests.get(url)
+    # url = 'https://api.themoviedb.org/3/search/movie?api_key=' + key + '&query=' + user_search
+    # res = requests.get(url)
+    
+    payload = {"query": user_search}
+    url = 'https://api.themoviedb.org/3/search/movie?api_key=' + key
+    res = requests.get(url, params=payload)
+    
+    # convert json object to python dict
     data = res.json()
+    # return results key from python dict
     search_results = data['results']
     return search_results
 
