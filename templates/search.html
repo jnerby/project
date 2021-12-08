@@ -2,9 +2,7 @@
 
 {% block content %}
     {% for item in search_results %}
-        <div class="container-fluid search-result" id="search-body">
-            <img src="https://image.tmdb.org/t/p/w500/{{ item['poster_path'] }}">
-            {{ item['title'] }} - {{ item['vote_average'] }} 
+        <div class="container-fluid center search-result" id="search-body">
         </div>
     {% endfor %}
 {% endblock %}

@@ -27,6 +27,8 @@ function populateSearch() {
             
             // remove all elements from last search
             const body = document.querySelector('body');
+            const blockContent = document.querySelector('#content');
+            content.innerHTML = "";
             const lastSearch = document.getElementsByClassName('search-result');
             while(lastSearch[0]) {
                 lastSearch[0].parentNode.removeChild(lastSearch[0]);
@@ -42,9 +44,6 @@ function populateSearch() {
                 tempImage.src = `https://image.tmdb.org/t/p/w500/${item['poster_path']}`;
                 tempDiv.appendChild(tempImage);
                 body.appendChild(tempDiv);
-                    //     <img src="https://image.tmdb.org/t/p/w500/${item['poster_path']}">
-                    //     ${item['title']} - ${item['vote_average']} 
-                    // </div>`);
             }
         });
 }

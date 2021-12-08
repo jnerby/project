@@ -17,7 +17,7 @@ key = os.environ.get('API_KEY')
 @app.route('/')
 @crud.login_required
 def render_homepage():
-    return render_template('base.html')
+    return render_template('home.html')
 
 @app.route('/club', methods=['GET', 'POST'])
 @crud.login_required
@@ -41,27 +41,27 @@ def create_new_club():
     return render_template('new_club.html')
 
 
-@app.route('/club_details/<club_id>')
-@crud.login_required
-def view_club_details(club_id):
-    """Show details of a specific club"""
-    # get the club user selected
-    club = Club.query.get(club_id)
-    # get owner
-    owner = User.query.filter_by(user_id = club.owner_id).first()
+# @app.route('/club_details/<club_id>')
+# @crud.login_required
+# def view_club_details(club_id):
+#     """Show details of a specific club"""
+#     # get the club user selected
+#     club = Club.query.get(club_id)
+#     # get owner
+#     owner = User.query.filter_by(user_id = club.owner_id).first()
     
-    return render_template('club_details.html', club=club, owner=owner)
+#     return render_template('club_details.html', club=club, owner=owner)
 
 
-@app.route('/join', methods=['GET', 'POST'])
-@crud.login_required
-def join_club():
-    """View all clubs"""
-    # if request.method == 'POST':
-    all_clubs = crud.get_all_clubs()
-    return render_template('join_club.html', all_clubs=all_clubs)
+# @app.route('/join', methods=['GET', 'POST'])
+# @crud.login_required
+# def join_club():
+#     """View all clubs"""
+#     # if request.method == 'POST':
+#     all_clubs = crud.get_all_clubs()
+#     return render_template('join_club.html', all_clubs=all_clubs)
 
-    # return render_template('join_club.html')
+#     # return render_template('join_club.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
