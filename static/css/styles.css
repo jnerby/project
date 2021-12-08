@@ -14,7 +14,6 @@ body {
     width: 80%;
     margin: 100px auto 50px;
     display: grid;
-    grid-auto-columns: auto;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     grid-gap: 10px;
     justify-items: center;
@@ -29,5 +28,3 @@ body {
     border-radius: 20px;
     box-shadow: 0 32px 75px rgba(68,77,136,0.2);
 }
-
-.grid-box

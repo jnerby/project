@@ -1,5 +1,5 @@
 """CRUD Functions"""
-from model import db, User, Club, Film, Vote, connect_to_db
+from model import db, User, Club, ClubUser, Film, Vote, connect_to_db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import session, redirect
 from functools import wraps
@@ -40,6 +40,16 @@ def register_user(fname, lname, email, username, password):
     db.session.commit()
 
     return new_user
+
+def request_to_join(user_id, club_id):
+    """Process user requests to join existing clubs"""
+
+    join_request = ClubUser(user_id=user_id, club_id=club_id, approved=False)
+
+    db.session.add(join_request)
+    db.session.commit(join_request)
+
+    return join_request
 
 def validate_username(username):
     """Check availability of username"""

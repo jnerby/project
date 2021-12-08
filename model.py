@@ -47,9 +47,12 @@ class ClubUser(db.Model):
     club_id = db.Column(db.Integer,
                         db.ForeignKey('clubs.club_id'),
                         nullable=False)
+    approved = db.Column(db.Boolean,
+                        default=False,
+                        nullable=False)
     
     def __repr__(self):
-        return f"<User user_id={self.user_id} club_id={self.club_id}>"
+        return f"<User user_id={self.user_id} club_id={self.club_id} approved={self.approved}>"
 
 class Club(db.Model):
     """A Club"""
