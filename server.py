@@ -4,7 +4,7 @@ from random import choice
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import crud
-from model import connect_to_db, User
+from model import db, User, Club, Film, Vote, connect_to_db
 
 app = Flask(__name__)
 app.secret_key = "dev"
@@ -19,8 +19,54 @@ key = os.environ.get('API_KEY')
 def render_homepage():
     return render_template('base.html')
 
+@app.route('/club', methods=['GET', 'POST'])
+@crud.login_required
+def create_new_club():
+    """Create a new club"""
+    # if user submitted new-club form
+    if request.method == 'POST':
+        # new club name user entered
+        name = request.form['club-name']
+        # user_id from session
+        user_id = session['user_id']
+
+        # check that club name not already in db
+        if Club.query.filter_by(name=name).first() is None:
+            # create a new club
+            crud.add_club(name, user_id)
+            flash(f"{name} created!")
+        else:
+            flash('Club name unavailable. Please try again.')
+
+    return render_template('new_club.html')
+
+
+@app.route('/club_details/<club_id>')
+@crud.login_required
+def view_club_details(club_id):
+    """Show details of a specific club"""
+    # get the club user selected
+    club = Club.query.get(club_id)
+    # get owner
+    owner = User.query.filter_by(user_id = club.owner_id).first()
+    
+    return render_template('club_details.html', club=club, owner=owner)
+
+
+@app.route('/join', methods=['GET', 'POST'])
+@crud.login_required
+def join_club():
+    """View all clubs"""
+    # if request.method == 'POST':
+    all_clubs = crud.get_all_clubs()
+    return render_template('join_club.html', all_clubs=all_clubs)
+
+    # return render_template('join_club.html')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """Log in"""
     # clear existing session
     session.clear()
 
@@ -28,8 +74,8 @@ def login():
     if request.method == 'POST':
 
         # vars from login-form
-        username = request.form['login_username']
-        password = request.form['login_password']
+        username = request.form['login-username']
+        password = request.form['login-password']
 
         # get first user w/ username = username entered on login form
         user = User.query.filter_by(username=username).first()

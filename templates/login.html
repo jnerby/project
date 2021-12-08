@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title%}Login{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <form id="login-form" action="/login" method="POST">
+            <input placeholder="Username" autofocus required name="login-username">
+            <input placeholder="Password" required type="password" name="login-password">
+            <button class="btn btn-outline-secondary" type="submit">Login</button>
+        </form>
+    </div>
+{% endblock %}

@@ -52,16 +52,22 @@
       <p>{{ message }}</p>
     </div>
     {% endfor %}
-
-    {% block content %}
-
     <div id="search-bar">
-      <form class="d-flex" id="search-form">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search" id="search">
+      <form class="container-fluid text-right" id="search-form">
+        <input type="search" placeholder="Search" aria-label="Search" name="search" id="search">
         <button class="btn btn-outline-secondary" type="submit">Search</button>
       </form>
     </div>
-    {% endblock %}
     <script src="/static/js/search.js"></script>
+
+    {% block content %}
+    <div>
+      <a href="/club">Start a Club</a>
+    </div>
+    <div>
+      <a href="/join">Join a Club</a>
+    </div>
+
+    {% endblock %}
   </body>
 </html>

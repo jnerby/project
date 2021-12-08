@@ -1,8 +1,17 @@
 """CRUD Functions"""
-from model import db, User, connect_to_db
+from model import db, User, Club, Film, Vote, connect_to_db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import session, redirect
 from functools import wraps
+
+def add_club(name, user_id):
+    new_club = Club(name=name, owner_id=user_id)
+
+    db.session.add(new_club)
+    db.session.commit()
+
+    return new_club
+
 
 def login_required(f):
     """
@@ -16,6 +25,11 @@ def login_required(f):
             return redirect("/login")
         return f(*args, **kwargs)
     return decorated_function    
+
+def get_all_clubs():
+    """Return all existing clubs that users can join"""
+    return Club.query.all()
+
 
 def register_user(fname, lname, email, username, password):
     """Register new user"""

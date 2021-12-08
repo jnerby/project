@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title%}Browse Clubs{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <form id="search-club-form" action="/join-club" method="POST">
+            <input placeholder="Club Name" autofocus required name="join-club-name">
+            <button class="btn btn-outline-secondary" type="submit">Search</button>
+        </form>
+    </div>
+    <div>
+        <h1>Clubs</h1>
+        {% for club in all_clubs %}
+            <div>
+                <a href="/club_details/{{ club['club_id'] }}">{{ club['name'] }}</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

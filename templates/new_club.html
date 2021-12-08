@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title%}New Club{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <form id="new-club-form" action="/club" method="POST">
+            <input placeholder="Club Name" autofocus required name="club-name">
+            <button class="btn btn-outline-secondary" type="submit">Create Club</button>
+        </form>
+    </div>
+{% endblock %}
