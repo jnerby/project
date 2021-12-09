@@ -19,6 +19,18 @@ key = os.environ.get('API_KEY')
 def render_homepage():
     return render_template('home.html')
 
+@app.route('/clubrequest', methods=['POST'])
+@crud.login_required
+def create_request():
+    """Enter request to join club in db"""
+    club_id = request.json.get('club_id')
+    user_id = session['user_id']
+
+    crud.request_to_join(user_id, club_id)
+
+    return 'Request Sent'
+
+
 @app.route('/club', methods=['GET', 'POST'])
 @crud.login_required
 def create_new_club():
@@ -30,36 +42,25 @@ def create_new_club():
         # user_id from session
         user_id = session['user_id']
 
-        # check that club name not already in db
-        if Club.query.filter_by(name=name).first() is None:
-            # create a new club
-            crud.add_club(name, user_id)
-            flash(f"{name} created!")
-        else:
-            flash('Club name unavailable. Please try again.')
+        crud.add_club(name, user_id)
+        flash(f"{name} created!")
 
-    return render_template('new_club.html')
-
-
-@app.route('/club_details/<club_id>')
-@crud.login_required
-def view_club_details(club_id):
-    """Show details of a specific club"""
-    # get the club user selected
-    club = Club.query.get(club_id)
-    # get owner
-    owner = User.query.filter_by(user_id = club.owner_id).first()
-    
-    return render_template('club_details.html', club=club, owner=owner)
+    return render_template('club_create.html')
 
 
 @app.route('/clubs', methods=['GET', 'POST'])
 @crud.login_required
 def join_club():
     """View all clubs"""
-    # if request.method == 'POST':
     all_clubs = crud.get_all_clubs()
-    return render_template('club_browse.html', all_clubs=all_clubs)
+    clubs = []
+    for club in all_clubs:
+        owner = crud.get_club_owner(club)
+        # name = club.name
+        # club_owners[name] = owner
+        clubs.append({'owner': owner, 'name': club.name, 'club_id': club.club_id})
+    ## PASS OWNER NAME TO TEMPLATE? CREATE SEP DICTIONARY WITH OWNER NAMES?
+    return render_template('club_browse.html', clubs=clubs)
 
 
 @app.route('/login', methods=['GET', 'POST'])

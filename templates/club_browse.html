@@ -10,10 +10,23 @@
     </div>
     <div>
         <h1>Clubs</h1>
-        {% for club in all_clubs %}
-            <div>
-                <a href="/club_details/{{ club['club_id'] }}">{{ club['name'] }}</a>
-            </div>
-        {% endfor %}
+        <table>
+            <tr>
+                <th>Club Name</th>
+                <th>Owner</th>
+                <th>ID</th>
+            </tr>
+            {% for club in clubs %}
+            <tr>
+                <td>{{ club['name'] }}</td>
+                <td>{{ club['owner'] }}</td>
+                <td>{{ club['club_id'] }}</td>
+                <td><button class="btn btn-outline-secondary club-request" id={{ club['club_id'] }}>Join</button></td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
+{% endblock %}
+{% block scripts %}
+<script src="static/js/club_request.js"></script>
 {% endblock %}

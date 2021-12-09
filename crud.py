@@ -12,7 +12,6 @@ def add_club(name, user_id):
 
     return new_club
 
-
 def login_required(f):
     """
     Decorate routes to require login.
@@ -30,6 +29,10 @@ def get_all_clubs():
     """Return all existing clubs that users can join"""
     return Club.query.all()
 
+def get_club_owner(club):
+    """Get name of club owner to display in browse screen"""
+    owner = User.query.filter_by(user_id=club.owner_id).one()
+    return f"{owner.fname} {owner.lname}"
 
 def register_user(fname, lname, email, username, password):
     """Register new user"""
@@ -43,13 +46,15 @@ def register_user(fname, lname, email, username, password):
 
 def request_to_join(user_id, club_id):
     """Process user requests to join existing clubs"""
+    # only send request if user has not requested before
+    if db.session.query(ClubUser).filter_by(user_id=user_id, club_id=club_id).first() is None:
+        join_request = ClubUser(user_id=user_id, club_id=club_id, approved=False)
+        db.session.add(join_request)
+        db.session.commit()
 
-    join_request = ClubUser(user_id=user_id, club_id=club_id, approved=False)
+        return join_request
 
-    db.session.add(join_request)
-    db.session.commit(join_request)
 
-    return join_request
 
 def validate_username(username):
     """Check availability of username"""
