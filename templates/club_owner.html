@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title%}Member Approval{% endblock %}
+
+{% block content %}
+<div>
+    <h1>Clubs</h1>
+    <table>
+        <tr>
+            <th>Club Name</th>
+            <th>Owner</th>
+            <th>ID</th>
+        </tr>
+        {% for club in owner_clubs %}
+        <tr>
+            <td>{{ club['name'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

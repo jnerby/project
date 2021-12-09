@@ -8,4 +8,9 @@
   <div>
     <a href="/clubs">Join a Club</a>
   </div>
+  {% if owner_clubs|length > 0%}
+  <div>
+    <a href="/my_clubs">My Clubs</a>
+  </div>
+  {% endif %}
 {% endblock %}

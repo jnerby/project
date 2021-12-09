@@ -17,7 +17,11 @@ key = os.environ.get('API_KEY')
 @app.route('/')
 @crud.login_required
 def render_homepage():
-    return render_template('home.html')
+    # get owner's clubs
+    user_id = session['user_id']
+    owner_clubs = crud.get_clubs_by_owner(user_id)
+
+    return render_template('home.html', owner_clubs=owner_clubs)
 
 @app.route('/clubrequest', methods=['POST'])
 @crud.login_required
@@ -42,7 +46,7 @@ def create_new_club():
         # user_id from session
         user_id = session['user_id']
 
-        crud.add_club(name, user_id)
+        crud.create_club(name, user_id)
         flash(f"{name} created!")
 
     return render_template('club_create.html')
@@ -54,12 +58,20 @@ def join_club():
     """View all clubs"""
     all_clubs = crud.get_all_clubs()
     clubs = []
+    user_id = session['user_id']
+
+    # for club in clubs, check if user in ClubUsers table. if not
     for club in all_clubs:
+        # get full name of club owner
         owner = crud.get_club_owner(club)
-        # name = club.name
-        # club_owners[name] = owner
-        clubs.append({'owner': owner, 'name': club.name, 'club_id': club.club_id})
-    ## PASS OWNER NAME TO TEMPLATE? CREATE SEP DICTIONARY WITH OWNER NAMES?
+        # get user's status in club
+        club_id = club.club_id
+        # get user's membership status for club
+        status = crud.get_approval_status(user_id, club_id)
+        ## ADD APPROVED STATUS TO DICTIONARY. USE JINJA IF TO CHANGE BUTTONS
+        clubs.append({'owner': owner, 'name': club.name, 'club_id': club.club_id, 'status': status})
+        # clubs.append({'owner': owner, 'name': club.name, 'club_id': club.club_id})
+
     return render_template('club_browse.html', clubs=clubs)
 
 
@@ -99,6 +111,15 @@ def logout():
     session.clear()
 
     return redirect('/')
+
+@app.route('/my_clubs')
+@crud.login_required
+def view_my_clubs():
+    """Load owner's club to approve new members"""
+    user_id = session['user_id']
+    owner_clubs = crud.get_clubs_by_owner(user_id)
+    return render_template('club_owner.html', owner_clubs=owner_clubs)
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def render_registration():

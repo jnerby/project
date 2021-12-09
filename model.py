@@ -52,7 +52,7 @@ class ClubUser(db.Model):
                         nullable=False)
     
     def __repr__(self):
-        return f"<User user_id={self.user_id} club_id={self.club_id} approved={self.approved}>"
+        return f"<ClubUser user_id={self.user_id} club_id={self.club_id} approved={self.approved}>"
 
 class Club(db.Model):
     """A Club"""
