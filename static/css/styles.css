@@ -33,3 +33,9 @@ table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
   }
+
+content .form-control
+{
+    display: inline-block;
+    width: auto;
+}

@@ -20,8 +20,9 @@ def render_homepage():
     # get owner's clubs
     user_id = session['user_id']
     owner_clubs = crud.get_clubs_by_owner(user_id)
+    user_clubs = crud.get_all_clubs_by_user(user_id)
 
-    return render_template('home.html', owner_clubs=owner_clubs)
+    return render_template('home.html', owner_clubs=owner_clubs, user_clubs=user_clubs)
 
 @app.route('/approval', methods=['POST'])
 @crud.login_required
@@ -158,6 +159,20 @@ def view_my_clubs():
 
     return render_template('club_owner.html', result=result)
 
+@app.route('/mylists')
+@crud.login_required
+def view_user_lists_and_clubs():
+    user_id = session['user_id']
+    user = crud.get_user_by_id(user_id)
+    clubs = crud.get_all_clubs_by_user(user_id)
+
+    result = []
+
+    for club in clubs: 
+        club_name = crud.get_club_by_id(club.club_id).name
+        result.append(club_name)
+
+    return render_template('mylists.html', user=user, result=result)
 
 @app.route('/register', methods=['GET', 'POST'])
 def render_registration():
@@ -174,6 +189,8 @@ def render_registration():
         # check password and password_conf match
         if password != password_conf:
             flash('Passwords Must Match')
+        elif len(password) < 8:
+            flash('Password must be at least 8 characters long.')
         # check username available
         elif crud.validate_username(username) == False:
             flash('Username unavailable.')

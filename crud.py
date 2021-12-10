@@ -62,6 +62,11 @@ def get_club_user_id(user_id, club_id):
     club = ClubUser.query.filter(ClubUser.club_id==club_id, ClubUser.user_id==user_id).first()
     return club.club_user_id
 
+def get_all_clubs_by_user(user_id):
+    """Return all user's clubs"""
+    clubs = ClubUser.query.filter(ClubUser.user_id==user_id, ClubUser.approved==True).all()
+    return clubs
+
 def get_join_requests(club_id):
     """Return all users who have requested to join a club"""
     user_requests = ClubUser.query.filter(ClubUser.club_id==club_id, ClubUser.approved==False).all()

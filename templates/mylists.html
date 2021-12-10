@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title%}My WatchLists{% endblock %}
+
+{% block content %}
+<div>
+    <h1>{{ user['username'] }}'s WatchLists</h1>
+    <ul>
+        {% for club_name in result %}
+        <li>{{ club_name }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script></script>
+{% endblock %}

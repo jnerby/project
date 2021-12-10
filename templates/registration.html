@@ -2,14 +2,14 @@
 {% block title%}User Registration{% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
+    <div class="form-group">
         <form id="registration-form" action="/register" method="POST">
-            <input placeholder="First Name" autofocus required name="fname">
-            <input placeholder="Last Name" required name="lname">
-            <input placeholder="Email" required name="email">
-            <input placeholder="Username" required name="username">
-            <input placeholder="Password" required type="password" name="password">
-            <input placeholder="Confirm Password" required type="password" name="password-conf">
+            <input placeholder="First Name" class="form-control" autofocus required name="fname">
+            <input placeholder="Last Name" class="form-control" required name="lname">
+            <input placeholder="Email" class="form-control" required name="email">
+            <input placeholder="Username" class="form-control" required name="username">
+            <input placeholder="Password" class="form-control" required type="password" name="password">
+            <input placeholder="Confirm Password" class="form-control" required type="password" name="password-conf">
             <button class="btn btn-outline-secondary" type="submit">Register</button>
         </form>
     </div>
