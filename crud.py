@@ -57,6 +57,11 @@ def get_clubs_by_owner(owner_id):
     """Return all clubs owned by user"""
     return Club.query.filter(Club.owner_id==owner_id).all()
 
+def get_club_user_id(user_id, club_id):
+    """Return primary key from ClubUser"""
+    club = ClubUser.query.filter(ClubUser.club_id==club_id, ClubUser.user_id==user_id).first()
+    return club.club_user_id
+
 def get_join_requests(club_id):
     """Return all users who have requested to join a club"""
     user_requests = ClubUser.query.filter(ClubUser.club_id==club_id, ClubUser.approved==False).all()

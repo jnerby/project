@@ -68,9 +68,11 @@ def join_club():
         club_id = club.club_id
         # get user's membership status for club
         status = crud.get_approval_status(user_id, club_id)
-        ## ADD APPROVED STATUS TO DICTIONARY. USE JINJA IF TO CHANGE BUTTONS
-        clubs.append({'owner': owner, 'name': club.name, 'club_id': club.club_id, 'status': status})
-        # clubs.append({'owner': owner, 'name': club.name, 'club_id': club.club_id})
+        # append each club dict to clubs list
+        clubs.append({'owner': owner, 
+                    'name': club.name, 
+                    'club_id': club.club_id, 
+                    'status': status})
 
     return render_template('club_browse.html', clubs=clubs)
 
@@ -119,31 +121,29 @@ def view_my_clubs():
     user_id = session['user_id']
     # get all clubs that user owns
     owner_clubs = crud.get_clubs_by_owner(user_id)
-
-    # initialize empty list for ClubUser join request objects
-    # join_requests = []
+    # initialize empty array for result
     result = []
 
-    # loop through owner's club to append all join requests to list
+    # loop through owner's club
     for club in owner_clubs:
         club_id = club.club_id
-        # join_requests.append(crud.get_join_requests(club_id))
 
-        # get user by id returns lists
+        # get all join requests for each club
         club_requests = crud.get_join_requests(club_id)
+        # if a club has join requests
         if club_requests:
+            # loop over join requests and add to dict
             for request in club_requests:
                 club_name = crud.get_club_by_id(request.club_id).name
                 username = crud.get_user_by_id(request.user_id).username
                 full_name = f"{crud.get_user_by_id(request.user_id).fname} {crud.get_user_by_id(request.user_id).lname}"
+                club_user_id = crud.get_club_user_id(request.user_id, request.club_id)
                 result_dict = {'club_name': club_name,
+                                'club_user_id': club_user_id,
                                 'username': username,
                                 'full_name': full_name}
+                # append dict to result list
                 result.append(result_dict)
-    # initialize empty list for dict of join requests
-
-    # loop through clubuser join requests and add club name and requestor name to dict
-    # for club in club_requests:
 
     return render_template('club_owner.html', result=result)
 
@@ -172,6 +172,7 @@ def render_registration():
             flash('Registration successful!')
             # on success, direct to login
             return redirect('/login')
+
     # render reg template if method == get/user not redirected to login
     return render_template('registration.html')
 

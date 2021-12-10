@@ -15,7 +15,7 @@
             <td>{{ item['club_name'] }}</td>
             <td>{{ item['full_name'] }}</td>
             <td>{{ item['username'] }}</td>
-            <td><button>Approve</button></td>
+            <td><button class="btn btn-outline-secondary club-approval" id={{ item['club_user_id'] }}>Approve</button></td>
         </tr>
         {% endfor %}
     </table>

@@ -1,10 +1,14 @@
+// get all club request buttons
 const buttons = document.querySelectorAll('.club-request');
 
+// add click event listener for all buttons
 for (const button of buttons){
     button.addEventListener('click', evt => {
+      // get club_id from evt.target
         const data = {
             club_id: evt.target.id
         }
+        // send post request
         fetch('/clubrequest', {
             method: 'POST',
             body: JSON.stringify(data),
@@ -13,7 +17,7 @@ for (const button of buttons){
             },
           })
           .then(response => response.text())
-            // second then is to gray out button if request went throught
+          // change request button if request was successful 
           .then(responseJSON => {
             evt.target.innerHTML = responseJSON;
             evt.target.disabled = true;
