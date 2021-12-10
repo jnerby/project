@@ -23,16 +23,16 @@ def render_homepage():
 
     return render_template('home.html', owner_clubs=owner_clubs)
 
-@app.route('/clubrequest', methods=['POST'])
+@app.route('/approval', methods=['POST'])
 @crud.login_required
-def create_request():
-    """Enter request to join club in db"""
-    club_id = request.json.get('club_id')
-    user_id = session['user_id']
+def approve_join_request():
+    """Grant club access to user once approved"""
+    # get club_user_id from request
+    club_user_id = request.json.get('club_user_id')
+    # update record in ClubUser to grant access
+    crud.grant_access_by_club_user_id(club_user_id)
 
-    crud.request_to_join(user_id, club_id)
-
-    return 'Request Sent'
+    return 'Approved'
 
 
 @app.route('/club', methods=['GET', 'POST'])
@@ -51,6 +51,17 @@ def create_new_club():
 
     return render_template('club_create.html')
 
+@app.route('/clubrequest', methods=['POST'])
+@crud.login_required
+def create_request():
+    """Enter request to join club in db"""
+    club_id = request.json.get('club_id')
+    user_id = session['user_id']
+
+    # add to ClubUsers
+    crud.request_to_join(user_id, club_id)
+
+    return 'Request Sent'
 
 @app.route('/clubs', methods=['GET', 'POST'])
 @crud.login_required

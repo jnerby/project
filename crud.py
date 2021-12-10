@@ -81,6 +81,14 @@ def grant_access(user_id, club_id):
     db.session.add(club)
     db.session.commit()
 
+def grant_access_by_club_user_id(club_user_id):
+    """Grant a user access to a club"""
+    club = ClubUser.query.filter(ClubUser.club_user_id==club_user_id).first()
+    club.approved = True
+
+    db.session.add(club)
+    db.session.commit()
+
 def register_user(fname, lname, email, username, password):
     """Register new user"""
     new_user = User(fname=fname, lname=lname, email=email, username=username,password_hash=generate_password_hash(password))
