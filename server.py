@@ -112,13 +112,40 @@ def logout():
 
     return redirect('/')
 
-@app.route('/my_clubs')
+@app.route('/join-requests')
 @crud.login_required
 def view_my_clubs():
     """Load owner's club to approve new members"""
     user_id = session['user_id']
+    # get all clubs that user owns
     owner_clubs = crud.get_clubs_by_owner(user_id)
-    return render_template('club_owner.html', owner_clubs=owner_clubs)
+
+    # initialize empty list for ClubUser join request objects
+    # join_requests = []
+    result = []
+
+    # loop through owner's club to append all join requests to list
+    for club in owner_clubs:
+        club_id = club.club_id
+        # join_requests.append(crud.get_join_requests(club_id))
+
+        # get user by id returns lists
+        club_requests = crud.get_join_requests(club_id)
+        if club_requests:
+            for request in club_requests:
+                club_name = crud.get_club_by_id(request.club_id).name
+                username = crud.get_user_by_id(request.user_id).username
+                full_name = f"{crud.get_user_by_id(request.user_id).fname} {crud.get_user_by_id(request.user_id).lname}"
+                result_dict = {'club_name': club_name,
+                                'username': username,
+                                'full_name': full_name}
+                result.append(result_dict)
+    # initialize empty list for dict of join requests
+
+    # loop through clubuser join requests and add club name and requestor name to dict
+    # for club in club_requests:
+
+    return render_template('club_owner.html', result=result)
 
 
 @app.route('/register', methods=['GET', 'POST'])

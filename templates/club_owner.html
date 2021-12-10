@@ -3,16 +3,19 @@
 
 {% block content %}
 <div>
-    <h1>Clubs</h1>
+    <h1>Join Requests</h1>
     <table>
         <tr>
             <th>Club Name</th>
-            <th>Owner</th>
-            <th>ID</th>
+            <th>Name</th>
+            <th>Username</th>
         </tr>
-        {% for club in owner_clubs %}
+        {% for item in result %}
         <tr>
-            <td>{{ club['name'] }}</td>
+            <td>{{ item['club_name'] }}</td>
+            <td>{{ item['full_name'] }}</td>
+            <td>{{ item['username'] }}</td>
+            <td><button>Approve</button></td>
         </tr>
         {% endfor %}
     </table>

@@ -39,20 +39,32 @@ def get_approval_status(user_id, club_id):
     """Check status of user's request to join a club"""
     # check if user has requested to join
     club = ClubUser.query.filter(ClubUser.club_id==club_id, ClubUser.user_id==user_id).first()
-    # print(club.approved)
-    # if club.approved is not None:
-    #     return club.approved
-    # else:
-    return 'Join' 
+    if club:
+        return str(club.approved)
+    else:
+        return 'Join' 
 
 def get_club_owner(club):
     """Get name of club owner to display in browse screen"""
     owner = User.query.filter_by(user_id=club.owner_id).one()
     return f"{owner.fname} {owner.lname}"
 
+def get_club_by_id(club_id):
+    """Return club object from club_id"""
+    return Club.query.filter(Club.club_id==club_id).first()
+
 def get_clubs_by_owner(owner_id):
     """Return all clubs owned by user"""
     return Club.query.filter(Club.owner_id==owner_id).all()
+
+def get_join_requests(club_id):
+    """Return all users who have requested to join a club"""
+    user_requests = ClubUser.query.filter(ClubUser.club_id==club_id, ClubUser.approved==False).all()
+    return user_requests
+
+def get_user_by_id(user_id):
+    """Return user object from user_id"""
+    return User.query.filter(User.user_id==user_id).first()
 
 def grant_access(user_id, club_id):
     """Grant a user access to a club"""
