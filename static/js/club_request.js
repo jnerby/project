@@ -24,5 +24,3 @@ for (const button of buttons){
         });
       });
 }
-
-

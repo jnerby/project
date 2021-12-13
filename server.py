@@ -14,6 +14,18 @@ app.jinja_env.auto_reload = True
 
 key = os.environ.get('API_KEY')
 
+@app.route('/search-react')
+def search():
+    """Renders search results where each result is a React component"""
+    return render_template('search-react.html')
+
+
+@app.route('/api')
+def fetch_api():
+    """Returns api call"""
+    userSearch = request.args.get('search')
+    return 'https://api.themoviedb.org/3/search/movie?api_key='+key+'&query='+userSearch
+
 @app.route('/')
 @crud.login_required
 def render_homepage():

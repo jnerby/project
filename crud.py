@@ -3,8 +3,18 @@ from model import db, User, Club, ClubUser, Film, Vote, connect_to_db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import session, redirect
 from functools import wraps
+import datetime
+
+
+def add_film_to_list(tmdb_id, club_id, user_id):
+    """Add new film to club list"""
+    new_film = Film(club_id=club_id,tmdb_id=tmdb_id, date_added=datetime.datetime.now(), added_by=user_id)
+    db.session.add(new_film)
+    db.session.commit()
+
 
 def create_club(name, user_id):
+    """Create new club and give access to onwer"""
     # get current user object
     curr_user = User.query.filter(User.user_id==user_id).one()
     # create new club

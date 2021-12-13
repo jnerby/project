@@ -10,6 +10,12 @@ body {
     background: #ecf4fb;
 }
 
+content .form-control
+{
+    display: inline-block;
+    width: auto;
+}
+
 .search-result {
     width: 80%;
     margin: 100px auto 50px;
@@ -33,9 +39,3 @@ table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
   }
-
-content .form-control
-{
-    display: inline-block;
-    width: auto;
-}
