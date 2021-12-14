@@ -17,11 +17,13 @@ app.jinja_env.auto_reload = True
 key = os.environ.get('API_KEY')
 
 @app.route('/search-react')
+@crud.login_required
 def search():
     """Renders search results where each result is a React component"""
     return render_template('search-react.html')
 
 @app.route('/api')
+@crud.login_required
 def fetch_api():
     """Returns api call based on search term"""
     # get value user entered in search bar
@@ -35,6 +37,7 @@ def fetch_api():
     return result
 
 @app.route('/api-details')
+@crud.login_required
 def fetch_api_details():
     """Return API call using film's id for modal"""
     # get movie id from clicked event
@@ -43,32 +46,38 @@ def fetch_api_details():
     # add movie id to api call for movie details
     url = 'https://api.themoviedb.org/3/movie/'+tmdb_id+'?api_key='+key+'&language=en-US'
     res = requests.get(url)
-    api_result = res.json()
+    result = res.json()
 
+    return result
+
+@app.route('/club-names')
+@crud.login_required
+def return_club_details():
     # get current user's id from session
     user_id = session['user_id']
+
     # get ClubUser objects for all clubs user is in
     club_users = crud.get_all_clubs_by_user(user_id)
     
-    # get club objects for all clubs user is in
-    clubs = [crud.get_club_by_id(club.club_id) for club in club_users]
+    # add user's club's names and ids to dictionary
+    clubs = {}
+    for item in club_users:
+        club = crud.get_club_by_id(item.club_id)
+        clubs[club.name] = club.club_id
 
-    # get club id and name for all clubs user is in
-    user_clubs = [{'name': club.name, 'id': club.club_id}for club in clubs]
-
-    # return search results and names and ids of user's clubs to jsx
-    result = {'api_result': api_result, 'clubs': user_clubs}
-
-    return result
+    return clubs
 
 @app.route('/add-to-list', methods=['POST'])
 @crud.login_required
 def add_film_to_list():
     """Add tmdb_id to films table"""
-    # tmdb_id = request.args.get('tmdb_id')
-    # club_id = request.args.get('club_id')
-    # print(tmdb_id)
-    # print(club_id)
+    tmdb_id = request.args.get('tmdb_id')
+    club_id = request.args.get('club_id')
+    user_id = session['user_id']
+
+    # insert film into selected list
+    crud.add_film_to_list(tmdb_id, club_id, user_id)
+
     return 'Added'
 
 @app.route('/')

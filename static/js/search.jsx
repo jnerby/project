@@ -9,10 +9,7 @@ function Modal(evt) {
         // parse response from AJAX request
         .then(movieDetails => {
             // separate movie details from clubs in server's response
-            const details = movieDetails['api_result'];
-            ///// separate clubs into a second fetch request. add club drop down as adjacentHTML in modal
-            const clubs = movieDetails['clubs'];
-
+            const details = movieDetails;
             // assign variables to use in modal
             const title = details['title'];
             const overview = details['overview'];
@@ -30,6 +27,7 @@ function Modal(evt) {
                                 <p>Runtime: ${runtime}</p>
                                 <p>Average Vote: ${vote_ave}</p>
                                 <p>Release Date: ${release}</p>
+                                <select id="club-dropdown"></select>
                                 <button id="addBtn" type="button" class="btn btn-secondary">Add to List</button>
                                 </div>`;
 
@@ -40,24 +38,33 @@ function Modal(evt) {
             const closeBtn = document.getElementById("close");
             // when close button is clicked, hide the modal
             closeBtn.addEventListener('click', () => modal.style.display="none");
+            
+            // get clubDropdown element for modal
+            const clubDropdown = document.getElementById('club-dropdown');
+
+            // fetch names of user's clubs from server so user can select which list to add to
+            fetch('/club-names')
+                .then(response => response.json())
+                .then(clubs => {
+                    // loop through clubs add add name and id to options in dd
+                    for (const [key, value] of Object.entries(clubs)) {
+                        const opt = document.createElement("option");
+                        opt.innerHTML = key;
+                        opt.value = value;
+                        clubDropdown.appendChild(opt);
+                    }
+                });
+
 
             // get Add to List Button
             const addBtn = document.getElementById("addBtn");
+            
             // when Add to List is clicked, call add_to_list function in server.py
             addBtn.addEventListener('click', (evt) => {
-                // get club id
-                const club_id = evt.target.name;
-                console.log(club_id);
-                const data = {
-                    tmdb_id: tmdb_id,
-                    club_id: club_id
-                }
-                // send post request
-                fetch('/add-to-list', {
-                ///// TUESDAY
-                // fetch(`/add-to-list?tmdb_id=${tmdb_id}&club_id=${club_id}`, {
+                // get club_id from dropdown
+                const club_id = clubDropdown.options[clubDropdown.selectedIndex].value;
+                fetch(`/add-to-list?tmdb_id=${tmdb_id}&club_id=${club_id}`, {
                     method: 'POST',
-                    body: JSON.stringify(data),
                     headers: {
                         'Content-Type': 'application/json',
                         },
