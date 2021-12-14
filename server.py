@@ -1,6 +1,7 @@
 from flask import Flask, redirect, request, render_template, session, flash
 from jinja2 import StrictUndefined
 from random import choice
+from requests import api
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import requests
@@ -20,17 +21,55 @@ def search():
     """Renders search results where each result is a React component"""
     return render_template('search-react.html')
 
-# FETCH FROM SERVER?
 @app.route('/api')
 def fetch_api():
-    """Returns api call"""
+    """Returns api call based on search term"""
+    # get value user entered in search bar
     user_search = request.args.get('search')
 
+    # add user_search to query string
     url = 'https://api.themoviedb.org/3/search/movie?api_key='+key+'&query='+user_search
     res = requests.get(url)
     result = res.json()
 
     return result
+
+@app.route('/api-details')
+def fetch_api_details():
+    """Return API call using film's id for modal"""
+    # get movie id from clicked event
+    tmdb_id = request.args.get('id')
+
+    # add movie id to api call for movie details
+    url = 'https://api.themoviedb.org/3/movie/'+tmdb_id+'?api_key='+key+'&language=en-US'
+    res = requests.get(url)
+    api_result = res.json()
+
+    # get current user's id from session
+    user_id = session['user_id']
+    # get ClubUser objects for all clubs user is in
+    club_users = crud.get_all_clubs_by_user(user_id)
+    
+    # get club objects for all clubs user is in
+    clubs = [crud.get_club_by_id(club.club_id) for club in club_users]
+
+    # get club id and name for all clubs user is in
+    user_clubs = [{'name': club.name, 'id': club.club_id}for club in clubs]
+
+    # return search results and names and ids of user's clubs to jsx
+    result = {'api_result': api_result, 'clubs': user_clubs}
+
+    return result
+
+@app.route('/add-to-list', methods=['POST'])
+@crud.login_required
+def add_film_to_list():
+    """Add tmdb_id to films table"""
+    # tmdb_id = request.args.get('tmdb_id')
+    # club_id = request.args.get('club_id')
+    # print(tmdb_id)
+    # print(club_id)
+    return 'Added'
 
 @app.route('/')
 @crud.login_required
