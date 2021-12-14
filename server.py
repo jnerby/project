@@ -3,6 +3,7 @@ from jinja2 import StrictUndefined
 from random import choice
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+import requests
 import crud
 from model import db, User, Club, ClubUser, Film, Vote, connect_to_db
 
@@ -19,12 +20,17 @@ def search():
     """Renders search results where each result is a React component"""
     return render_template('search-react.html')
 
-
+# FETCH FROM SERVER?
 @app.route('/api')
 def fetch_api():
     """Returns api call"""
-    userSearch = request.args.get('search')
-    return 'https://api.themoviedb.org/3/search/movie?api_key='+key+'&query='+userSearch
+    user_search = request.args.get('search')
+
+    url = 'https://api.themoviedb.org/3/search/movie?api_key='+key+'&query='+user_search
+    res = requests.get(url)
+    result = res.json()
+
+    return result
 
 @app.route('/')
 @crud.login_required

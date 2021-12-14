@@ -1,32 +1,40 @@
+function RenderModal(evt) {
+    evt.preventDefault();
+    // const id = evt.target.id; 
+
+    // get the modal element
+    const modal = document.getElementById("myModal");    
+    // set innerHMTL to modal-content class
+    modal.innerHTML = `<div class=modal-content><span id="close" class=close>&times;</span><p>${evt.target.id}</p></div>`;
+    // make the modal visibl
+    modal.style.display = "block";
+
+    // get close button for model
+    const close = document.getElementById("close");
+    // when close button is clicked, hide the modal
+    close.addEventListener('click', () => modal.style.display="none");
+}
+
 function RenderResults(props) {
     return (
         <React.Fragment>
             <div className="container-fluid search-result">
                 {/* map each result's poster path to image */}
                 {props.searchResults.map((result) => (
-                    <img id={result['id']} alt={result['title']} src={'https://image.tmdb.org/t/p/w500/' + result['poster_path']}></img>))}
-            {/* add modal functionality - add on click to each result evt.target to get event that was clicked on */}
+                    <img className="modal-btn" key={result['id']} id={result['id']} alt={result['title']} 
+                    src={'https://image.tmdb.org/t/p/w500/' + result['poster_path']} 
+                    onClick={RenderModal}></img>))}
             </div>
         </React.Fragment>
     ); 
 } 
 
-// function ResultDetails(props) {
-
-// }
-
-
 function SearchForm() {
     const [searchResults, updateSearchResults ] = React.useState([]);
-
     function queryAPI(evt){
         evt.preventDefault();
-
         const userSearch = document.querySelector('#search').value;
-
-        fetch('/api', {
-
-        })
+        fetch(`/api?search=${userSearch}`)
             // make AJAX request
             .then(response => response.json())
             // parse response from AJAX request
@@ -49,3 +57,4 @@ function SearchForm() {
 }
 
 ReactDOM.render(<SearchForm />, document.querySelector('#search-form-div'));
+// ReactDom.render(<RenderModal />, document.querySelector('#search-form-div'));
