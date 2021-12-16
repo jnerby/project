@@ -117,6 +117,13 @@ def register_user(fname, lname, email, username, password):
 
     return new_user
 
+def remove_film_from_list(film_id):
+    """Remove a film from a club's list"""
+    film = Film.query.get(film_id)
+    db.session.delete(film)
+    db.session.commit()
+    return film
+
 def request_to_join(user_id, club_id):
     """Process user requests to join existing clubs"""
     # only send request if user has not requested before

@@ -88,6 +88,9 @@ class Film(db.Model):
     added_by = db.Column(db.Integer,
                         db.ForeignKey('users.user_id'),
                         nullable=False)
+    watched = db.Column(db.Boolean,
+                        default=False,
+                        nullable=False)
 
     club = db.relationship('Club', back_populates='films')
     vote_users = db.relationship('User', secondary='votes', back_populates='user_votes')

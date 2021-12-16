@@ -17,29 +17,6 @@ app.jinja_env.auto_reload = True
 
 key = os.environ.get('API_KEY')
 
-@app.route('/watchlist')
-@crud.login_required
-def render_watchlists():
-    """Returns API call with gallery for watchlist"""
-    # get club_id from ajax request
-    club_id = request.args.get('club_id')
-    # get all films in a club's watchlist
-    films = crud.get_watchlist_by_club_id(club_id)
-
-    # initialize empty dictionary to return to broswer
-    film_dict = {}
-
-    # loop through films in club's list
-    for film in films:
-        # get each film's details
-        url = 'https://api.themoviedb.org/3/movie/'+str(film.tmdb_id)+'?api_key='+key+'&language=en-US'
-        res = requests.get(url)
-        result = res.json()
-        # add api call result to film_dict
-        film_dict[film.tmdb_id] = result
-    
-    return jsonify(film_dict)
-
 
 @app.route('/')
 @crud.login_required
@@ -51,8 +28,15 @@ def render_homepage():
     user_clubs = crud.get_all_clubs_by_user(user_id)
     user = crud.get_user_by_id(user_id)
     clubs = [crud.get_club_by_id(club.club_id) for club in user_clubs]
+    # join_requests = [crud.get_join_requests(club.club_id) for club in owner_clubs]
+    join_requests = 0
+    for club in owner_clubs:
+        if crud.get_join_requests(club.club_id):
+            join_requests += 1
 
-    return render_template('home.html', owner_clubs=owner_clubs, user_clubs=user_clubs, user=user, clubs=clubs)
+    print(join_requests)
+
+    return render_template('home.html', owner_clubs=owner_clubs, user_clubs=user_clubs, user=user, clubs=clubs, join_requests=join_requests)
 
 @app.route('/add-to-list', methods=['POST'])
 @crud.login_required
@@ -304,11 +288,45 @@ def render_registration():
     return render_template('registration.html')
 
 
+# @app.route('/remove-film')
+# @crud.login_required
+# def remove_film_from_list():
+#     """Remove a film from a club's watchlist"""
+#     film_id = request.args.get('id')
+#     print(film_id)
+#     crud.remove_film_from_list(film_id)
+#     return 'removed'
+
+
 @app.route('/search')
 @crud.login_required
 def search():
     """Renders search results where each result is a React component"""
     return render_template('search.html')
+
+
+@app.route('/watchlist')
+@crud.login_required
+def render_watchlists():
+    """Returns API call with gallery for watchlist"""
+    # get club_id from ajax request
+    club_id = request.args.get('club_id')
+    # get all films in a club's watchlist
+    films = crud.get_watchlist_by_club_id(club_id)
+
+    # initialize empty dictionary to return to broswer
+    film_dict = {}
+
+    # loop through films in club's list
+    for film in films:
+        # get each film's details
+        url = 'https://api.themoviedb.org/3/movie/'+str(film.tmdb_id)+'?api_key='+key+'&language=en-US'
+        res = requests.get(url)
+        result = res.json()
+        # add api call result to film_dict
+        film_dict[film.film_id] = result
+    
+    return jsonify(film_dict)
 
 
 if __name__ == "__main__":

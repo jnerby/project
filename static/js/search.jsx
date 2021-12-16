@@ -74,8 +74,9 @@ function Modal(evt) {
                                 <p>Runtime: ${runtime}</p>
                                 <p>Average Vote: ${vote_ave}</p>
                                 <p>Release Date: ${release}</p>
-                                <select id="club-dropdown"></select>
-                                <button id="addBtn" type="button" class="btn btn-secondary">Add to List</button>
+                                <label>Club</label><select class="btn btn-secondary dropdown-toggle" id="club-dropdown"></select>
+                                <br>
+                                <button id="addBtn" type="button" class="btn btn-dark">Add to List</button>
                                 </div>`;
 
             // make the modal visible
