@@ -1,24 +1,29 @@
 {% extends 'base.html' %}
 {% block title%}WatchList{% endblock %}
 
-{% block content %}
-<div>
-  <a href="/search-react">Browse</a>
-</div>
-<div>
+{% block clubnav %}
+  <div>
     <a href="/club">Start a Club</a>
   </div>
   <div>
     <a href="/clubs">Join a Club</a>
   </div>
   {% if owner_clubs|length > 0%}
-  <div>
-    <a href="/join-requests">Owner Clubs</a>
-  </div>
+    <div>
+      <a href="/join-requests">Join Requests</a>
+    </div>
   {% endif %}
+{% endblock %}
+
+{% block content %}
   {% if user_clubs|length > 0%}
   <div>
-    <a href="/mylists">My WatchLists</a>
+    <h1>{{ user['username'] }}'s WatchLists</h1>
+      {% for club in clubs %}
+        <button class="club-list btn btn-dark" id={{ club['club_id'] }}>{{ club['name'] }}</button>
+      {% endfor %}
   </div>
+  <div id="root"></div>
+  <script type="text/jsx" src="/static/js/watchlist.jsx"></script>
   {% endif %}
 {% endblock %}

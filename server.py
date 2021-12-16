@@ -5,6 +5,7 @@ from requests import api
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import requests
+from flask import jsonify
 import crud
 from model import db, User, Club, ClubUser, Film, Vote, connect_to_db
 
@@ -16,11 +17,56 @@ app.jinja_env.auto_reload = True
 
 key = os.environ.get('API_KEY')
 
-@app.route('/search-react')
+@app.route('/watchlist')
 @crud.login_required
-def search():
-    """Renders search results where each result is a React component"""
-    return render_template('search-react.html')
+def render_watchlists():
+    """Returns API call with gallery for watchlist"""
+    # get club_id from ajax request
+    club_id = request.args.get('club_id')
+    # get all films in a club's watchlist
+    films = crud.get_watchlist_by_club_id(club_id)
+
+    # initialize empty dictionary to return to broswer
+    film_dict = {}
+
+    # loop through films in club's list
+    for film in films:
+        # get each film's details
+        url = 'https://api.themoviedb.org/3/movie/'+str(film.tmdb_id)+'?api_key='+key+'&language=en-US'
+        res = requests.get(url)
+        result = res.json()
+        # add api call result to film_dict
+        film_dict[film.tmdb_id] = result
+    
+    return jsonify(film_dict)
+
+
+@app.route('/')
+@crud.login_required
+def render_homepage():
+    # get owner's clubs
+    user_id = session['user_id']
+
+    owner_clubs = crud.get_clubs_by_owner(user_id)
+    user_clubs = crud.get_all_clubs_by_user(user_id)
+    user = crud.get_user_by_id(user_id)
+    clubs = [crud.get_club_by_id(club.club_id) for club in user_clubs]
+
+    return render_template('home.html', owner_clubs=owner_clubs, user_clubs=user_clubs, user=user, clubs=clubs)
+
+@app.route('/add-to-list', methods=['POST'])
+@crud.login_required
+def add_film_to_list():
+    """Add tmdb_id to films table"""
+    tmdb_id = request.args.get('tmdb_id')
+    club_id = request.args.get('club_id')
+    user_id = session['user_id']
+
+    # insert film into selected list
+    crud.add_film_to_list(tmdb_id, club_id, user_id)
+
+    return 'Added'
+
 
 @app.route('/api')
 @crud.login_required
@@ -36,6 +82,7 @@ def fetch_api():
 
     return result
 
+
 @app.route('/api-details')
 @crud.login_required
 def fetch_api_details():
@@ -50,45 +97,6 @@ def fetch_api_details():
 
     return result
 
-@app.route('/club-names')
-@crud.login_required
-def return_club_details():
-    # get current user's id from session
-    user_id = session['user_id']
-
-    # get ClubUser objects for all clubs user is in
-    club_users = crud.get_all_clubs_by_user(user_id)
-    
-    # add user's club's names and ids to dictionary
-    clubs = {}
-    for item in club_users:
-        club = crud.get_club_by_id(item.club_id)
-        clubs[club.name] = club.club_id
-
-    return clubs
-
-@app.route('/add-to-list', methods=['POST'])
-@crud.login_required
-def add_film_to_list():
-    """Add tmdb_id to films table"""
-    tmdb_id = request.args.get('tmdb_id')
-    club_id = request.args.get('club_id')
-    user_id = session['user_id']
-
-    # insert film into selected list
-    crud.add_film_to_list(tmdb_id, club_id, user_id)
-
-    return 'Added'
-
-@app.route('/')
-@crud.login_required
-def render_homepage():
-    # get owner's clubs
-    user_id = session['user_id']
-    owner_clubs = crud.get_clubs_by_owner(user_id)
-    user_clubs = crud.get_all_clubs_by_user(user_id)
-
-    return render_template('home.html', owner_clubs=owner_clubs, user_clubs=user_clubs)
 
 @app.route('/approval', methods=['POST'])
 @crud.login_required
@@ -118,6 +126,26 @@ def create_new_club():
 
     return render_template('club_create.html')
 
+
+@app.route('/club-names')
+@crud.login_required
+def return_club_details():
+    """Return names and ids of clubs for Add to List dropdown"""
+    # get current user's id from session
+    user_id = session['user_id']
+
+    # get ClubUser objects for all clubs user is in
+    club_users = crud.get_all_clubs_by_user(user_id)
+    
+    # add user's club's names and ids to dictionary
+    clubs = {}
+    for item in club_users:
+        club = crud.get_club_by_id(item.club_id)
+        clubs[club.name] = club.club_id
+
+    return clubs
+
+
 @app.route('/clubrequest', methods=['POST'])
 @crud.login_required
 def create_request():
@@ -129,6 +157,7 @@ def create_request():
     crud.request_to_join(user_id, club_id)
 
     return 'Request Sent'
+
 
 @app.route('/clubs', methods=['GET', 'POST'])
 @crud.login_required
@@ -184,6 +213,7 @@ def login():
     # render template if method == get/not redirected to homepage
     return render_template('login.html')
 
+
 @app.route('/logout')
 def logout():
     """Log user out"""
@@ -191,6 +221,7 @@ def logout():
     session.clear()
 
     return redirect('/')
+
 
 @app.route('/join-requests')
 @crud.login_required
@@ -225,6 +256,7 @@ def view_my_clubs():
 
     return render_template('club_owner.html', result=result)
 
+
 @app.route('/mylists')
 @crud.login_required
 def view_user_lists_and_clubs():
@@ -239,6 +271,7 @@ def view_user_lists_and_clubs():
         result.append(club_name)
 
     return render_template('mylists.html', user=user, result=result)
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def render_registration():
@@ -269,6 +302,13 @@ def render_registration():
 
     # render reg template if method == get/user not redirected to login
     return render_template('registration.html')
+
+
+@app.route('/search')
+@crud.login_required
+def search():
+    """Renders search results where each result is a React component"""
+    return render_template('search.html')
 
 
 if __name__ == "__main__":

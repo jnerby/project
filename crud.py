@@ -86,6 +86,10 @@ def get_user_by_id(user_id):
     """Return user object from user_id"""
     return User.query.filter(User.user_id==user_id).first()
 
+def get_watchlist_by_club_id(club_id):
+    """Return all films objects added to a club's watchlist"""
+    return Film.query.filter(Film.club_id==club_id).all()
+
 def grant_access(user_id, club_id):
     """Grant a user access to a club"""
     # get the club object

@@ -1,4 +1,51 @@
+function SearchForm() {
+// QUERY API WHEN USER SEARCHES FOR A TITLE
+
+    // use state to store search results from API call
+    const [searchResults, updateSearchResults] = React.useState([]);
+    // pass search form submission as evt to queryAPI
+    function queryAPI(evt){
+        evt.preventDefault();
+        const userSearch = document.querySelector('#search').value;
+        fetch(`/api?search=${userSearch}`)
+            // make AJAX request
+            .then(response => response.json())
+            // parse response from AJAX request
+            .then(searchResults => {
+                // storing json response at results key in results variable
+                const apiResults = searchResults['results'];
+                updateSearchResults(apiResults);
+            });
+    }
+    return (
+        <React.Fragment>
+            <form onSubmit={queryAPI} className="container-fluid text-right" id="search-form">
+                <input type="search" placeholder="Title" aria-label="Search" name="search" id="search"></input>
+                <button className="btn btn-outline-secondary" type="submit">Search</button>
+            </form>
+            {/* call Result w/ searchResults state as prop */}
+            <Result searchResults={searchResults}/>
+        </React.Fragment>
+    )
+}
+
+function Result(props) {
+// DISPLAY MOVIE POSTERS FROM SEARCH RESULT
+    return (
+        <React.Fragment>
+            <div className="container-fluid search-result">
+                {/* map each result's poster path to image */}
+                {props.searchResults.map((result) => (
+                    <img className="modal-btn" key={result['id']} id={result['id']} alt={result['title']} 
+                    src={'https://image.tmdb.org/t/p/w500/' + result['poster_path']} 
+                    onClick={Modal}></img>))}
+            </div>
+        </React.Fragment>
+    ); 
+} 
+
 function Modal(evt) {
+// RENDER MODAL WHEN USER CLICKS ON A MOVIE POSTER
     evt.preventDefault();
 
     // Fetch movie details from server using tmdb_id
@@ -55,7 +102,6 @@ function Modal(evt) {
                     }
                 });
 
-
             // get Add to List Button
             const addBtn = document.getElementById("addBtn");
             
@@ -76,49 +122,6 @@ function Modal(evt) {
                     });
             });
         });
-}
-
-function Result(props) {
-    return (
-        <React.Fragment>
-            <div className="container-fluid search-result">
-                {/* map each result's poster path to image */}
-                {props.searchResults.map((result) => (
-                    <img className="modal-btn" key={result['id']} id={result['id']} alt={result['title']} 
-                    src={'https://image.tmdb.org/t/p/w500/' + result['poster_path']} 
-                    onClick={Modal}></img>))}
-            </div>
-        </React.Fragment>
-    ); 
-} 
-
-function SearchForm() {
-    // use state to store search results from API call
-    const [searchResults, updateSearchResults] = React.useState([]);
-    // pass search form submission as evt to queryAPI
-    function queryAPI(evt){
-        evt.preventDefault();
-        const userSearch = document.querySelector('#search').value;
-        fetch(`/api?search=${userSearch}`)
-            // make AJAX request
-            .then(response => response.json())
-            // parse response from AJAX request
-            .then(searchResults => {
-                // storing json response at results key in results variable
-                const apiResults = searchResults['results'];
-                updateSearchResults(apiResults);
-            });
-    }
-    return (
-        <React.Fragment>
-            <form onSubmit={queryAPI} className="container-fluid text-right" id="search-form">
-                <input type="search" placeholder="Title" aria-label="Search" name="search" id="search"></input>
-                <button className="btn btn-outline-secondary" type="submit">Search</button>
-            </form>
-            {/* call RenderResults w/ searchResults state */}
-            <Result searchResults={searchResults}/>
-        </React.Fragment>
-    )
 }
 
 ReactDOM.render(<SearchForm />, document.querySelector('#search-form-div'));

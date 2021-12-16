@@ -21,7 +21,6 @@
     <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.js"></script>
     
 
-    
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -40,6 +39,9 @@
               <a class="nav-link active" href="/login">Login</a>
             </li>           
             {% else %}
+            <li class="navbar-nav ms-auto">
+              <a class="nav-link" aria-current="page" href="/search">Browse</a>
+            </li>
             <li class="navbar-nav ml-auto">
               <a class="nav-link" href="/logout">Logout</a>
             </li>
@@ -47,16 +49,23 @@
         </div>
       </div>
     </nav>
+
     {% for message in get_flashed_messages() %}
     <div class=flashes>
       <p>{{ message }}</p>
     </div>
     {% endfor %}
 
+    <div class="club-nav">
+      {% block clubnav %}
+      {% endblock %}
+    </div>
+
     <div class="container p-5" id="content">
     {% block content %}
     {% endblock %}
     </div>
+
     {% block scripts %}
     {% endblock %}
   </body>
