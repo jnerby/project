@@ -18,6 +18,7 @@ app.jinja_env.auto_reload = True
 key = os.environ.get('API_KEY')
 
 
+
 @app.route('/')
 @crud.login_required
 def render_homepage():
@@ -37,6 +38,7 @@ def render_homepage():
     print(join_requests)
 
     return render_template('home.html', owner_clubs=owner_clubs, user_clubs=user_clubs, user=user, clubs=clubs, join_requests=join_requests)
+
 
 @app.route('/add-to-list', methods=['POST'])
 @crud.login_required
@@ -60,7 +62,7 @@ def fetch_api():
     user_search = request.args.get('search')
 
     # add user_search to query string
-    url = 'https://api.themoviedb.org/3/search/movie?api_key='+key+'&query='+user_search
+    url = 'https://api.themoviedb.org/3/search/movie?api_key='+str(key)+'&query='+user_search
     res = requests.get(url)
     result = res.json()
 
@@ -75,7 +77,7 @@ def fetch_api_details():
     tmdb_id = request.args.get('id')
 
     # add movie id to api call for movie details
-    url = 'https://api.themoviedb.org/3/movie/'+tmdb_id+'?api_key='+key+'&language=en-US'
+    url = 'https://api.themoviedb.org/3/movie/'+str(tmdb_id)+'?api_key='+str(key)+'&language=en-US'
     res = requests.get(url)
     result = res.json()
 
@@ -108,7 +110,23 @@ def create_new_club():
         crud.create_club(name, user_id)
         flash(f"{name} created!")
 
-    return render_template('club_create.html')
+    return 'added'
+
+
+@app.route('/club-buttons')
+@crud.login_required
+def get_club_buttons():
+    user_id = session['user_id']
+    # get User's clubs
+    all_clubs = crud.get_all_clubs_by_user(user_id)
+
+    club_dict = {}
+
+    # get club id and club name for all user's clubs
+    for club in all_clubs:
+        club_dict[club.club_id] = crud.get_club_by_id(club.club_id).name
+
+    return jsonify(club_dict)
 
 
 @app.route('/club-names')
@@ -147,25 +165,55 @@ def create_request():
 @crud.login_required
 def join_club():
     """View all clubs"""
-    all_clubs = crud.get_all_clubs()
-    clubs = []
-    user_id = session['user_id']
+        # if user submitted new-club form
+    if request.method == 'POST':
+        # new club name user entered
+        name = request.form['club-name']
+        # user_id from session
+        user_id = session['user_id']
+
+        crud.create_club(name, user_id)
+        flash(f"{name} created!")
+
+        all_clubs = crud.get_all_clubs()
+        clubs = []
+        user_id = session['user_id']
 
     # for club in clubs, check if user in ClubUsers table. if not
-    for club in all_clubs:
-        # get full name of club owner
-        owner = crud.get_club_owner(club)
-        # get user's status in club
-        club_id = club.club_id
-        # get user's membership status for club
-        status = crud.get_approval_status(user_id, club_id)
-        # append each club dict to clubs list
-        clubs.append({'owner': owner, 
-                    'name': club.name, 
-                    'club_id': club.club_id, 
-                    'status': status})
+        for club in all_clubs:
+            # get full name of club owner
+            owner = crud.get_club_owner(club)
+            # get user's status in club
+            club_id = club.club_id
+            # get user's membership status for club
+            status = crud.get_approval_status(user_id, club_id)
+            # append each club dict to clubs list
+            clubs.append({'owner': owner, 
+                        'name': club.name, 
+                        'club_id': club.club_id, 
+                        'status': status})
 
-    return render_template('club_browse.html', clubs=clubs)
+        return render_template('clubs.html', clubs=clubs)
+    else:
+        all_clubs = crud.get_all_clubs()
+        clubs = []
+        user_id = session['user_id']
+
+    # for club in clubs, check if user in ClubUsers table. if not
+        for club in all_clubs:
+            # get full name of club owner
+            owner = crud.get_club_owner(club)
+            # get user's status in club
+            club_id = club.club_id
+            # get user's membership status for club
+            status = crud.get_approval_status(user_id, club_id)
+            # append each club dict to clubs list
+            clubs.append({'owner': owner, 
+                        'name': club.name, 
+                        'club_id': club.club_id, 
+                        'status': status})
+
+        return render_template('clubs.html', clubs=clubs)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -183,17 +231,27 @@ def login():
 
         # get first user w/ username = username entered on login form
         user = User.query.filter_by(username=username).first()
-        # get user's user_id to set session
-        user_id = user.user_id
 
-        # check password hash with pw user entered
-        if crud.validate_pw(username, password):
-            flash('Welcome!')
-            # set user_id in session
-            session['user_id'] = user_id
-            return redirect('/')
+        # flash message if user does not exist
+        # if not user:
+
+        if user:
+        # get user's user_id to set session
+            user_id = user.user_id
+
+
+            # check password hash with pw user entered
+            if crud.validate_pw(username, password):
+                flash('Welcome!')
+                # set user_id in session
+                session['user_id'] = user_id
+                return redirect('/')
+            else:
+                flash('Invalid Password')
+
         else:
-            flash('Invalid Password')
+            flash('Username does not exist.')
+
     # render template if method == get/not redirected to homepage
     return render_template('login.html')
 
@@ -288,14 +346,14 @@ def render_registration():
     return render_template('registration.html')
 
 
-# @app.route('/remove-film')
-# @crud.login_required
-# def remove_film_from_list():
-#     """Remove a film from a club's watchlist"""
-#     film_id = request.args.get('id')
-#     print(film_id)
-#     crud.remove_film_from_list(film_id)
-#     return 'removed'
+@app.route('/remove-film')
+@crud.login_required
+def remove_film_from_list():
+    """Remove a film from a club's watchlist"""
+    film_id = request.args.get('id')
+    print(film_id)
+    crud.remove_film_from_list(film_id)
+    return 'removed'
 
 
 @app.route('/search')
@@ -320,13 +378,22 @@ def render_watchlists():
     # loop through films in club's list
     for film in films:
         # get each film's details
-        url = 'https://api.themoviedb.org/3/movie/'+str(film.tmdb_id)+'?api_key='+key+'&language=en-US'
+        url = 'https://api.themoviedb.org/3/movie/'+str(film.tmdb_id)+'?api_key='+str(key)+'&language=en-US'
         res = requests.get(url)
         result = res.json()
         # add api call result to film_dict
         film_dict[film.film_id] = result
     
     return jsonify(film_dict)
+
+
+@app.route('/watched-film')
+@crud.login_required
+def update_film_to_watched():
+    film_id = request.args.get('id')
+    print(film_id)
+    crud.update_watched_status(film_id)
+    return 'updated'
 
 
 if __name__ == "__main__":

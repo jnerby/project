@@ -96,7 +96,7 @@ class Film(db.Model):
     vote_users = db.relationship('User', secondary='votes', back_populates='user_votes')
 
     def __repr__(self):
-        return f"<User film_id={self.film_id} date_added={self.date_added}>"
+        return f"<Film film_id={self.film_id} date_added={self.date_added} watched={self.watched}>"
 
 class Vote(db.Model):
     """User up and downvotes"""
@@ -116,7 +116,7 @@ class Vote(db.Model):
                     nullable=False)
 
     def __repr__(self):
-        return f"<User vote_id={self.vote_id} vote={self.vote}>"
+        return f"<Vote vote_id={self.vote_id} vote={self.vote}>"
 
 
 if __name__ == "__main__":

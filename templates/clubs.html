@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title%}Browse Clubs{% endblock %}
+
+{% block content %}
+<h1>Clubs</h1>
+<h3>Start a Club</h3>
+    <div class="container-fluid">
+        <form id="new-club-form" action="/clubs" method="POST">
+            <input placeholder="Club Name" autofocus required name="club-name">
+            <button class="btn btn-outline-secondary" type="submit">Create Club</button>
+        </form>
+    </div>    
+
+<h3>Join a Club</h3>
+
+    <div>
+        <table>
+            <tr>
+                <th>Club Name</th>
+                <th>Owner</th>
+                <th>ID</th>
+            </tr>
+            {% if clubs %}
+                {% for club in clubs %}
+                <tr>
+                    <td>{{ club['name'] }}</td>
+                    <td>{{ club['owner'] }}</td>
+                    <td>{{ club['club_id'] }}</td>
+                    <td>{{ club['status'] }}</td>
+                    {% if club['status'] == "True" %}
+                    <td><button class="btn btn-outline-secondary club-request" disabled id={{ club['club_id'] }}>Enrolled</button></td>
+                    {% elif club['status'] == "False" %}
+                    <td><button class="btn btn-outline-secondary club-request" disabled id={{ club['club_id'] }}>Request Sent</button></td>
+                    {% else %}
+                    <td><button class="btn btn-outline-secondary club-request" id={{ club['club_id'] }}>Join</button></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            {% endif %}
+        </table>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="static/js/club_request.js"></script>
+{% endblock %}

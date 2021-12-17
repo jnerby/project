@@ -14,6 +14,7 @@ function SearchForm() {
             .then(searchResults => {
                 // storing json response at results key in results variable
                 const apiResults = searchResults['results'];
+                console.log(apiResults);
                 updateSearchResults(apiResults);
             });
     }

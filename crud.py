@@ -135,6 +135,16 @@ def request_to_join(user_id, club_id):
 
         return join_request
 
+def update_watched_status(film_id):
+    """Update film's watched status"""
+    film = Film.query.get(film_id)
+    
+    film.watched = True
+    db.session.add(film)
+    db.session.commit()
+
+    return film
+
 def validate_username(username):
     """Check availability of username"""
     # if username not already in db, return true

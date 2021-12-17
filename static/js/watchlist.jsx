@@ -1,36 +1,75 @@
-//// CLUB BUTTONS ////
-// get all club buttons
-const clubs = document.getElementsByClassName('club-list');
-// add event listener to each club button to pass club_id to Watchlist
-for (const club of clubs){
-    club.addEventListener('click', (evt) =>{
-        evt.preventDefault();
-        // update page header to show which club user is viewing
-        document.getElementById('user-lists').innerHTML = evt.target.innerHTML;
-        ReactDOM.render(<Watchlist club_id={evt.target.id} />, document.querySelector('#root'));
-    });
-}
+const ClubButtons = () => {
+    const [club_id, updateClub] = React.useState();
+    const [buttons, updateButtons] = React.useState([]);
 
+    React.useEffect(() => {
+        fetch('/club-buttons')
+        .then(response => {
+            return response.json();
+            })
+        .then(clubs => {
+            const btns = [];
+            // Generate buttons key = club_id, value = club name
+            for (const [key, value] of Object.entries(clubs)) {
+                btns.push(
+                    // Use club_id as button key
+                    <div id={`btn_div${key}`}>
+                        {/* Button on click updates state to club's id */}
+                        <button className="removeBtn btn btn-dark" onClick={() => updateClub(key)}>{value}</button>
+                    </div>
+                );
+            }
+            updateButtons(btns);
+        });
+
+    }, []);
+    return (
+        <React.Fragment>
+            <section className="word-container watchlist">{buttons}</section>
+            <Watchlist club_id={club_id} />
+        </React.Fragment>
+    )
+}
 
 const Watchlist = (props) => {
     const [movies, updateMovies] = React.useState([]);
+
+    // Remove a film from a list
+    function removeFilm(evt) {
+        const film_id = evt.target.id.slice(3);
+
+        fetch(`/remove-film?id=${film_id}`)
+            .then(response => response.text())
+            .then(evt.target.disabled = true)
+            // .then(result => updateMovies(movies.filter((item) => item.id != `div${film_id}`)))
+            // .then(console.log(movies))
+    }
+    //// TO DO ////
+    function watchedFilm(evt) {
+        const film_id = evt.target.id.slice(2);
+        console.log(film_id);
+        fetch(`/watched-film?id=${film_id}`)
+            .then(response => response.text())
+            .then(evt.target.disabled = true)
+    }
+
     React.useEffect(() => {
         fetch(`/watchlist?club_id=${props.club_id}`)
             .then(response => response.json())
             .then(films => {
-                // get values from result dictionary
+                // Get values from result dictionary
                 const values = Object.values(films);
-                // initiliaze empty helper array for movie details
+                // Initiliaze empty helper array for movie details
                 const helper = [];
-                // loop over film objects
+                // Loop over film objects
                 for (const [key, value] of Object.entries(films)) {
                     helper.push(
-                        <div>
+                        <div id={`div${key}`}>
                             <div>
                             <img src={`https://image.tmdb.org/t/p/w500/${value['poster_path']}`}></img>
                             </div>
-                            <button id={key} type="button" className="removeBtn btn btn-dark">Remove</button>
-                            {/* <button id="addBtn" type="button" class="btn btn-dark">Schedule</button> */}
+                            <button id={`rmv${key}`} onClick={removeFilm} className="removeBtn btn btn-dark">Remove</button>
+                            <button id={`wt${key}`} onClick={watchedFilm} className="watchBtn btn btn-dark">Watched</button>
                             <h4>{value['title']}</h4>
                             <p>{value['overview']}</p>
                             <p>Voter Average: {value['vote_average']}</p>
@@ -38,22 +77,12 @@ const Watchlist = (props) => {
                         </div>
                         );
                 }
-                
-                // replace empty movies array in state with values from helper array
-                updateMovies(helper);
+                // Replace empty movies array in state with values from helper array
+                updateMovies(movies => helper);
+
             })},[props.club_id]);
 
     return <section className="word-container watchlist">{movies}</section>;
 }
 
-
-// //// REMOVE BUTTONS ////
-// // get all remove buttons
-// const removeBtns = document.getElementsByClassName('removeBtn');
-// // add event listener for when remove button is clicked
-// for (const b of removeBtns) {
-//     b.addEventListener('click', (evt) =>{
-//         evt.preventDefault();
-//         console.log(evt.target.id);
-//     });
-// }
+ReactDOM.render(<ClubButtons />, document.querySelector('#root'));
