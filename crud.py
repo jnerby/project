@@ -77,6 +77,10 @@ def get_all_clubs_by_user(user_id):
     clubs = ClubUser.query.filter(ClubUser.user_id==user_id, ClubUser.approved==True).all()
     return clubs
 
+def get_film_history():
+    """Returns all movies where watched = True"""
+    return Film.query.filter(Film.watched==True).all()
+
 def get_join_requests(club_id):
     """Return all users who have requested to join a club"""
     user_requests = ClubUser.query.filter(ClubUser.club_id==club_id, ClubUser.approved==False).all()
@@ -88,7 +92,7 @@ def get_user_by_id(user_id):
 
 def get_watchlist_by_club_id(club_id):
     """Return all films objects added to a club's watchlist"""
-    return Film.query.filter(Film.club_id==club_id).all()
+    return Film.query.filter(Film.club_id==club_id, Film.watched==False).all()
 
 def grant_access(user_id, club_id):
     """Grant a user access to a club"""

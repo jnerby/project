@@ -216,6 +216,57 @@ def join_club():
         return render_template('clubs.html', clubs=clubs)
 
 
+@app.route('/history')
+@crud.login_required
+def view_history():
+    """View all movies a user has watched"""
+    # Get all watched films
+    films = crud.get_film_history()
+
+    results = []
+
+    for film in films:
+        url = 'https://api.themoviedb.org/3/movie/'+str(film.tmdb_id)+'?api_key='+str(key)+'&language=en-US'
+        res = requests.get(url)
+        results.append(res.json())
+
+    return render_template('history.html', results=results)
+
+
+@app.route('/join-requests')
+@crud.login_required
+def view_my_clubs():
+    """Load owner's club to approve new members"""
+    user_id = session['user_id']
+    # get all clubs that user owns
+    owner_clubs = crud.get_clubs_by_owner(user_id)
+    # initialize empty array for result
+    result = []
+
+    # loop through owner's club
+    for club in owner_clubs:
+        club_id = club.club_id
+
+        # get all join requests for each club
+        club_requests = crud.get_join_requests(club_id)
+        # if a club has join requests
+        if club_requests:
+            # loop over join requests and add to dict
+            for request in club_requests:
+                club_name = crud.get_club_by_id(request.club_id).name
+                username = crud.get_user_by_id(request.user_id).username
+                full_name = f"{crud.get_user_by_id(request.user_id).fname} {crud.get_user_by_id(request.user_id).lname}"
+                club_user_id = crud.get_club_user_id(request.user_id, request.club_id)
+                result_dict = {'club_name': club_name,
+                                'club_user_id': club_user_id,
+                                'username': username,
+                                'full_name': full_name}
+                # append dict to result list
+                result.append(result_dict)
+
+    return render_template('club_owner.html', result=result)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """Log in"""
@@ -263,40 +314,6 @@ def logout():
     session.clear()
 
     return redirect('/')
-
-
-@app.route('/join-requests')
-@crud.login_required
-def view_my_clubs():
-    """Load owner's club to approve new members"""
-    user_id = session['user_id']
-    # get all clubs that user owns
-    owner_clubs = crud.get_clubs_by_owner(user_id)
-    # initialize empty array for result
-    result = []
-
-    # loop through owner's club
-    for club in owner_clubs:
-        club_id = club.club_id
-
-        # get all join requests for each club
-        club_requests = crud.get_join_requests(club_id)
-        # if a club has join requests
-        if club_requests:
-            # loop over join requests and add to dict
-            for request in club_requests:
-                club_name = crud.get_club_by_id(request.club_id).name
-                username = crud.get_user_by_id(request.user_id).username
-                full_name = f"{crud.get_user_by_id(request.user_id).fname} {crud.get_user_by_id(request.user_id).lname}"
-                club_user_id = crud.get_club_user_id(request.user_id, request.club_id)
-                result_dict = {'club_name': club_name,
-                                'club_user_id': club_user_id,
-                                'username': username,
-                                'full_name': full_name}
-                # append dict to result list
-                result.append(result_dict)
-
-    return render_template('club_owner.html', result=result)
 
 
 @app.route('/mylists')
