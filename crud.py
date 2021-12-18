@@ -77,9 +77,10 @@ def get_all_clubs_by_user(user_id):
     clubs = ClubUser.query.filter(ClubUser.user_id==user_id, ClubUser.approved==True).all()
     return clubs
 
-def get_film_history():
-    """Returns all movies where watched = True"""
-    return Film.query.filter(Film.watched==True).all()
+def get_history_by_clubs(clubs):
+    """Return all films a user's clubs have watched"""
+    films = Film.query.filter(Film.club_id.in_(clubs), Film.watched==True).all()
+    return films
 
 def get_join_requests(club_id):
     """Return all users who have requested to join a club"""

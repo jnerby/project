@@ -1,6 +1,5 @@
 function SearchForm() {
 // QUERY API WHEN USER SEARCHES FOR A TITLE
-
     // use state to store search results from API call
     const [searchResults, updateSearchResults] = React.useState([]);
     // pass search form submission as evt to queryAPI

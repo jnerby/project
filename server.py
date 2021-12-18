@@ -1,11 +1,10 @@
-from flask import Flask, redirect, request, render_template, session, flash
-from jinja2 import StrictUndefined
-from random import choice
-from requests import api
-from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import requests
-from flask import jsonify
+from flask import Flask, flash, jsonify, redirect, render_template, request, session
+from jinja2 import StrictUndefined
+# from random import choice
+# from requests import api
+from werkzeug.security import generate_password_hash, check_password_hash
 import crud
 from model import db, User, Club, ClubUser, Film, Vote, connect_to_db
 
@@ -16,6 +15,12 @@ app.jinja_env.undefined = StrictUndefined
 app.jinja_env.auto_reload = True
 
 key = os.environ.get('API_KEY')
+
+
+@app.route('/recs')
+@crud.login_required
+def render_recommendation():
+    return True
 
 
 
@@ -219,12 +224,22 @@ def join_club():
 @app.route('/history')
 @crud.login_required
 def view_history():
-    """View all movies a user has watched"""
-    # Get all watched films
-    films = crud.get_film_history()
+    """View all movies a user's club(s) have watched"""
+    user_id = session['user_id']
+    # Get a ClubUsers
+    user_clubs = crud.get_all_clubs_by_user(user_id)
+
+    # Add user's club_ids to set
+    club_ids = set()
+    for club in user_clubs:
+        club_ids.add(club.club_id)
+
+    # Get all films that have been watched in users' clubs
+    films = crud.get_history_by_clubs(club_ids)
 
     results = []
 
+    # Call API for each film
     for film in films:
         url = 'https://api.themoviedb.org/3/movie/'+str(film.tmdb_id)+'?api_key='+str(key)+'&language=en-US'
         res = requests.get(url)
@@ -400,6 +415,7 @@ def render_watchlists():
         result = res.json()
         # add api call result to film_dict
         film_dict[film.film_id] = result
+    print(film_dict)
     
     return jsonify(film_dict)
 

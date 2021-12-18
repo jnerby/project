@@ -44,7 +44,6 @@ const Watchlist = (props) => {
             // .then(result => updateMovies(movies.filter((item) => item.id != `div${film_id}`)))
             // .then(console.log(movies))
     }
-    //// TO DO ////
     function watchedFilm(evt) {
         const film_id = evt.target.id.slice(2);
         console.log(film_id);
@@ -74,15 +73,20 @@ const Watchlist = (props) => {
                             <p>{value['overview']}</p>
                             <p>Voter Average: {value['vote_average']}</p>
                             <p>Runtime: {value['runtime']}</p>
+                            <ul>Genres 
+                            {value['genres'].map(genre => (<li>{genre['name']}</li>))}
+                            </ul>
                         </div>
-                        );
+                    );
                 }
                 // Replace empty movies array in state with values from helper array
                 updateMovies(movies => helper);
-
+                
             })},[props.club_id]);
-
     return <section className="word-container watchlist">{movies}</section>;
 }
 
 ReactDOM.render(<ClubButtons />, document.querySelector('#root'));
+
+
+// add form to search by genre/runtime

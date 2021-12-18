@@ -2,22 +2,27 @@
 {% block title%}History{% endblock %}
 
 {% block content %}
-<div id="body">
-    <div class="card-columns">
-        {% for result in results %}
-        <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{ result.poster_path }}" alt={{ result.title}} hover={{ result.overview }}>
-            <div class="card-body">
-                <h5 class="card-title">{{ result.title }}</h5>
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+    <div id="body">
+        <div class="card-columns">
+            {% for result in results %}
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{ result.poster_path }}" alt={{ result.title}} hover={{ result.overview }}>
+                <div class="card-body">
+                    <h5 class="card-title">{{ result.title }}</h5>
+                    <!-- <i onclick="myFunction(this)" class="fa fa-thumbs-up"></i> -->
+                </div>
             </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">{{ result.vote_average }}</li>
-            </ul>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
-</div>
 
+<!-- TODO - ADD SCRIPT TO RECORD LIKES -->
+<script>
+function myFunction(x) {
+    x.classList.toggle("fa-thumbs-down");
+    }
+</script>
 
 
 {% endblock %}
