@@ -24,6 +24,29 @@ content .form-control
     grid-gap: 10px;
     justify-items: center;
 }
+
+/* FORMATTING FOR GRAYED OUT PICS IN SEARCH RESULTS */
+/* Container holding the image and the text */
+.cont {
+  position: relative;
+}
+
+/* Bottom right text */
+.text-block {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: black;
+  color: white;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.gray-img {
+  opacity: 0.4;
+  filter: alpha(opacity=40); /* msie */
+}
+
 .search-result img {
     width: 100%;
     cursor: pointer;
