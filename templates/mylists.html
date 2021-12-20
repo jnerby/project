@@ -1,17 +1,11 @@
-<!-- {% extends 'base.html' %}
-{% block title%}My WatchLists{% endblock %}
+{% extends 'base.html' %}
+{% block title%}Lists{% endblock %}
 
 {% block content %}
-<div>
-    <h1>{{ user['username'] }}'s WatchLists</h1>
-    <ul>
-        {% for club_name in result %}
-        <li>{{ club_name }}</li>
-        {% endfor %}
-    </ul>
-</div>
-{% endblock %}
+  <h1 id="user-lists">{{ user['username'] }}'s WatchLists</h1>
 
-{% block scripts %}
-<script></script>
-{% endblock %} -->
+  <div id="root"></div>    
+  <div id=list-modal class=modal></div>
+  <script type="text/jsx" src="/static/js/watchlist.jsx"></script>
+
+{% endblock %}

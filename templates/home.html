@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title%}WatchList{% endblock %}
+{% block title%}Lists{% endblock %}
 
 {% block clubnav %}
   {% if join_requests == 1 %}
@@ -14,10 +14,10 @@
 {% endblock %}
 
 {% block content %}
-<h1 id="user-lists">{{ user['username'] }}'s WatchLists</h1>
+<h1 id="user-lists">{{ user['username'] }}'s Profile</h1>
 
-  <div id="root"></div>    
-  <div id=list-modal class=modal></div>
-  <script type="text/jsx" src="/static/js/watchlist.jsx"></script>
+<div id="root"></div>    
+<div id=list-modal class=modal></div>
+<script type="text/jsx" src="/static/js/recs.jsx"></script>
 
 {% endblock %}

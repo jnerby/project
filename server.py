@@ -17,32 +17,54 @@ app.jinja_env.auto_reload = True
 key = os.environ.get('API_KEY')
 
 
-@app.route('/recs')
+@app.route('/user-views')
 @crud.login_required
-def render_recommendation():
-    return True
+def fetch_user_views():
+    """Checks if user has watched or added a movie to a list"""
+    user_id = session['user_id']
+    # Get clubuser for all user's clubs
+    club_users = crud.get_all_clubs_by_user(user_id)
+    # Get all a user's clubs
+    clubs = [club_user.club_id for club_user in club_users]
+    # Get all films in any of a user's clubs
+    films = crud.get_history_and_watchlist_by_clubs(clubs)
 
+    result = {}
+    for film in films:
+        result[film.tmdb_id] = film.watched
+
+    return jsonify(result)
+
+
+# @app.route('/recs')
+# @crud.login_required
+# def render_recommendation():
+#     user_id = session['user_id']
+#     films = crud.get_user_films(user_id)
+#     print(films)
+#     return True
+
+## TMDB - https://developers.themoviedb.org/3/movies/get-similar-movies
 
 
 @app.route('/')
 @crud.login_required
 def render_homepage():
-    # get owner's clubs
+    """Display join requests and recommendations"""
+    
     user_id = session['user_id']
-
+    
+    # Clubs for which user is the owner
     owner_clubs = crud.get_clubs_by_owner(user_id)
-    user_clubs = crud.get_all_clubs_by_user(user_id)
+    # user_clubs = crud.get_all_clubs_by_user(user_id)
     user = crud.get_user_by_id(user_id)
-    clubs = [crud.get_club_by_id(club.club_id) for club in user_clubs]
-    # join_requests = [crud.get_join_requests(club.club_id) for club in owner_clubs]
+    # clubs = [crud.get_club_by_id(club.club_id) for club in user_clubs]
     join_requests = 0
     for club in owner_clubs:
         if crud.get_join_requests(club.club_id):
             join_requests += 1
 
-    print(join_requests)
-
-    return render_template('home.html', owner_clubs=owner_clubs, user_clubs=user_clubs, user=user, clubs=clubs, join_requests=join_requests)
+    return render_template('home.html', user=user, join_requests=join_requests)
 
 
 @app.route('/add-to-list', methods=['POST'])
@@ -69,9 +91,31 @@ def fetch_api():
     # add user_search to query string
     url = 'https://api.themoviedb.org/3/search/movie?api_key='+str(key)+'&query='+user_search
     res = requests.get(url)
-    result = res.json()
+    search_results = res.json()
 
-    return result
+    # Get user's films
+    user_id = session['user_id']
+    # Get clubuser for all user's clubs
+    club_users = crud.get_all_clubs_by_user(user_id)
+    # Get all a user's clubs
+    clubs = [club_user.club_id for club_user in club_users]
+    # Get all films in any of a user's clubs
+    history = crud.get_history_and_watchlist_by_clubs(clubs)
+
+    films = {}
+    for item in history:
+        films[item.tmdb_id] = item.watched
+
+    result = search_results['results']
+
+    for item in result:
+        if item['id'] in films:
+            if films[item['id']] == False:
+                item['db_status'] = 'On a List'
+            else:
+                item['db_status'] = 'Watched'
+
+    return jsonify(result)
 
 
 @app.route('/api-details')
@@ -305,7 +349,6 @@ def login():
         # get user's user_id to set session
             user_id = user.user_id
 
-
             # check password hash with pw user entered
             if crud.validate_pw(username, password):
                 flash('Welcome!')
@@ -330,21 +373,14 @@ def logout():
 
     return redirect('/')
 
-
 @app.route('/mylists')
 @crud.login_required
-def view_user_lists_and_clubs():
+def render_user_lists():
+    """Renders watchlist.jsx in My Lists page"""
     user_id = session['user_id']
     user = crud.get_user_by_id(user_id)
-    clubs = crud.get_all_clubs_by_user(user_id)
 
-    result = []
-
-    for club in clubs: 
-        club_name = crud.get_club_by_id(club.club_id).name
-        result.append(club_name)
-
-    return render_template('mylists.html', user=user, result=result)
+    return render_template('mylists.html', user=user)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -415,7 +451,6 @@ def render_watchlists():
         result = res.json()
         # add api call result to film_dict
         film_dict[film.film_id] = result
-    print(film_dict)
     
     return jsonify(film_dict)
 

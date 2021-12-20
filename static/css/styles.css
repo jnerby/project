@@ -29,6 +29,11 @@ content .form-control
     cursor: pointer;
 }
 
+.search-result img {
+  width: 100%;
+  cursor: pointer;
+}
+
 .search-result img:hover {
     /* transform: scale(0.8) rotate(-5deg); */
     border-radius: 20px;

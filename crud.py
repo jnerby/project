@@ -27,19 +27,7 @@ def create_club(name, user_id):
 
     # grant access to club owner
     grant_access(user_id, new_club.club_id)
-
-def login_required(f):
-    """
-    Decorate routes to require login.
-
-    https://flask.palletsprojects.com/en/1.1.x/patterns/viewdecorators/
-    """
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if session.get("user_id") is None:
-            return redirect("/login")
-        return f(*args, **kwargs)
-    return decorated_function    
+  
 
 def get_all_clubs():
     """Return all existing clubs that users can join"""
@@ -54,10 +42,9 @@ def get_approval_status(user_id, club_id):
     else:
         return 'Join' 
 
-def get_club_owner(club):
-    """Get name of club owner to display in browse screen"""
-    owner = User.query.filter_by(user_id=club.owner_id).one()
-    return f"{owner.fname} {owner.lname}"
+def get_all_clubs_by_user(user_id):
+    """Return all user's clubs"""
+    return ClubUser.query.filter(ClubUser.user_id==user_id, ClubUser.approved==True).all()
 
 def get_club_by_id(club_id):
     """Return club object from club_id"""
@@ -67,29 +54,35 @@ def get_clubs_by_owner(owner_id):
     """Return all clubs owned by user"""
     return Club.query.filter(Club.owner_id==owner_id).all()
 
+def get_club_owner(club):
+    """Get name of club owner to display in browse screen"""
+    owner = User.query.filter_by(user_id=club.owner_id).one()
+    return f"{owner.fname} {owner.lname}"
+
 def get_club_user_id(user_id, club_id):
     """Return primary key from ClubUser"""
     club = ClubUser.query.filter(ClubUser.club_id==club_id, ClubUser.user_id==user_id).first()
     return club.club_user_id
 
-def get_all_clubs_by_user(user_id):
-    """Return all user's clubs"""
-    clubs = ClubUser.query.filter(ClubUser.user_id==user_id, ClubUser.approved==True).all()
-    return clubs
-
 def get_history_by_clubs(clubs):
     """Return all films a user's clubs have watched"""
-    films = Film.query.filter(Film.club_id.in_(clubs), Film.watched==True).all()
-    return films
+    return Film.query.filter(Film.club_id.in_(clubs), Film.watched==True).all()
+
+def get_history_and_watchlist_by_clubs(clubs):
+    """Return all films (viewed and unviewed) in any of a user's clubs"""
+    return Film.query.filter(Film.club_id.in_(clubs)).all()
 
 def get_join_requests(club_id):
     """Return all users who have requested to join a club"""
-    user_requests = ClubUser.query.filter(ClubUser.club_id==club_id, ClubUser.approved==False).all()
-    return user_requests
+    return ClubUser.query.filter(ClubUser.club_id==club_id, ClubUser.approved==False).all()
 
 def get_user_by_id(user_id):
     """Return user object from user_id"""
     return User.query.filter(User.user_id==user_id).first()
+
+def get_user_films(user_id):
+    """ Get all films user has added to a list"""
+    return Film.query.filter(Film.added_by==user_id).all()
 
 def get_watchlist_by_club_id(club_id):
     """Return all films objects added to a club's watchlist"""
@@ -112,6 +105,19 @@ def grant_access_by_club_user_id(club_user_id):
 
     db.session.add(club)
     db.session.commit()
+
+def login_required(f):
+    """
+    Decorate routes to require login.
+
+    https://flask.palletsprojects.com/en/1.1.x/patterns/viewdecorators/
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get("user_id") is None:
+            return redirect("/login")
+        return f(*args, **kwargs)
+    return decorated_function  
 
 def register_user(fname, lname, email, username, password):
     """Register new user"""

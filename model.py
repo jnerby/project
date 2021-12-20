@@ -70,7 +70,7 @@ class Club(db.Model):
     films = db.relationship('Film', back_populates='club')
 
     def __repr__(self):
-        return f"<User club={self.name} owner={self.owner_id}>"
+        return f"<Club club={self.name} owner={self.owner_id}>"
 
 class Film(db.Model):
     """A film"""
