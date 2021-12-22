@@ -280,7 +280,7 @@ def join_club():
 
         return render_template('clubs.html', clubs=clubs)
 
-#####   NOT LOADING
+
 @app.route('/history', methods=['GET','POST'])
 @crud.login_required
 def view_history():
