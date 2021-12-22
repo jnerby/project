@@ -68,6 +68,10 @@ def get_club_user_id(user_id, club_id):
     club = ClubUser.query.filter(ClubUser.club_id==club_id, ClubUser.user_id==user_id).first()
     return club.club_user_id
 
+def get_film(film_id):
+    """Return film object by film id"""
+    return Film.query.filter(Film.film_id==film_id).first()
+
 def get_history_and_watchlist_by_clubs(clubs):
     """Return all films (viewed and unviewed) in any of a user's clubs"""
     return Film.query.filter(Film.club_id.in_(clubs)).all()
@@ -139,7 +143,6 @@ def rate_film(film_id, user_id):
     db.session.commit()
 
     return new_rating
-    # return 
 
 def register_user(fname, lname, email, username, password):
     """Register new user"""

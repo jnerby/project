@@ -23,12 +23,8 @@ key = os.environ.get('API_KEY')
 # def add_film_rating():
 #     user_id = session['user_id']
 #     film_id = request.args.get('film_id')
-
 #     crud.rate_film(film_id, user_id)
-
 #     return 'rated'
-    
-
             # if crud.get_all_ratings(film.film_id):
             #     ratings = crud.get_all_ratings(film.film_id)
             #     for rating in ratings:
@@ -49,8 +45,6 @@ key = os.environ.get('API_KEY')
 #     return True
 
 ## TMDB - https://developers.themoviedb.org/3/movies/get-similar-movies
-
-
 
 @app.route('/')
 @crud.login_required
@@ -84,11 +78,7 @@ def render_homepage():
         tup = (datetime.strftime(film.view_schedule, "%m/%d/%Y"), datetime.strftime(film.view_schedule, "%a"), details['title'], details['poster_path'])
         films.append(tup)
 
-    # Sort films by view date
-    # films_sorted = sorted(films)
-    # print(films_sorted)
     films.sort()
-    print(films)
 
     return render_template('home.html', user=user, join_requests=join_requests, films=films)
 
@@ -274,7 +264,7 @@ def join_club():
         clubs = []
         user_id = session['user_id']
 
-    # for club in clubs, check if user in ClubUsers table. if not
+        # for club in clubs, check if user in ClubUsers table. if not
         for club in all_clubs:
             # get full name of club owner
             owner = crud.get_club_owner(club)
@@ -296,7 +286,7 @@ def join_club():
 def view_history():
     """View all movies a user's club(s) have watched"""
     if request.method == 'POST':
-        # print('post')
+        print('post')
         user_id = session['user_id']
         # Get a ClubUsers
         user_clubs = crud.get_all_clubs_by_user(user_id)
@@ -463,6 +453,14 @@ def schedule_viewing():
     view_date = request.args.get('date')
     crud.schedule_viewing(film_id, view_date)
     return 'Scheduled'
+
+@app.route('/schedule-check')
+@crud.login_required
+def check_scheduled():
+    """Checks if movie has a view date schedule"""
+    film_id = request.args.get('id')
+    film = crud.get_film(film_id)
+    return str(film.view_schedule != None)
 
 
 @app.route('/search')
