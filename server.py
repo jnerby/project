@@ -1,5 +1,6 @@
 import os
 import requests
+import itertools
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
 from datetime import datetime
 from jinja2 import StrictUndefined
@@ -56,18 +57,40 @@ key = os.environ.get('API_KEY')
 def render_homepage():
     """Display join requests and recommendations"""
     user_id = session['user_id']
-    
+    user = crud.get_user_by_id(user_id)
+
     # Clubs for which user is the owner
     owner_clubs = crud.get_clubs_by_owner(user_id)
-    # user_clubs = crud.get_all_clubs_by_user(user_id)
-    user = crud.get_user_by_id(user_id)
-    # clubs = [crud.get_club_by_id(club.club_id) for club in user_clubs]
+
+    # Get all join requests for clubs for which user is owner
     join_requests = 0
     for club in owner_clubs:
         if crud.get_join_requests(club.club_id):
             join_requests += 1
 
-    return render_template('home.html', user=user, join_requests=join_requests)
+    # Get all clubs user is in
+    clubs = crud.get_all_clubs_by_user(user_id)
+    # Get user's film schedule
+    club_sched = [crud.get_schedule_by_club_id(club.club_id) for club in clubs]
+    # Flatten club_sched
+    sched_films = list(itertools.chain(*club_sched))
+
+    films = []
+    for film in sched_films:
+        url = 'https://api.themoviedb.org/3/movie/'+str(film.tmdb_id)+'?api_key='+str(key)+'&language=en-US'
+        res = requests.get(url)
+        details = res.json()
+        # Add date, weekday, title, and poster path to tuple
+        tup = (datetime.strftime(film.view_schedule, "%m/%d/%Y"), datetime.strftime(film.view_schedule, "%a"), details['title'], details['poster_path'])
+        films.append(tup)
+
+    # Sort films by view date
+    # films_sorted = sorted(films)
+    # print(films_sorted)
+    films.sort()
+    print(films)
+
+    return render_template('home.html', user=user, join_requests=join_requests, films=films)
 
 
 @app.route('/add-to-list', methods=['POST'])
@@ -456,8 +479,11 @@ def render_watchlists():
     # get club_id from ajax request
     club_id = request.args.get('club_id')
 
+    # Get all films in a club's list
     films = crud.get_watchlist_by_club_id(club_id)
+    # Get all films scheduled for a club
     scheduled_films = crud.get_schedule_by_club_id(club_id)
+    # print(scheduled_films)
 
     # initialize empty dictionary to return to broswer
     film_dict = {}
@@ -471,13 +497,13 @@ def render_watchlists():
         # add api call result to film_dict
         film_dict[film.film_id] = result
 
-        # check if any films scheduled
-        for schedule_film in scheduled_films:
-            if schedule_film.film_id in film_dict:
-                # film_dict[film.film_id]['view_date'] = datetime.date.strptime(schedule_film.view_schedule, "%Y-%m-%d")
+    # If any movies in film_dict have a date scheduled, add key value pair to film-dict
+    for sch_film in scheduled_films:
+        id = sch_film.film_id
+        if id in film_dict:
+            inner = film_dict[id]
+            inner['view_date'] = datetime.strftime(sch_film.view_schedule, "%a, %m/%d/%Y")
 
-                film_dict[film.film_id]['view_date'] = schedule_film.view_schedule
-    
     return jsonify(film_dict)
 
 

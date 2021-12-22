@@ -15,9 +15,27 @@
 
 {% block content %}
 <h1 id="user-lists">{{ user['username'] }}'s Profile</h1>
-
-<div id="root"></div>    
 <div id=list-modal class=modal></div>
-<script type="text/jsx" src="/static/js/recs.jsx"></script>
+
+<div id="root">
+  {% if films %}
+  <h3>Upcoming Films</h3>
+  <!-- <div class="card-columns"> -->
+    {% for film in films %}
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{ film[3] }}" alt="Card image cap">
+          <div class="card-body">
+            <p class="card-text">{{ film[2] }}</p>
+            <p class="card-text">{{ film[1] }}, {{ film[0] }}</p>
+          </div>
+        </div>
+    {% endfor %}
+  <!-- </div> -->
+  {% endif %}
+
+</div>    
+
+
+
 
 {% endblock %}

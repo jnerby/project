@@ -39,10 +39,11 @@ const Watchlist = (props) => {
             .then(response => response.json())
             .then(films => {
                 // Get values from result dictionary
-                const values = Object.values(films);
+                // const values = Object.values(films);
                 // Initiliaze empty helper array for movie details
                 const helper = [];
                 // Loop over film objects
+                console.log(films);
                 for (const [key, value] of Object.entries(films)) {
                     helper.push(
                         <div id={`div${key}`}>
@@ -60,6 +61,7 @@ const Watchlist = (props) => {
                         </div>
                     );
                 }
+                // console.log(helper);
                 // Replace empty movies array in state with values from helper array
                 updateMovies(movies => helper);
                 
@@ -72,7 +74,6 @@ function Modal(evt) {
 
     const film_id = evt.target.id.slice(3);
     const film_name = evt.target.name;
-    // console.log(film_name);
 
     const modal = document.getElementById("list-modal");
 
@@ -121,7 +122,6 @@ function Modal(evt) {
     sched.addEventListener('click', (evt) => {
         const dt = document.querySelector('#schedDate').value;
         const film_id = evt.target.id.slice(3);
-        console.log(dt);
         fetch(`/schedule?id=${film_id}&date=${dt}`)
             .then(response=>response.text())
             .then(evt.target.disabled = true)

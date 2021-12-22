@@ -86,7 +86,7 @@ def get_rating(film_id, user_id):
 
 def get_schedule_by_club_id(club_id):
     """Return all movies with a scheduled viewing from a club"""
-    return Film.query.filter(Film.club_id==club_id, Film.view_schedule!=None).all()
+    return Film.query.filter(Film.club_id==club_id, Film.view_schedule!=None, Film.watched==False).all()
 
 def get_user_by_id(user_id):
     """Return user object from user_id"""
