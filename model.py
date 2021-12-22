@@ -28,7 +28,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(128))
 
     clubs = db.relationship('Club', secondary='club_users', back_populates='users')
-    user_votes = db.relationship('Film', secondary='votes', back_populates='vote_users')
+    user_ratings = db.relationship('Film', secondary='ratings', back_populates='ratings_users')
 
     def __repr__(self):
         return f"<User user_id={self.user_id} username={self.username}>"
@@ -88,22 +88,25 @@ class Film(db.Model):
     added_by = db.Column(db.Integer,
                         db.ForeignKey('users.user_id'),
                         nullable=False)
+    view_schedule = db.Column(db.DateTime)
     watched = db.Column(db.Boolean,
                         default=False,
                         nullable=False)
 
     club = db.relationship('Club', back_populates='films')
-    vote_users = db.relationship('User', secondary='votes', back_populates='user_votes')
+    ratings_users = db.relationship('User', secondary='ratings', back_populates='user_ratings')
 
     def __repr__(self):
         return f"<Film film_id={self.film_id} date_added={self.date_added} watched={self.watched}>"
 
-class Vote(db.Model):
-    """User up and downvotes"""
 
-    __tablename__ = 'votes'
+#### NEED USER_RATINGS TABLE
+class Rating(db.Model):
+    """User ratings"""
 
-    vote_id = db.Column(db.Integer,
+    __tablename__ = 'ratings'
+
+    rating_id = db.Column(db.Integer,
                         primary_key=True,
                         autoincrement=True)
     user_id = db.Column(db.Integer,
@@ -112,11 +115,11 @@ class Vote(db.Model):
     film_id = db.Column(db.Integer,
                         db.ForeignKey('films.film_id'),
                         nullable=False)
-    vote = db.Column(db.Boolean,
+    rating = db.Column(db.Integer,
                     nullable=False)
 
     def __repr__(self):
-        return f"<Vote vote_id={self.vote_id} vote={self.vote}>"
+        return f"<Rating rating_id={self.rating_id} rating={self.rating}>"
 
 
 if __name__ == "__main__":

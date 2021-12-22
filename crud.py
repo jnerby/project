@@ -1,5 +1,5 @@
 """CRUD Functions"""
-from model import db, User, Club, ClubUser, Film, Vote, connect_to_db
+from model import db, User, Club, ClubUser, Film, Rating, connect_to_db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import session, redirect
 from functools import wraps
@@ -46,6 +46,10 @@ def get_all_clubs_by_user(user_id):
     """Return all user's clubs"""
     return ClubUser.query.filter(ClubUser.user_id==user_id, ClubUser.approved==True).all()
 
+def get_all_ratings(film_id):
+    """Return all ratings for a film"""
+    return Rating.query.filter(Rating.film_id==film_id).all()
+
 def get_club_by_id(club_id):
     """Return club object from club_id"""
     return Club.query.filter(Club.club_id==club_id).first()
@@ -64,17 +68,25 @@ def get_club_user_id(user_id, club_id):
     club = ClubUser.query.filter(ClubUser.club_id==club_id, ClubUser.user_id==user_id).first()
     return club.club_user_id
 
-def get_history_by_clubs(clubs):
-    """Return all films a user's clubs have watched"""
-    return Film.query.filter(Film.club_id.in_(clubs), Film.watched==True).all()
-
 def get_history_and_watchlist_by_clubs(clubs):
     """Return all films (viewed and unviewed) in any of a user's clubs"""
     return Film.query.filter(Film.club_id.in_(clubs)).all()
 
+def get_history_by_clubs(clubs):
+    """Return all films a user's clubs have watched"""
+    return Film.query.filter(Film.club_id.in_(clubs), Film.watched==True).all()
+
 def get_join_requests(club_id):
     """Return all users who have requested to join a club"""
     return ClubUser.query.filter(ClubUser.club_id==club_id, ClubUser.approved==False).all()
+
+def get_rating(film_id, user_id):
+    """Return user's rating for a particular film"""
+    return Rating.query.filter(Rating.film_id==film_id, Rating.user_id==user_id).first()
+
+def get_schedule_by_club_id(club_id):
+    """Return all movies with a scheduled viewing from a club"""
+    return Film.query.filter(Film.club_id==club_id, Film.view_schedule!=None).all()
 
 def get_user_by_id(user_id):
     """Return user object from user_id"""
@@ -119,6 +131,16 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function  
 
+def rate_film(film_id, user_id):
+    """Add a new film rating"""
+    new_rating = Rating(film_id=film_id, user_id=user_id, rating=2)
+
+    db.session.add(new_rating)
+    db.session.commit()
+
+    return new_rating
+    # return 
+
 def register_user(fname, lname, email, username, password):
     """Register new user"""
     new_user = User(fname=fname, lname=lname, email=email, username=username,password_hash=generate_password_hash(password))
@@ -145,6 +167,16 @@ def request_to_join(user_id, club_id):
         db.session.commit()
 
         return join_request
+
+def schedule_viewing(film_id, view_date):
+    """Schedule a date to watch a film"""
+    film = Film.query.get(film_id)
+
+    film.view_schedule = view_date
+    db.session.add(film)
+    db.session.commit()
+
+    return film
 
 def update_watched_status(film_id):
     """Update film's watched status"""

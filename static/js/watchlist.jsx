@@ -1,5 +1,5 @@
 const ClubButtons = () => {
-    const [club_id, updateClub] = React.useState();
+    const [club_id, updateClub] = React.useState(0);
     const [buttons, updateButtons] = React.useState([]);
 
     React.useEffect(() => {
@@ -21,7 +21,6 @@ const ClubButtons = () => {
             }
             updateButtons(btns);
         });
-
     }, []);
     return (
         <React.Fragment>
@@ -34,25 +33,8 @@ const ClubButtons = () => {
 const Watchlist = (props) => {
     const [movies, updateMovies] = React.useState([]);
 
-    // Remove a film from a list
-    function removeFilm(evt) {
-        const film_id = evt.target.id.slice(3);
-
-        fetch(`/remove-film?id=${film_id}`)
-            .then(response => response.text())
-            .then(evt.target.disabled = true)
-            // .then(result => updateMovies(movies.filter((item) => item.id != `div${film_id}`)))
-            // .then(console.log(movies))
-    }
-    function watchedFilm(evt) {
-        const film_id = evt.target.id.slice(2);
-        console.log(film_id);
-        fetch(`/watched-film?id=${film_id}`)
-            .then(response => response.text())
-            .then(evt.target.disabled = true)
-    }
-
     React.useEffect(() => {
+        ///// club_id becomes undefined??
         fetch(`/watchlist?club_id=${props.club_id}`)
             .then(response => response.json())
             .then(films => {
@@ -65,11 +47,10 @@ const Watchlist = (props) => {
                     helper.push(
                         <div id={`div${key}`}>
                             <div>
-                            <img src={`https://image.tmdb.org/t/p/w500/${value['poster_path']}`}></img>
+                            <img id={`img${key}`} name={value['title']} src={`https://image.tmdb.org/t/p/w500/${value['poster_path']}`} onClick={Modal}></img>
                             </div>
-                            <button id={`rmv${key}`} onClick={removeFilm} className="removeBtn btn btn-dark">Remove</button>
-                            <button id={`wt${key}`} onClick={watchedFilm} className="watchBtn btn btn-dark">Watched</button>
                             <h4>{value['title']}</h4>
+                            <h5>View Date: {value['view_date']}</h5>
                             <p>{value['overview']}</p>
                             <p>Voter Average: {value['vote_average']}</p>
                             <p>Runtime: {value['runtime']}</p>
@@ -86,7 +67,66 @@ const Watchlist = (props) => {
     return <section className="word-container watchlist">{movies}</section>;
 }
 
+function Modal(evt) {
+    evt.preventDefault();
+
+    const film_id = evt.target.id.slice(3);
+    const film_name = evt.target.name;
+    // console.log(film_name);
+
+    const modal = document.getElementById("list-modal");
+
+    modal.innerHTML = `<div class=modal-content><span id="close" align="right" class=close>&times;</span>
+                        <h1>${film_name}</h1>
+                        <button id="rmv${film_id}" class="removeBtn btn btn-dark">Remove</button>
+                        <br>
+                        <button id="wt${film_id}" class="watchBtn btn btn-dark">Watched</button> 
+                        <br>
+                        <input type="date" id="schedDate">
+                        <button id="sch${film_id}" class="schBtn btn btn-dark">Schedule</button> 
+                        </div>`;
+
+    // make the modal visible
+    modal.style.display = "block";
+
+    // get close button for model
+    const closeBtn = document.getElementById("close");
+    // when close button is clicked, hide the modal
+    closeBtn.addEventListener('click', () => modal.style.display = "none");
+
+    // Remove from List
+    const rmv = modal.querySelector('.removeBtn');
+
+    rmv.addEventListener('click', (evt) => {
+        const film_id = evt.target.id.slice(3);
+
+        fetch(`/remove-film?id=${film_id}`)
+            .then(response => response.text())
+            .then(evt.target.disabled = true)
+    });
+
+    // Mark as watched
+    const wat = modal.querySelector('.watchBtn');
+
+    wat.addEventListener('click', (evt) => {
+        const film_id = evt.target.id.slice(2);
+        fetch(`/watched-film?id=${film_id}`)
+            .then(response => response.text())
+            .then(evt.target.disabled = true)
+    })
+
+    // Schedule
+    const sched = modal.querySelector('.schBtn')
+
+    sched.addEventListener('click', (evt) => {
+        const dt = document.querySelector('#schedDate').value;
+        const film_id = evt.target.id.slice(3);
+        console.log(dt);
+        fetch(`/schedule?id=${film_id}&date=${dt}`)
+            .then(response=>response.text())
+            .then(evt.target.disabled = true)
+    })
+
+}
+
 ReactDOM.render(<ClubButtons />, document.querySelector('#root'));
-
-
-// add form to search by genre/runtime
