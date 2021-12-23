@@ -18,33 +18,6 @@ app.jinja_env.auto_reload = True
 
 key = os.environ.get('API_KEY')
 
-# @app.route('/rate')
-# @crud.login_required
-# def add_film_rating():
-#     user_id = session['user_id']
-#     film_id = request.args.get('film_id')
-#     crud.rate_film(film_id, user_id)
-#     return 'rated'
-            # if crud.get_all_ratings(film.film_id):
-            #     ratings = crud.get_all_ratings(film.film_id)
-            #     for rating in ratings:
-            #         username = crud.get_user_by_id(user_id).username
-            #         if 'ratings' in details:
-            #             details['ratings'] += {'username': username, 'rating': rating.rating}
-            #         else:
-            #             details['ratings'] = {'username': username, 'rating': rating.rating}
-                # details['rating'] = crud.get_all_ratings(film.film_id)
-        # return render_template('history.html', results=results)
-
-# @app.route('/recs')
-# @crud.login_required
-# def render_recommendation():
-#     user_id = session['user_id']
-#     films = crud.get_user_films(user_id)
-#     print(films)
-#     return True
-
-## TMDB - https://developers.themoviedb.org/3/movies/get-similar-movies
 
 @app.route('/')
 @crud.login_required
@@ -286,7 +259,6 @@ def join_club():
 def view_history():
     """View all movies a user's club(s) have watched"""
     if request.method == 'POST':
-        print('post')
         user_id = session['user_id']
         # Get a ClubUsers
         user_clubs = crud.get_all_clubs_by_user(user_id)
@@ -306,12 +278,33 @@ def view_history():
             url = 'https://api.themoviedb.org/3/movie/'+str(film.tmdb_id)+'?api_key='+str(key)+'&language=en-US'
             res = requests.get(url)
             details = res.json()
+            # Add Film table's film_id to details object
+            details['db_id'] = film.film_id
+
+
+            # Add film's ratings to details object
+            film_ratings = crud.get_all_ratings(film.film_id)
+            rating_details = []
+
+            # Check if film has any ratings
+            if film_ratings:
+                # Loop over ratings
+                for item in film_ratings:
+                    # Get username
+                    user = crud.get_user_by_id(item.user_id)
+                    username = user.username
+                    # Add rating value and user name to tuple
+                    tup = (item.rating, username)
+                    # Add duptle to rating details
+                    rating_details.append(tup)
+
+            # Add ratings list to details dict
+            details['db_ratings'] = rating_details
+
             results.append(details)
 
         return jsonify(results)
     else:
-        print('get')
-
         user = crud.get_user_by_id(session['user_id'])
         return render_template('history.html', user=user)
 
@@ -404,6 +397,19 @@ def render_user_lists():
     return render_template('mylists.html', user=user)
 
 
+@app.route('/rate')
+@crud.login_required
+def add_film_rating():
+    """Adds a user's rating"""
+    user_id = session['user_id']
+    film_id = request.args.get('film_id')
+    rating = request.args.get('rating')
+
+    crud.rate_film(film_id, user_id, rating)
+
+    return 'rated'
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def render_registration():
     """Register new user if username available and password valid and direct to login"""
@@ -440,7 +446,6 @@ def render_registration():
 def remove_film_from_list():
     """Remove a film from a club's watchlist"""
     film_id = request.args.get('id')
-    print(film_id)
     crud.remove_film_from_list(film_id)
     return 'removed'
 
@@ -467,6 +472,13 @@ def check_scheduled():
 @crud.login_required
 def search():
     """Renders search results where each result is a React component"""
+## TMDB - https://developers.themoviedb.org/3/movies/get-similar-movies
+
+    user_id = session['user_id']
+    ratings = crud.get_ratings_by_user(user_id)
+    print(ratings)
+    if len(ratings) > 3:
+        print('ok')
     return render_template('search.html')
 
 
@@ -481,7 +493,6 @@ def render_watchlists():
     films = crud.get_watchlist_by_club_id(club_id)
     # Get all films scheduled for a club
     scheduled_films = crud.get_schedule_by_club_id(club_id)
-    # print(scheduled_films)
 
     # initialize empty dictionary to return to broswer
     film_dict = {}
@@ -509,7 +520,6 @@ def render_watchlists():
 @crud.login_required
 def update_film_to_watched():
     film_id = request.args.get('id')
-    print(film_id)
     crud.update_watched_status(film_id)
     return 'updated'
 

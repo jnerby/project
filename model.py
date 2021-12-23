@@ -100,7 +100,6 @@ class Film(db.Model):
         return f"<Film film_id={self.film_id} date_added={self.date_added} watched={self.watched}>"
 
 
-#### NEED USER_RATINGS TABLE
 class Rating(db.Model):
     """User ratings"""
 
@@ -119,7 +118,7 @@ class Rating(db.Model):
                     nullable=False)
 
     def __repr__(self):
-        return f"<Rating rating_id={self.rating_id} rating={self.rating}>"
+        return f"<Rating rating_id={self.rating_id} rating={self.rating} film_id={self.film_id}>"
 
 
 if __name__ == "__main__":

@@ -34,14 +34,12 @@ const Watchlist = (props) => {
     const [movies, updateMovies] = React.useState([]);
 
     React.useEffect(() => {
-        ///// club_id becomes undefined??
         fetch(`/watchlist?club_id=${props.club_id}`)
             .then(response => response.json())
             .then(films => {
                 // Initiliaze empty helper array for movie details
                 const helper = [];
                 // Loop over film objects
-                // console.log(films);
                 for (const [key, value] of Object.entries(films)) {
                     helper.push(
                         <div id={`div${key}`}>
@@ -73,6 +71,8 @@ const Watchlist = (props) => {
 }
 
 // const SearchList = () => {
+    // add onclick to options. check on event type for select, event that is triggered when a select changes which opt selected
+    // search list is parent of watchlist
 
 // }
 
@@ -121,6 +121,7 @@ function Modal(evt) {
 
                 wat.addEventListener('click', (evt) => {
                     const film_id = evt.target.id.slice(2);
+
                     fetch(`/watched-film?id=${film_id}`)
                         .then(response => response.text())
                         .then(evt.target.disabled = true)

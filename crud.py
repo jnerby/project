@@ -88,6 +88,10 @@ def get_rating(film_id, user_id):
     """Return user's rating for a particular film"""
     return Rating.query.filter(Rating.film_id==film_id, Rating.user_id==user_id).first()
 
+def get_ratings_by_user(user_id):
+    """Return all ratings for a film"""
+    return Rating.query.filter(Rating.user_id==user_id).all()
+
 def get_schedule_by_club_id(club_id):
     """Return all movies with a scheduled viewing from a club"""
     return Film.query.filter(Film.club_id==club_id, Film.view_schedule!=None, Film.watched==False).all()
@@ -135,9 +139,9 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function  
 
-def rate_film(film_id, user_id):
+def rate_film(film_id, user_id, rating):
     """Add a new film rating"""
-    new_rating = Rating(film_id=film_id, user_id=user_id, rating=2)
+    new_rating = Rating(film_id=film_id, user_id=user_id, rating=rating)
 
     db.session.add(new_rating)
     db.session.commit()
