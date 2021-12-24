@@ -134,7 +134,7 @@ function Modal(evt) {
                     // replace button text
                     .then(result => {
                         addBtn.innerHTML = result;
-                        modal.style.display = "none";
+                        modal.style.display = "none"
                     });
             });
         });

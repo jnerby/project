@@ -25,8 +25,60 @@ const ClubButtons = () => {
     return (
         <React.Fragment>
             <section className="word-container watchlist">{buttons}</section>
-            <Watchlist club_id={club_id} />
+            {/* <Watchlist club_id={club_id} /> */}
+            <SearchList club_id={club_id} />
         </React.Fragment>
+    )
+}
+
+const Filter = (evt) => {
+    // get genre user selected
+    const selectedGenre = evt.target.value;
+    // get all movie divs
+    const divs = document.getElementsByClassName('watchDiv');
+    // loop through movie dives
+    for (const d of divs){
+
+        // const genList = d.getElementById('genreList');
+        const genItems = d.getElementsByClassName('genreItem');
+        // get all genres for a movie
+        const movieGenres = [];
+        for (const g of genItems) {
+            movieGenres.push(g.id);
+        }
+        /// add something to turn off filter
+        if (!movieGenres.includes(selectedGenre)) {
+            // console.log(d);
+            d.style.display = "none";
+        }
+        else {
+            d.style.display = "block";
+        } 
+    }
+} 
+
+const SearchList = (props) => {
+    const [genres, updateGenres] = React.useState([]);
+    const club_id = props.club_id
+    React.useEffect(() => {
+        fetch(`/club-filters?id=${club_id}`)
+            .then(response => response.json())
+            .then(results => {
+
+                updateGenres(results);
+            });
+    }, [props.club_id]);
+    return (
+        <React.Fragment>
+            {/* <section className="word-container">{genres}</section> */}
+            <section className="word-container">
+                <select onChange={Filter} value="genreSelect">
+                    {genres.map(genre => (<option value={genre}>{genre}</option>))}
+                </select>
+            </section>
+            <Watchlist club_id={club_id}/>
+        </React.Fragment>
+
     )
 }
 
@@ -42,7 +94,7 @@ const Watchlist = (props) => {
                 // Loop over film objects
                 for (const [key, value] of Object.entries(films)) {
                     helper.push(
-                        <div id={`div${key}`}>
+                        <div id={`div${key}`} className="watchDiv">
                             <div>
                                 <img id={`img${key}`} name={value['title']} src={`https://image.tmdb.org/t/p/w500/${value['poster_path']}`} onClick={Modal}></img>
                             </div>
@@ -51,8 +103,8 @@ const Watchlist = (props) => {
                             <p>{value['overview']}</p>
                             <p>Voter Average: {value['vote_average']}</p>
                             <p>Runtime: {value['runtime']}</p>
-                            <ul>Genres
-                                {value['genres'].map(genre => (<li>{genre['name']}</li>))}
+                            <ul id="genreList">Genres
+                                {value['genres'].map(genre => (<li className="genreItem" id={genre['name']}>{genre['name']}</li>))}
                             </ul>
                         </div>
                     );
@@ -65,16 +117,9 @@ const Watchlist = (props) => {
     return (
         <React.Fragment>
             <section className="word-container watchlist">{movies}</section>
-            {/* <SearchList /> */}
         </React.Fragment>
     )
 }
-
-// const SearchList = () => {
-    // add onclick to options. check on event type for select, event that is triggered when a select changes which opt selected
-    // search list is parent of watchlist
-
-// }
 
 function Modal(evt) {
     evt.preventDefault();

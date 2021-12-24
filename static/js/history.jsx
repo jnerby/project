@@ -14,8 +14,6 @@ const History = () => {
             .then(result => {
                 const newHistory = [];
                 for (const item of result) {
-                    // console.log(item['db_ratings']);
-                    // if (item.hasOwnProperty('db_ratings')){
                     // sum all ratings for a film
                     let ratings_sum = 0;
                     let ave_ratings = 0;
@@ -29,10 +27,8 @@ const History = () => {
                     // Check if user has already reviewed
                     const rated_users = new Set();
                     for (const rat of item['db_ratings']) {
-                        // console.log(rat[1]);
                         rated_users.add(rat[1]);
                     }
-                    // console.log(rated_users);
                     if (rated_users.has(username)) {
                         newHistory.push(
                             <div className="card-group">
@@ -61,18 +57,7 @@ const History = () => {
                     }
 
                 }
-                // else {
-                //     newHistory.push(
-                //         <div id={`div${item['db_id']}`} className="card" style={{ width: '18rem' }}>
-                //             <img onClick={rateFilm} id={`img${item['db_id']}`} name={item['title']} className="card-img-top" src={`https://image.tmdb.org/t/p/w500/${item['poster_path']}`} alt="Card image cap"></img>
-                //             <div className="card-body">
-                //             </div>
-                //         </div>
-                //     );
-                // }
-                // }
                 updateHistory(newHistory);
-
             })
     }, []);
 
@@ -99,6 +84,11 @@ function rateFilm(evt) {
                             <option value="3">3</option>
                             <option value="4">4</option>
                             <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
                         </select>
                         <button id="submitRatingBtn" class="btn btn-dark">Rate</button>
                         </div>`;

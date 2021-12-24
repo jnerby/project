@@ -166,6 +166,35 @@ def get_club_buttons():
 
     return jsonify(club_dict)
 
+@app.route('/club-filters', methods=['GET', 'POST'])
+@crud.login_required
+def get_club_filters():
+    """Gets all genres on a club's watchlist"""
+    user_id = session['user_id']
+    club_id = request.args.get('id')
+
+    # Get club's watchlist
+    watchlist = crud.get_watchlist_by_club_id(club_id)
+
+    # Check if club has any films on watchlist
+    if watchlist:
+        genres = set()
+
+        # Loop through each film in club's watchlist
+        for film in watchlist:
+            url = 'https://api.themoviedb.org/3/movie/'+str(film.tmdb_id)+'?api_key='+str(key)+'&language=en-US'
+            res = requests.get(url)
+            result = res.json()
+            film_genres = result['genres']
+            # Add all genres to set
+            for genre in film_genres:
+                genres.add(genre['name'])
+
+        return jsonify(list(genres))
+
+    return 'empty'
+
+
 
 @app.route('/club-names')
 @crud.login_required
@@ -217,7 +246,7 @@ def join_club():
         clubs = []
         user_id = session['user_id']
 
-    # for club in clubs, check if user in ClubUsers table. if not
+        # for club in clubs, check if user in ClubUsers table. if not
         for club in all_clubs:
             # get full name of club owner
             owner = crud.get_club_owner(club)
@@ -476,10 +505,19 @@ def search():
 
     user_id = session['user_id']
     ratings = crud.get_ratings_by_user(user_id)
-    print(ratings)
-    if len(ratings) > 3:
-        print('ok')
-    return render_template('search.html')
+    high_ratings = []
+    # if len(ratings) > 2:
+    #     for item in ratings:
+    #         if item.rating > 7:
+    #             high_ratings.append(item)
+    # else:      
+    url = 'https://api.themoviedb.org/3/movie/popular?api_key='+str(key)+'&language=en-US&page=1'
+    res = requests.get(url)
+    result = res.json()
+    recs = result['results']
+    print(recs)
+
+    return render_template('search.html', recs=recs)
 
 
 @app.route('/watchlist')
