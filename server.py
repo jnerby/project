@@ -4,8 +4,6 @@ import itertools
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
 from datetime import datetime
 from jinja2 import StrictUndefined
-# from random import choice
-# from requests import api
 from werkzeug.security import generate_password_hash, check_password_hash
 import crud
 from model import db, User, Club, ClubUser, Film, Rating, connect_to_db
@@ -501,22 +499,30 @@ def check_scheduled():
 @crud.login_required
 def search():
     """Renders search results where each result is a React component"""
-## TMDB - https://developers.themoviedb.org/3/movies/get-similar-movies
-
     user_id = session['user_id']
     ratings = crud.get_ratings_by_user(user_id)
     high_ratings = []
-    # if len(ratings) > 2:
-    #     for item in ratings:
-    #         if item.rating > 7:
-    #             high_ratings.append(item)
-    # else:      
-    url = 'https://api.themoviedb.org/3/movie/popular?api_key='+str(key)+'&language=en-US&page=1'
-    res = requests.get(url)
-    result = res.json()
-    recs = result['results']
-    print(recs)
-
+    if len(ratings) > 2:
+        for item in ratings:
+            # get all highly rated movies
+            if item.rating > 7:
+                high_ratings.append(item)
+            # get similar movies for each highly rated movie
+            for film in high_ratings:
+                tmdb_id = crud.get_film(film.film_id).tmdb_id
+                url = 'https://api.themoviedb.org/3/movie/'+ str(tmdb_id) + '/similar?api_key='+ str(key) + '&language=en-US&page=1'
+                res = requests.get(url)
+                result = res.json()
+                movies = result['results']
+                recs = [(movie['vote_average'], movie['poster_path']) for movie in movies]
+                recs.sort(reverse=True)
+    else:      
+        url = 'https://api.themoviedb.org/3/movie/popular?api_key='+str(key)+'&language=en-US&page=1'
+        res = requests.get(url)
+        result = res.json()
+        movies = result['results']
+        recs = [(movie['vote_average'], movie['poster_path']) for movie in movies]
+        recs.sort(reverse=True)
     return render_template('search.html', recs=recs)
 
 

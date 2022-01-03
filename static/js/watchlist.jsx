@@ -14,7 +14,6 @@ const ClubButtons = () => {
                     btns.push(
                         // Use club_id as button key
                         <div id={`btn_div${key}`}>
-                            {/* Button on click updates state to club's id */}
                             <button className="removeBtn btn btn-dark" onClick={() => updateClub(key)}>{value}</button>
                         </div>
                     );
@@ -25,7 +24,6 @@ const ClubButtons = () => {
     return (
         <React.Fragment>
             <section className="word-container watchlist">{buttons}</section>
-            {/* <Watchlist club_id={club_id} /> */}
             <SearchList club_id={club_id} />
         </React.Fragment>
     )
@@ -38,19 +36,41 @@ const Filter = (evt) => {
     const divs = document.getElementsByClassName('watchDiv');
     // loop through movie dives
     for (const d of divs){
-
-        // const genList = d.getElementById('genreList');
         const genItems = d.getElementsByClassName('genreItem');
         // get all genres for a movie
         const movieGenres = [];
         for (const g of genItems) {
             movieGenres.push(g.id);
         }
-        /// add something to turn off filter
+        // hide movies that do not have selected genre
         if (!movieGenres.includes(selectedGenre)) {
-            // console.log(d);
             d.style.display = "none";
         }
+        // display all other movies
+        else {
+            d.style.display = "block";
+        } 
+    }
+} 
+
+const FilterRuntime = (evt) => {
+    // get genre user selected
+    const selectedRuntime = parseInt(evt.target.value);
+    console.log(selectedRuntime);
+    // get all movie divs
+    const divs = document.getElementsByClassName('watchDiv');
+    // loop through movie dives
+    for (const d of divs){
+        console.log(d);
+        // get runtime paragraph
+        const rt_paragraph = d.querySelector('#runtime').innerHTML;
+        // get runtime value from innerHTML
+        const film_rt = parseInt(rt_paragraph.slice(9));
+        // console.log(film_rt);
+        if (selectedRuntime > film_rt) {
+            d.style.display = "none";
+        }
+        // display all other movies
         else {
             d.style.display = "block";
         } 
@@ -70,10 +90,18 @@ const SearchList = (props) => {
     }, [props.club_id]);
     return (
         <React.Fragment>
-            {/* <section className="word-container">{genres}</section> */}
             <section className="word-container">
                 <select onChange={Filter} value="genreSelect">
                     {genres.map(genre => (<option value={genre}>{genre}</option>))}
+                </select>
+                <br></br>
+                <select onChange={FilterRuntime} value="runtimeSelect">
+                    <option value="90">90</option>
+                    <option value="120">120</option>
+                    <option value="150">150</option>
+                    <option value="180">180</option>
+                    <option value="210">210</option>
+                    <option value="240">240</option>
                 </select>
             </section>
             <Watchlist club_id={club_id}/>
@@ -102,7 +130,7 @@ const Watchlist = (props) => {
                             <h5>View Date: {value['view_date']}</h5>
                             <p>{value['overview']}</p>
                             <p>Voter Average: {value['vote_average']}</p>
-                            <p>Runtime: {value['runtime']}</p>
+                            <p id="runtime">Runtime: {value['runtime']}</p>
                             <ul id="genreList">Genres
                                 {value['genres'].map(genre => (<li className="genreItem" id={genre['name']}>{genre['name']}</li>))}
                             </ul>

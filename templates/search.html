@@ -5,24 +5,58 @@
     <div id=myModal class=modal></div>
     <div id="search-form-div"></div>
     <div id="body"></div>
-    <!-- update search.jsx so search overwrites carousel -->
-        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-            <div class="carousel-inner">
-            {% for rec in recs%}
-                <div class="carousel-item active">
-                    <img class="d-block w-100" src="https://image.tmdb.org/t/p/w500/{{ rec['poster_path'] }}" alt="First slide">
-                </div>
-            {% endfor %}
+    {% if recs|length > 0 %}
+        <div class="card-columns">
+            <div class="card">
+              <img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{ recs[0][1] }}" alt="Card image cap">
+              <div class="card-body">
+                <img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{ recs[1][1] }}" alt="Card image cap">
+              </div>
             </div>
-            <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-            </a>
-        </div>
+            <div class="card p-3">
+              <blockquote class="blockquote mb-0 card-body">
+                <img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{ recs[2][1] }}" alt="Card image cap">
+                <footer class="blockquote-footer">
+                </footer>
+              </blockquote>
+            </div>
+            <div class="card">
+              <img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{ recs[3][1] }}" alt="Card image cap">
+              <div class="card-body">
+              </div>
+            </div>
+            <div class="card bg-primary text-white text-center p-3">
+              <blockquote class="blockquote mb-0">
+                <p>Recommendation based on your viewing history</p>
+                <footer class="blockquote-footer">
+                </footer>
+              </blockquote>
+            </div>
+            <div class="card text-center">
+              <div class="card-body">
+                <img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{ recs[4][1] }}" alt="Card image cap">
+              </div>
+            </div>
+            <div class="card">
+              <img class="card-img" src="https://image.tmdb.org/t/p/w500/{{ recs[5][1] }}" alt="Card image">
+            </div>
+            <div class="card p-3 text-right">
+              <blockquote class="blockquote mb-0">
+                <img class="card-img" src="https://image.tmdb.org/t/p/w500/{{ recs[6][1] }}" alt="Card image">
+                <footer class="blockquote-footer">
+                </footer>
+              </blockquote>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <img class="card-img" src="https://image.tmdb.org/t/p/w500/{{ recs[7][1] }}" alt="Card image">
+              </div>
+            </div>
+            {% endif %}
+
+          </div>
+
+
     <script type="text/jsx" src="/static/js/search.jsx"></script>
 </body>
 
