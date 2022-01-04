@@ -7,13 +7,13 @@ function SearchForm() {
     function queryAPI(evt) {
         evt.preventDefault();
         const userSearch = document.querySelector('#search').value;
+        document.getElementById('recs').innerHTML = "";
         fetch(`/api?search=${userSearch}`)
             // make AJAX request
             .then(response => response.json())
             // parse response from AJAX request
             .then(apiResults => {
                 // storing json response at results key in results variable
-                // const apiResults = searchResults['results'];
                 updateSearchResults(apiResults);
             });
     }
@@ -62,7 +62,6 @@ function Result(props) {
 function Modal(evt) {
     // RENDER MODAL WHEN USER CLICKS ON A MOVIE POSTER
     evt.preventDefault();
-
     // Fetch movie details from server using tmdb_id
     const tmdb_id = evt.target.id;
     fetch(`/api-details?id=${tmdb_id}`)

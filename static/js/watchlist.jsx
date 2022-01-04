@@ -32,49 +32,62 @@ const ClubButtons = () => {
 const Filter = (evt) => {
     // get genre user selected
     const selectedGenre = evt.target.value;
+
     // get all movie divs
     const divs = document.getElementsByClassName('watchDiv');
-    // loop through movie dives
-    for (const d of divs){
-        const genItems = d.getElementsByClassName('genreItem');
-        // get all genres for a movie
-        const movieGenres = [];
-        for (const g of genItems) {
-            movieGenres.push(g.id);
-        }
-        // hide movies that do not have selected genre
-        if (!movieGenres.includes(selectedGenre)) {
-            d.style.display = "none";
-        }
-        // display all other movies
-        else {
+
+    // if selected genre = All Genres, make everything visible
+    if (selectedGenre == "All Genres"){
+        for (const d of divs){
             d.style.display = "block";
-        } 
+        }
+    } else {
+        // loop through movie divs
+        for (const d of divs){
+            const genItems = d.getElementsByClassName('genreItem');
+            // get all genres for a movie
+            const movieGenres = [];
+            for (const g of genItems) {
+                movieGenres.push(g.innerHTML);
+            }
+            // hide movies that do not have selected genre
+            if (!movieGenres.includes(selectedGenre)) {
+                d.style.display = "none";
+            }
+            // display all other movies
+            else {
+                d.style.display = "block";
+            } 
+        }
     }
 } 
 
 const FilterRuntime = (evt) => {
     // get genre user selected
     const selectedRuntime = parseInt(evt.target.value);
-    console.log(selectedRuntime);
     // get all movie divs
     const divs = document.getElementsByClassName('watchDiv');
     // loop through movie dives
-    for (const d of divs){
-        console.log(d);
-        // get runtime paragraph
-        const rt_paragraph = d.querySelector('#runtime').innerHTML;
-        // get runtime value from innerHTML
-        const film_rt = parseInt(rt_paragraph.slice(9));
-        // console.log(film_rt);
-        if (selectedRuntime > film_rt) {
-            d.style.display = "none";
-        }
-        // display all other movies
-        else {
+    if (selectedRuntime == "All"){
+        for (const d of divs){
             d.style.display = "block";
-        } 
+        }
+    } else {
+        for (const d of divs){
+            // get runtime paragraph
+            const rt_paragraph = d.querySelector('#runtime').innerHTML;
+            // get runtime value from innerHTML
+            const film_rt = parseInt(rt_paragraph.slice(9));
+            if (selectedRuntime > film_rt) {
+                d.style.display = "none";
+            }
+            // display all other movies
+            else {
+                d.style.display = "block";
+            } 
+        }
     }
+
 } 
 
 const SearchList = (props) => {
@@ -84,18 +97,25 @@ const SearchList = (props) => {
         fetch(`/club-filters?id=${club_id}`)
             .then(response => response.json())
             .then(results => {
-
                 updateGenres(results);
             });
     }, [props.club_id]);
     return (
         <React.Fragment>
             <section className="word-container">
-                <select onChange={Filter} value="genreSelect">
-                    {genres.map(genre => (<option value={genre}>{genre}</option>))}
+                <h5>Filters</h5>
+                <h6>Genres</h6>
+                <p id="selectedGen"></p>
+                <form>
+                <select onChange={Filter} id="genreSelectEl">
+                    {genres.map(genre => (<option value={genre} id={genre}>{genre}</option>))}
                 </select>
+                </form>
                 <br></br>
-                <select onChange={FilterRuntime} value="runtimeSelect">
+                <h6>Runtimes</h6>
+                <select onChange={FilterRuntime} id="runtimeSelect">
+                    <option value="---">---</option>
+                    <option value="All">All</option>
                     <option value="90">90</option>
                     <option value="120">120</option>
                     <option value="150">150</option>
@@ -112,7 +132,6 @@ const SearchList = (props) => {
 
 const Watchlist = (props) => {
     const [movies, updateMovies] = React.useState([]);
-
     React.useEffect(() => {
         fetch(`/watchlist?club_id=${props.club_id}`)
             .then(response => response.json())
@@ -132,7 +151,7 @@ const Watchlist = (props) => {
                             <p>Voter Average: {value['vote_average']}</p>
                             <p id="runtime">Runtime: {value['runtime']}</p>
                             <ul id="genreList">Genres
-                                {value['genres'].map(genre => (<li className="genreItem" id={genre['name']}>{genre['name']}</li>))}
+                                {value['genres'].map(genre => (<li className="genreItem">{genre['name']}</li>))}
                             </ul>
                         </div>
                     );

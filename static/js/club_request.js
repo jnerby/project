@@ -24,3 +24,7 @@ for (const button of buttons){
         });
       });
 }
+
+// get club details from club name button
+const clubDetails = document.querySelectorAll(".club-details");
+console.log(clubDetails);

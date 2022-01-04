@@ -188,10 +188,13 @@ def get_club_filters():
             for genre in film_genres:
                 genres.add(genre['name'])
 
-        return jsonify(list(genres))
+        # alphabetize genres    
+        gen = list(genres)
+        gen.sort()
+        gen.insert(0, "---")
+        gen.insert(1, "All Genres")
 
-    return 'empty'
-
+        return jsonify(gen)
 
 
 @app.route('/club-names')
