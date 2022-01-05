@@ -2,11 +2,33 @@ import os
 import requests
 import itertools
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
-from datetime import datetime
+from datetime import datetime, timedelta
 from jinja2 import StrictUndefined
 from werkzeug.security import generate_password_hash, check_password_hash
 import crud
 from model import db, User, Club, ClubUser, Film, Rating, connect_to_db
+
+
+#TWILIO
+from twilio.rest import Client
+
+twilio_account_sid = os.environ['TWILIO_ACCOUNT_SID']
+twilio_auth_token = os.environ['TWILIO_AUTH_TOKEN']
+twilio_number = os.environ['TWILIO_NUMBER']
+my_num = os.environ['ME']
+
+client = Client(twilio_account_sid, twilio_auth_token)
+
+# from celery import Celery
+
+# from config import config_classes
+# from views.appointment import (
+#     AppointmentFormResource,
+#     AppointmentResourceCreate,
+#     AppointmentResourceDelete,
+#     AppointmentResourceIndex,
+# )
+
 
 app = Flask(__name__)
 app.secret_key = "dev"
@@ -16,42 +38,86 @@ app.jinja_env.auto_reload = True
 
 key = os.environ.get('API_KEY')
 
+@app.route('/user-notifications')
+def update_notifications():
+    """Update user notifications preferences"""
+    user_id = session['user_id']
+    notification = crud.update_notifications(user_id)
+
+    if notification == True:
+        flash('Notification are now on!')
+    else:
+        flash('Reminders are off!')
+
+    return redirect('/')
+    
+# def check_reminders():
+#     """Check if any movies scheduled for tomorrow and user has notifications turned on"""
+#     # check if user has notifications turned on
+#     user_id = session['user_id']
+#     user = crud.get_user_by_id(user_id)
+#     # get tomorrow's date
+#     tomorrow = datetime.strftime(datetime.today() + timedelta(1), "%m/%d/%Y")
+#     # get all movies with watchdates in a user's club
+#     #
+
+
+# check_reminders()
+# def send_reminder():
+#     twilio_account_sid = os.environ['TWILIO_ACCOUNT_SID']
+#     twilio_auth_token = os.environ['TWILIO_AUTH_TOKEN']
+#     twilio_number = os.environ['TWILIO_NUMBER']
+#     my_num = os.environ['ME']
+
+#     client = Client(twilio_account_sid, twilio_auth_token)
+
+#     message = client.messages.create(
+#         to=my_num,
+#         from_=twilio_number,
+#         body="Twilio test 2!")
+
+#     # print(message.sid)
+
+# send_reminder()
 
 @app.route('/')
 @crud.login_required
 def render_homepage():
     """Display join requests and recommendations"""
     user_id = session['user_id']
-    user = crud.get_user_by_id(user_id)
+    if user_id:
+        user = crud.get_user_by_id(user_id)
 
-    # Clubs for which user is the owner
-    owner_clubs = crud.get_clubs_by_owner(user_id)
+        # Clubs for which user is the owner
+        owner_clubs = crud.get_clubs_by_owner(user_id)
 
-    # Get all join requests for clubs for which user is owner
-    join_requests = 0
-    for club in owner_clubs:
-        if crud.get_join_requests(club.club_id):
-            join_requests += 1
+        # Get all join requests for clubs for which user is owner
+        join_requests = 0
+        for club in owner_clubs:
+            if crud.get_join_requests(club.club_id):
+                join_requests += 1
 
-    # Get all clubs user is in
-    clubs = crud.get_all_clubs_by_user(user_id)
-    # Get user's film schedule
-    club_sched = [crud.get_schedule_by_club_id(club.club_id) for club in clubs]
-    # Flatten club_sched
-    sched_films = list(itertools.chain(*club_sched))
+        # Get all clubs user is in
+        clubs = crud.get_all_clubs_by_user(user_id)
+        # Get user's film schedule
+        club_sched = [crud.get_schedule_by_club_id(club.club_id) for club in clubs]
+        # Flatten club_sched
+        sched_films = list(itertools.chain(*club_sched))
 
-    films = []
-    for film in sched_films:
-        url = 'https://api.themoviedb.org/3/movie/'+str(film.tmdb_id)+'?api_key='+str(key)+'&language=en-US'
-        res = requests.get(url)
-        details = res.json()
-        # Add date, weekday, title, and poster path to tuple
-        tup = (datetime.strftime(film.view_schedule, "%m/%d/%Y"), datetime.strftime(film.view_schedule, "%a"), details['title'], details['poster_path'])
-        films.append(tup)
+        films = []
+        for film in sched_films:
+            url = 'https://api.themoviedb.org/3/movie/'+str(film.tmdb_id)+'?api_key='+str(key)+'&language=en-US'
+            res = requests.get(url)
+            details = res.json()
+            # Add date, weekday, title, and poster path to tuple
+            tup = (datetime.strftime(film.view_schedule, "%m/%d/%Y"), datetime.strftime(film.view_schedule, "%a"), details['title'], details['poster_path'])
+            films.append(tup)
 
-    films.sort()
+        films.sort()
 
-    return render_template('home.html', user=user, join_requests=join_requests, films=films)
+        return render_template('home.html', user=user, join_requests=join_requests, films=films)
+    else:
+        return redirect('/login')
 
 
 @app.route('/add-to-list', methods=['POST'])
@@ -174,9 +240,11 @@ def get_club_filters():
     # Get club's watchlist
     watchlist = crud.get_watchlist_by_club_id(club_id)
 
+    # gen = []
+    genres = set()
+
     # Check if club has any films on watchlist
     if watchlist:
-        genres = set()
 
         # Loop through each film in club's watchlist
         for film in watchlist:
@@ -188,13 +256,13 @@ def get_club_filters():
             for genre in film_genres:
                 genres.add(genre['name'])
 
-        # alphabetize genres    
-        gen = list(genres)
-        gen.sort()
-        gen.insert(0, "---")
-        gen.insert(1, "All Genres")
+    # alphabetize genres    
+    gen = list(genres)
+    gen.sort()
+    gen.insert(0, "---")
+    gen.insert(1, "All Genres")
 
-        return jsonify(gen)
+    return jsonify(gen)
 
 
 @app.route('/club-names')
@@ -449,6 +517,7 @@ def render_registration():
         lname = request.form['lname']
         email = request.form['email']
         username = request.form['username']
+        phone = request.form['phone']
         password = request.form['password']
         password_conf = request.form['password-conf']
 
@@ -462,7 +531,7 @@ def render_registration():
             flash('Username unavailable.')
         else:
             # add user
-            new_user = crud.register_user(fname, lname, email, username, password)
+            new_user = crud.register_user(fname, lname, email, username, phone, password)
             flash('Registration successful!')
             # on success, direct to login
             return redirect('/login')
@@ -476,18 +545,64 @@ def render_registration():
 def remove_film_from_list():
     """Remove a film from a club's watchlist"""
     film_id = request.args.get('id')
+    film_name = request.args.get('name')
+
+    user_id = session['user_id']
+    username = crud.get_user_by_id(user_id).username
+
+    # get all users who want notifications about this film
+    to_notify = crud.get_users_with_notification_by_film(film_id)
+
+    # get film
+    film = crud.get_film(film_id)
+    
+    # only notify if viewing has been scheduled
+    if film.view_schedule is not None:
+        # reformat view date
+
+        # send notifications for users with notifications turned on
+        for item in to_notify:
+            message = client.messages.create(
+                to=my_num,
+                # to=item[0]
+                from_=twilio_number,
+                body=f"Hi {item[1]}! {username} removed {film_name} from your club's Watchlist.")
+
     crud.remove_film_from_list(film_id)
+
     return 'removed'
 
 
 @app.route('/schedule')
 @crud.login_required
 def schedule_viewing():
-    """Schedules a date to watch a movie"""
+    """Schedules a date to watch a movie and notifies club members with notifications turned on"""
+    user_id = session['user_id']
+    username = crud.get_user_by_id(user_id).username
+    
     film_id = request.args.get('id')
+    film_name = request.args.get('name')
     view_date = request.args.get('date')
+
+    # schedule viewing
     crud.schedule_viewing(film_id, view_date)
+
+    # get all users who want notifications about this film
+    to_notify = crud.get_users_with_notification_by_film(film_id)
+
+    # reformat view date
+    view_date_obj = datetime.strptime(view_date, "%Y-%m-%d").strftime("%A, %m/%d/%Y")
+
+    # send notifications for users with notifications turned on
+    for item in to_notify:
+        message = client.messages.create(
+            to=my_num,
+            # to=item[0]
+            from_=twilio_number,
+            body=f"Hi {item[1]}! {username} scheduled {film_name} for {view_date_obj}.")
+
     return 'Scheduled'
+
 
 @app.route('/schedule-check')
 @crud.login_required

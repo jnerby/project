@@ -2,6 +2,7 @@
 {% block title%}Lists{% endblock %}
 
 {% block clubnav %}
+
   {% if join_requests == 1 %}
     <div>
       <a href="/join-requests">{{ join_requests }} Join Request</a>
@@ -11,10 +12,22 @@
       <a href="/join-requests">{{ join_requests }} Join Requests</a>
     </div>
   {% endif %}
+
+  {% if user['notifications'] == False %}
+  <div>
+    <a href="/user-notifications">Turn on reminders</a>
+  </div>
+  {% else %}
+  <div>
+    <a href="/user-notifications">Turn off reminders</a>
+  </div>
+  {% endif %}
+
 {% endblock %}
 
 {% block content %}
 <h1 id="user-lists">{{ user['username'] }}'s Profile</h1>
+
 <div id=list-modal class=modal></div>
 
 <div id="root">

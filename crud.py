@@ -50,6 +50,10 @@ def get_all_ratings(film_id):
     """Return all ratings for a film"""
     return Rating.query.filter(Rating.film_id==film_id).all()
 
+def get_all_clubusers_by_club(club_id):
+    """Returns all users in a club"""
+    return ClubUser.query.filter(ClubUser.club_id==club_id).all()
+
 def get_club_by_id(club_id):
     """Return club object from club_id"""
     return Club.query.filter(Club.club_id==club_id).first()
@@ -104,6 +108,19 @@ def get_user_films(user_id):
     """ Get all films user has added to a list"""
     return Film.query.filter(Film.added_by==user_id).all()
 
+def get_users_with_notification_by_film(film_id):
+    """Returns list of tuples of users who want to receive notifications about a movie"""
+    film = get_film(film_id)
+    club_id = film.club_id
+    # get all club_users
+    members = get_all_clubusers_by_club(club_id)
+    # get all users in club
+    users = [get_user_by_id(member.user_id) for member in members]
+    # get all users with notifications turned on
+    to_notify = [(f"+1{user.phone}", user.fname) for user in users if user.notifications == True]
+
+    return to_notify
+
 def get_watchlist_by_club_id(club_id):
     """Return all films objects added to a club's watchlist"""
     return Film.query.filter(Film.club_id==club_id, Film.watched==False).all()
@@ -148,9 +165,9 @@ def rate_film(film_id, user_id, rating):
 
     return new_rating
 
-def register_user(fname, lname, email, username, password):
+def register_user(fname, lname, email, username, phone, password):
     """Register new user"""
-    new_user = User(fname=fname, lname=lname, email=email, username=username,password_hash=generate_password_hash(password))
+    new_user = User(fname=fname, lname=lname, email=email, username=username, phone=phone, password_hash=generate_password_hash(password))
 
     db.session.add(new_user)
     db.session.commit()
@@ -184,6 +201,19 @@ def schedule_viewing(film_id, view_date):
     db.session.commit()
 
     return film
+
+def update_notifications(user_id):
+    """Update a user's notification preferences"""
+    user = get_user_by_id(user_id)
+    if user.notifications == False:
+        user.notifications = True
+    else:
+        user.notifications = False
+
+    db.session.add(user)
+    db.session.commit()
+    
+    return user.notifications
 
 def update_watched_status(film_id):
     """Update film's watched status"""

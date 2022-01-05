@@ -23,6 +23,10 @@ class User(db.Model):
     fname = db.Column(db.String(25))
     lname = db.Column(db.String(25))
     email = db.Column(db.String(30))
+    phone = db.Column(db.String(10))
+    notifications = db.Column(db.Boolean,
+                        default=False,
+                        nullable=False)
     username = db.Column(db.String(25),
                         unique=True)
     password_hash = db.Column(db.String(128))

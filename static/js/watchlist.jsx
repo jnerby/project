@@ -183,7 +183,7 @@ function Modal(evt) {
             if (scheduled == 'True') {
                 modal.innerHTML = `<div class=modal-content><span id="close" align="right" class=close>&times;</span>
                                 <h1>${film_name}</h1>
-                                <button id="rmv${film_id}" class="removeBtn btn btn-dark">Remove</button>
+                                <button id="rmv${film_id}" name="rmv${film_name}" class="removeBtn btn btn-dark">Remove</button>
                                 <br>
                                 <button id="wt${film_id}" class="watchBtn btn btn-dark">Watched</button> 
                                 <br>
@@ -202,8 +202,8 @@ function Modal(evt) {
 
                 rmv.addEventListener('click', (evt) => {
                     const film_id = evt.target.id.slice(3);
-
-                    fetch(`/remove-film?id=${film_id}`)
+                    const film_name = evt.target.name.slice(3);
+                    fetch(`/remove-film?id=${film_id}&name=${film_name}`)
                         .then(response => response.text())
                         .then(evt.target.disabled = true)
                 });
@@ -222,13 +222,13 @@ function Modal(evt) {
             }
             else {
                 modal.innerHTML = `<div class=modal-content><span id="close" align="right" class=close>&times;</span>
-                                <h1>${film_name}</h1>
-                                <button id="rmv${film_id}" class="removeBtn btn btn-dark">Remove</button>
+                                <h1 class="film-title">${film_name}</h1>
+                                <button id="rmv${film_id}" name="rmv${film_name}" class="removeBtn btn btn-dark">Remove</button>
                                 <br>
                                 <button id="wt${film_id}" class="watchBtn btn btn-dark">Watched</button> 
                                 <br>
                                 <input type="date" id="schedDate">
-                                <button id="sch${film_id}" class="schBtn btn btn-dark">Schedule</button> 
+                                <button id="sch${film_id}" name="sch${film_name}" class="schBtn btn btn-dark">Schedule</button> 
                                 </div>`;
 
                 // make the modal visible
@@ -244,8 +244,8 @@ function Modal(evt) {
 
                 rmv.addEventListener('click', (evt) => {
                     const film_id = evt.target.id.slice(3);
-
-                    fetch(`/remove-film?id=${film_id}`)
+                    const film_name = evt.target.name.slice(3);
+                    fetch(`/remove-film?id=${film_id}&name=${film_name}`)
                         .then(response => response.text())
                         .then(evt.target.disabled = true)
                 });
@@ -266,7 +266,8 @@ function Modal(evt) {
                 sched.addEventListener('click', (evt) => {
                     const dt = document.querySelector('#schedDate').value;
                     const film_id = evt.target.id.slice(3);
-                    fetch(`/schedule?id=${film_id}&date=${dt}`)
+                    const film_name = evt.target.name.slice(3);
+                    fetch(`/schedule?id=${film_id}&name=${film_name}&date=${dt}`)
                         .then(response => response.text())
                         .then(evt.target.disabled = true)
                 })
