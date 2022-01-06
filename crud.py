@@ -62,6 +62,13 @@ def get_clubs_by_owner(owner_id):
     """Return all clubs owned by user"""
     return Club.query.filter(Club.owner_id==owner_id).all()
 
+def get_club_members(club):
+    """Returns all members of a club"""
+    club_user_objects = ClubUser.query.filter(ClubUser.club_id==club.club_id).all()
+    member_objects = [get_user_by_id(club_user.user_id) for club_user in club_user_objects if club_user.approved == True]
+    member_names = [f"{user.fname} {user.lname}" for user in member_objects]
+    return member_names
+
 def get_club_owner(club):
     """Get name of club owner to display in browse screen"""
     owner = User.query.filter_by(user_id=club.owner_id).one()

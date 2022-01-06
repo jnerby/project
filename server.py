@@ -1,11 +1,12 @@
 import os
 import requests
 import itertools
-from flask import Flask, flash, jsonify, redirect, render_template, request, session
+from flask import Flask, flash, json, jsonify, redirect, render_template, request, session
 from datetime import datetime, timedelta
 from jinja2 import StrictUndefined
 from werkzeug.security import generate_password_hash, check_password_hash
 import crud
+import helpers
 from model import db, User, Club, ClubUser, Film, Rating, connect_to_db
 
 
@@ -45,22 +46,13 @@ def render_homepage():
             if crud.get_join_requests(club.club_id):
                 join_requests += 1
 
-        # Get all clubs user is in
-        clubs = crud.get_all_clubs_by_user(user_id)
-        # Get user's film schedule
-        club_sched = [crud.get_schedule_by_club_id(club.club_id) for club in clubs]
-        # Flatten club_sched
-        sched_films = list(itertools.chain(*club_sched))
+        # Get all films with a scheduled view date
+        scheduled_films = helpers.get_users_scheduled_films(user_id)
 
-        films = []
-        for film in sched_films:
-            url = 'https://api.themoviedb.org/3/movie/'+str(film.tmdb_id)+'?api_key='+str(key)+'&language=en-US'
-            res = requests.get(url)
-            details = res.json()
-            # Add date, weekday, title, and poster path to tuple
-            tup = (datetime.strftime(film.view_schedule, "%m/%d/%Y"), datetime.strftime(film.view_schedule, "%a"), details['title'], details['poster_path'])
-            films.append(tup)
+        # Get film details for all films with a scheduled view date as tuples
+        films = helpers.get_details_scheduled_films(scheduled_films)
 
+        # Sort films with scheduled view date by closest view date
         films.sort()
 
         return render_template('home.html', user=user, join_requests=join_requests, films=films)
@@ -76,7 +68,7 @@ def add_film_to_list():
     club_id = request.args.get('club_id')
     user_id = session['user_id']
 
-    # insert film into selected list
+    # Insert film into selected list
     crud.add_film_to_list(tmdb_id, club_id, user_id)
 
     return 'Added'
@@ -86,10 +78,10 @@ def add_film_to_list():
 @crud.login_required
 def fetch_api():
     """Returns api call based on search term"""
-    # get value user entered in search bar
+    # Get value user entered in search bar
     user_search = request.args.get('search')
 
-    # add user_search to query string
+    # Add user_search to query string
     url = 'https://api.themoviedb.org/3/search/movie?api_key='+str(key)+'&query='+user_search
     res = requests.get(url)
     search_results = res.json()
@@ -98,15 +90,12 @@ def fetch_api():
 
     # Get user's films
     user_id = session['user_id']
-    # Get clubuser for all user's clubs
-    club_users = crud.get_all_clubs_by_user(user_id)
-    # Get all a user's clubs
-    clubs = [club_user.club_id for club_user in club_users]
-    # Get all films in any of a user's clubs
-    history = crud.get_history_and_watchlist_by_clubs(clubs)
 
+    users_watch_history = helpers.get_users_clubs_watchlists(user_id)
+
+    ### REWORK WITH GET
     films = {}
-    for item in history:
+    for item in users_watch_history:
         films[item.tmdb_id] = item.watched
 
     for item in result:
@@ -123,10 +112,10 @@ def fetch_api():
 @crud.login_required
 def fetch_api_details():
     """Return API call using film's id for modal"""
-    # get movie id from clicked event
+    # Get movie id from clicked event
     tmdb_id = request.args.get('id')
 
-    # add movie id to api call for movie details
+    # Add movie id to api call for movie details
     url = 'https://api.themoviedb.org/3/movie/'+str(tmdb_id)+'?api_key='+str(key)+'&language=en-US'
     res = requests.get(url)
     result = res.json()
@@ -138,11 +127,10 @@ def fetch_api_details():
 @crud.login_required
 def approve_join_request():
     """Grant club access to user once approved"""
-    # get club_user_id from request
+    # Get club_user_id from request
     club_user_id = request.json.get('club_user_id')
-    # update record in ClubUser to grant access
+    # Update record in ClubUser to grant access
     crud.grant_access_by_club_user_id(club_user_id)
-#return success - in AJAX promise, if success then disable
 
     return 'Approved'
 
@@ -151,16 +139,16 @@ def approve_join_request():
 @crud.login_required
 def create_new_club():
     """Create a new club"""
-    # if user submitted new-club form
+    # If user submitted new-club form
     if request.method == 'POST':
-        # new club name user entered
-        name = request.form['club-name']
-        # user_id from session
         user_id = session['user_id']
+        # New club name user entered
+        name = request.form['club-name']
 
         crud.create_club(name, user_id)
         flash(f"{name} created!")
-# return success
+    
+    # return success
     return 'added'
 
 
@@ -189,26 +177,17 @@ def get_club_filters():
     # Get club's watchlist
     watchlist = crud.get_watchlist_by_club_id(club_id)
 
-    # gen = []
-    genres = set()
+    gen = []
 
     # Check if club has any films on watchlist
     if watchlist:
+        # Get set of all genres on a club's watchlist
+        genres = helpers.get_watchlist_genres(watchlist)
 
-        # Loop through each film in club's watchlist
-        for film in watchlist:
-            url = 'https://api.themoviedb.org/3/movie/'+str(film.tmdb_id)+'?api_key='+str(key)+'&language=en-US'
-            res = requests.get(url)
-            result = res.json()
-            film_genres = result['genres']
-            # Add all genres to set
-            for genre in film_genres:
-                genres.add(genre['name'])
-
-    # alphabetize genres    
-    gen = list(genres)
-    gen.sort()
-    gen.insert(0, "All")
+        # Convert genres to list, alphabetize, add "All" option for dropdown    
+        gen = list(genres)
+        gen.sort()
+        gen.insert(0, "All")
 
     return jsonify(gen)
 
@@ -249,64 +228,31 @@ def create_request():
 @crud.login_required
 def join_club():
     """View all clubs"""
-        # if user submitted new-club form
-    if request.method == 'POST':
-        # new club name user entered
-        name = request.form['club-name']
-        # user_id from session
-        user_id = session['user_id']
+    user_id = session['user_id']
 
+    # Get all clubs in db
+    all_clubs = crud.get_all_clubs()
+
+    # Get club name, owner, and user enrollment status for each club
+    clubs = helpers.get_club_details(all_clubs, user_id)
+
+    # If user submitted new-club form
+    if request.method == 'POST':
+        # Create new club
+        name = request.form['club-name']
         crud.create_club(name, user_id)
         flash(f"{name} created!")
 
-        all_clubs = crud.get_all_clubs()
-        clubs = []
-        user_id = session['user_id']
-
-        # for club in clubs, check if user in ClubUsers table. if not
-        for club in all_clubs:
-            # get full name of club owner
-            owner = crud.get_club_owner(club)
-            # get user's status in club
-            club_id = club.club_id
-            # get user's membership status for club
-            status = crud.get_approval_status(user_id, club_id)
-            # append each club dict to clubs list
-            clubs.append({'owner': owner, 
-                        'name': club.name, 
-                        'club_id': club.club_id, 
-                        'status': status})
-
-        return render_template('clubs.html', clubs=clubs)
-    else:
-        all_clubs = crud.get_all_clubs()
-        clubs = []
-        user_id = session['user_id']
-
-        # for club in clubs, check if user in ClubUsers table. if not
-        for club in all_clubs:
-            # get full name of club owner
-            owner = crud.get_club_owner(club)
-            # get user's status in club
-            club_id = club.club_id
-            # get user's membership status for club
-            status = crud.get_approval_status(user_id, club_id)
-            # append each club dict to clubs list
-            clubs.append({'owner': owner, 
-                        'name': club.name, 
-                        'club_id': club.club_id, 
-                        'status': status})
-
-        return render_template('clubs.html', clubs=clubs)
+    return render_template('clubs.html', clubs=clubs)
 
 
 @app.route('/history', methods=['GET','POST'])
 @crud.login_required
 def view_history():
     """View all movies a user's club(s) have watched"""
+    user_id = session['user_id']
     if request.method == 'POST':
-        user_id = session['user_id']
-        # Get a ClubUsers
+        # Get all users' clubuser objects
         user_clubs = crud.get_all_clubs_by_user(user_id)
 
         # Add user's club_ids to set
@@ -315,39 +261,9 @@ def view_history():
             club_ids.add(club.club_id)
 
         # Get all films that have been watched in users' clubs
-        films = crud.get_history_by_clubs(club_ids)
+        watched_films = crud.get_history_by_clubs(club_ids)
 
-        results = []
-
-        # Call API for each film
-        for film in films:
-            url = 'https://api.themoviedb.org/3/movie/'+str(film.tmdb_id)+'?api_key='+str(key)+'&language=en-US'
-            res = requests.get(url)
-            details = res.json()
-            # Add Film table's film_id to details object
-            details['db_id'] = film.film_id
-
-
-            # Add film's ratings to details object
-            film_ratings = crud.get_all_ratings(film.film_id)
-            rating_details = []
-
-            # Check if film has any ratings
-            if film_ratings:
-                # Loop over ratings
-                for item in film_ratings:
-                    # Get username
-                    user = crud.get_user_by_id(item.user_id)
-                    username = user.username
-                    # Add rating value and user name to tuple
-                    tup = (item.rating, username)
-                    # Add duptle to rating details
-                    rating_details.append(tup)
-
-            # Add ratings list to details dict
-            details['db_ratings'] = rating_details
-
-            results.append(details)
+        results = helpers.get_film_details_and_ratings(watched_films)
 
         return jsonify(results)
     else:
@@ -360,31 +276,11 @@ def view_history():
 def view_my_clubs():
     """Load owner's club to approve new members"""
     user_id = session['user_id']
-    # get all clubs that user owns
+    # Get all clubs that user owns
     owner_clubs = crud.get_clubs_by_owner(user_id)
-    # initialize empty array for result
-    result = []
 
-    # loop through owner's club
-    for club in owner_clubs:
-        club_id = club.club_id
-
-        # get all join requests for each club
-        club_requests = crud.get_join_requests(club_id)
-        # if a club has join requests
-        if club_requests:
-            # loop over join requests and add to dict
-            for request in club_requests:
-                club_name = crud.get_club_by_id(request.club_id).name
-                username = crud.get_user_by_id(request.user_id).username
-                full_name = f"{crud.get_user_by_id(request.user_id).fname} {crud.get_user_by_id(request.user_id).lname}"
-                club_user_id = crud.get_club_user_id(request.user_id, request.club_id)
-                result_dict = {'club_name': club_name,
-                                'club_user_id': club_user_id,
-                                'username': username,
-                                'full_name': full_name}
-                # append dict to result list
-                result.append(result_dict)
+    # Get all join requests for clubs user owns
+    result = helpers.get_join_requests_for_users_clubs(owner_clubs)
 
     return render_template('club_owner.html', result=result)
 
@@ -392,7 +288,7 @@ def view_my_clubs():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """Log in"""
-    # clear existing session
+    # Clear existing session
     session.clear()
 
     # if login form submitted
@@ -505,13 +401,13 @@ def remove_film_from_list():
     film = crud.get_film(film_id)
     
     # only notify if viewing has been scheduled
-    if film.view_schedule:
-        # send notifications for users with notifications turned on
-        for item in to_notify:
-            message = client.messages.create(
-                to=item[0],
-                from_=twilio_number,
-                body=f"Hi {item[1]}! {username} removed {film_name} from your club's Watchlist.")
+    # if film.view_schedule:
+    #     # send notifications for users with notifications turned on
+    #     for item in to_notify:
+    #         message = client.messages.create(
+    #             to=my_num,
+    #             from_=twilio_number,
+    #             body=f"Hi {item[1]}! {username} removed {film_name} from your club's Watchlist.")
 
     crud.remove_film_from_list(film_id)
 
@@ -540,13 +436,13 @@ def schedule_viewing():
     view_date_obj = datetime.strptime(view_date, "%Y-%m-%d").strftime("%A, %m/%d/%Y")
 
     # send notifications for users with notifications turned on
-    for item in to_notify:
-        message = client.messages.create(
-            to=item[0],
-            from_=twilio_number,
-            body=f"Hi {item[1]}! {username} scheduled {film_name} for {view_date_obj}.")
+    # for item in to_notify:
+    #     message = client.messages.create(
+    #         to=my_num,
+    #         from_=twilio_number,
+    #         body=f"Hi {item[1]}! {username} scheduled {film_name} for {view_date_obj}.")
 
-#return success - in AJAX promise, if success then disable
+    #return success - in AJAX promise, if success then disable
     return 'Success'
 
 
@@ -564,30 +460,13 @@ def check_scheduled():
 def search():
     """Renders search results where each result is a React component"""
     user_id = session['user_id']
+
+    # Get all user's ratings
     ratings = crud.get_ratings_by_user(user_id)
-    high_ratings = []
-    if len(ratings) > 2:
-        for item in ratings:
-            # get all highly rated movies
-            if item.rating > 7:
-                high_ratings.append(item)
-            # get similar movies for each highly rated movie
-            for film in high_ratings:
-                tmdb_id = crud.get_film(film.film_id).tmdb_id
-                url = 'https://api.themoviedb.org/3/movie/'+ str(tmdb_id) + '/similar?api_key='+ str(key) + '&language=en-US&page=1'
-                res = requests.get(url)
-                result = res.json()
-                movies = result['results']
-                watched = crud.get
-                recs = [(movie['vote_average'], movie['poster_path']) for movie in movies]
-                recs.sort(reverse=True)
-    else:      
-        url = 'https://api.themoviedb.org/3/movie/popular?api_key='+str(key)+'&language=en-US&page=1'
-        res = requests.get(url)
-        result = res.json()
-        movies = result['results']
-        recs = [(movie['vote_average'], movie['poster_path']) for movie in movies]
-        recs.sort(reverse=True)
+
+    # Get movie recommendations based on user's ratings
+    recs = helpers.get_user_recommendations(ratings, user_id)
+
     return render_template('search.html', recs=recs)
 
 
@@ -600,29 +479,14 @@ def render_watchlists():
 
     # Get all films in a club's list
     films = crud.get_watchlist_by_club_id(club_id)
+    film_dict = helpers.get_watchlist_films_schedules(films)
+
     # Get all films scheduled for a club
     scheduled_films = crud.get_schedule_by_club_id(club_id)
 
-    # initialize empty dictionary to return to broswer
-    film_dict = {}
+    result = helpers.add_film_schedule_to_film_dict(film_dict, scheduled_films)
 
-    # loop through films in club's list
-    for film in films:
-        # get each film's details
-        url = 'https://api.themoviedb.org/3/movie/'+str(film.tmdb_id)+'?api_key='+str(key)+'&language=en-US'
-        res = requests.get(url)
-        result = res.json()
-        # add api call result to film_dict
-        film_dict[film.film_id] = result
-
-    # If any movies in film_dict have a date scheduled, add key value pair to film-dict
-    for sch_film in scheduled_films:
-        id = sch_film.film_id
-        if id in film_dict:
-            inner = film_dict[id]
-            inner['view_date'] = datetime.strftime(sch_film.view_schedule, "%a, %m/%d/%Y")
-
-    return jsonify(film_dict)
+    return jsonify(result)
 
 
 @app.route('/watched-film')
@@ -640,9 +504,9 @@ def update_notifications():
     notification = crud.update_notifications(user_id)
 
     if notification:
-        flash('Notification are now on!')
+        flash('Notifications are on!')
     else:
-        flash('Reminders are off!')
+        flash('Notifications are off!')
 
     return redirect('/')
 
