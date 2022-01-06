@@ -19,17 +19,6 @@ my_num = os.environ['ME']
 
 client = Client(twilio_account_sid, twilio_auth_token)
 
-# from celery import Celery
-
-# from config import config_classes
-# from views.appointment import (
-#     AppointmentFormResource,
-#     AppointmentResourceCreate,
-#     AppointmentResourceDelete,
-#     AppointmentResourceIndex,
-# )
-
-
 app = Flask(__name__)
 app.secret_key = "dev"
 app.jinja_env.undefined = StrictUndefined
@@ -38,47 +27,6 @@ app.jinja_env.auto_reload = True
 
 key = os.environ.get('API_KEY')
 
-@app.route('/user-notifications')
-def update_notifications():
-    """Update user notifications preferences"""
-    user_id = session['user_id']
-    notification = crud.update_notifications(user_id)
-
-    if notification == True:
-        flash('Notification are now on!')
-    else:
-        flash('Reminders are off!')
-
-    return redirect('/')
-    
-# def check_reminders():
-#     """Check if any movies scheduled for tomorrow and user has notifications turned on"""
-#     # check if user has notifications turned on
-#     user_id = session['user_id']
-#     user = crud.get_user_by_id(user_id)
-#     # get tomorrow's date
-#     tomorrow = datetime.strftime(datetime.today() + timedelta(1), "%m/%d/%Y")
-#     # get all movies with watchdates in a user's club
-#     #
-
-
-# check_reminders()
-# def send_reminder():
-#     twilio_account_sid = os.environ['TWILIO_ACCOUNT_SID']
-#     twilio_auth_token = os.environ['TWILIO_AUTH_TOKEN']
-#     twilio_number = os.environ['TWILIO_NUMBER']
-#     my_num = os.environ['ME']
-
-#     client = Client(twilio_account_sid, twilio_auth_token)
-
-#     message = client.messages.create(
-#         to=my_num,
-#         from_=twilio_number,
-#         body="Twilio test 2!")
-
-#     # print(message.sid)
-
-# send_reminder()
 
 @app.route('/')
 @crud.login_required
@@ -194,6 +142,7 @@ def approve_join_request():
     club_user_id = request.json.get('club_user_id')
     # update record in ClubUser to grant access
     crud.grant_access_by_club_user_id(club_user_id)
+#return success - in AJAX promise, if success then disable
 
     return 'Approved'
 
@@ -211,7 +160,7 @@ def create_new_club():
 
         crud.create_club(name, user_id)
         flash(f"{name} created!")
-
+# return success
     return 'added'
 
 
@@ -259,8 +208,7 @@ def get_club_filters():
     # alphabetize genres    
     gen = list(genres)
     gen.sort()
-    gen.insert(0, "---")
-    gen.insert(1, "All Genres")
+    gen.insert(0, "All")
 
     return jsonify(gen)
 
@@ -557,19 +505,17 @@ def remove_film_from_list():
     film = crud.get_film(film_id)
     
     # only notify if viewing has been scheduled
-    if film.view_schedule is not None:
-        # reformat view date
-
+    if film.view_schedule:
         # send notifications for users with notifications turned on
         for item in to_notify:
             message = client.messages.create(
-                to=my_num,
-                # to=item[0]
+                to=item[0],
                 from_=twilio_number,
                 body=f"Hi {item[1]}! {username} removed {film_name} from your club's Watchlist.")
 
     crud.remove_film_from_list(film_id)
 
+    #return success - in AJAX promise, if success then disable
     return 'removed'
 
 
@@ -596,12 +542,12 @@ def schedule_viewing():
     # send notifications for users with notifications turned on
     for item in to_notify:
         message = client.messages.create(
-            to=my_num,
-            # to=item[0]
+            to=item[0],
             from_=twilio_number,
             body=f"Hi {item[1]}! {username} scheduled {film_name} for {view_date_obj}.")
 
-    return 'Scheduled'
+#return success - in AJAX promise, if success then disable
+    return 'Success'
 
 
 @app.route('/schedule-check')
@@ -632,6 +578,7 @@ def search():
                 res = requests.get(url)
                 result = res.json()
                 movies = result['results']
+                watched = crud.get
                 recs = [(movie['vote_average'], movie['poster_path']) for movie in movies]
                 recs.sort(reverse=True)
     else:      
@@ -684,6 +631,20 @@ def update_film_to_watched():
     film_id = request.args.get('id')
     crud.update_watched_status(film_id)
     return 'updated'
+
+
+@app.route('/user-notifications')
+def update_notifications():
+    """Update user notifications preferences"""
+    user_id = session['user_id']
+    notification = crud.update_notifications(user_id)
+
+    if notification:
+        flash('Notification are now on!')
+    else:
+        flash('Reminders are off!')
+
+    return redirect('/')
 
 
 if __name__ == "__main__":

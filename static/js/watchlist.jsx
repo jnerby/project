@@ -30,65 +30,63 @@ const ClubButtons = () => {
 }
 
 const Filter = (evt) => {
-    // get genre user selected
-    const selectedGenre = evt.target.value;
-
     // get all movie divs
     const divs = document.getElementsByClassName('watchDiv');
+    // get selected genre and runtime from dropdown
+    const selectedGenre = document.getElementById('genreSelectEl').value;
+    const selectedRuntime = document.getElementById('runtimeSelect').value;
 
-    // if selected genre = All Genres, make everything visible
-    if (selectedGenre == "All Genres"){
-        for (const d of divs){
+    // if filters cleared, display all
+    if (selectedGenre === "All" && selectedRuntime === "All") {
+        for (const d of divs) {
             d.style.display = "block";
         }
     } else {
-        // loop through movie divs
-        for (const d of divs){
-            const genItems = d.getElementsByClassName('genreItem');
+        for (const d of divs) {
             // get all genres for a movie
+            const genItems = d.getElementsByClassName('genreItem');
             const movieGenres = [];
             for (const g of genItems) {
                 movieGenres.push(g.innerHTML);
             }
-            // hide movies that do not have selected genre
-            if (!movieGenres.includes(selectedGenre)) {
-                d.style.display = "none";
-            }
-            // display all other movies
-            else {
-                d.style.display = "block";
-            } 
-        }
-    }
-} 
-
-const FilterRuntime = (evt) => {
-    // get genre user selected
-    const selectedRuntime = parseInt(evt.target.value);
-    // get all movie divs
-    const divs = document.getElementsByClassName('watchDiv');
-    // loop through movie dives
-    if (selectedRuntime == "All"){
-        for (const d of divs){
-            d.style.display = "block";
-        }
-    } else {
-        for (const d of divs){
-            // get runtime paragraph
-            const rt_paragraph = d.querySelector('#runtime').innerHTML;
             // get runtime value from innerHTML
+            const rt_paragraph = d.querySelector('#runtime').innerHTML;
             const film_rt = parseInt(rt_paragraph.slice(9));
-            if (selectedRuntime > film_rt) {
-                d.style.display = "none";
-            }
-            // display all other movies
-            else {
-                d.style.display = "block";
-            } 
-        }
-    }
 
-} 
+            // if both are filtered
+            if (selectedGenre !== "All" && selectedRuntime !== "All") {
+                if (selectedRuntime < film_rt || !movieGenres.includes(selectedGenre)) {
+                    d.style.display = "none";
+                } else {
+                    d.style.display = "block";
+                }
+            }
+
+            // if only genres is filtered
+            else if (selectedRuntime === "All") {
+                if (!movieGenres.includes(selectedGenre)) {
+                    d.style.display = "none";
+                } else {
+                    d.style.display = "block";
+                }
+            }
+
+            // if only runtime is filtered
+            else if (selectedGenre === "All") {
+                // if runtime exceed max runtime, hide
+                if (selectedRuntime < film_rt) {
+                    d.style.display = "none";
+                }
+                else {
+                    d.style.display = "block";
+                }
+            }
+
+        }
+
+    }
+}
+
 
 const SearchList = (props) => {
     const [genres, updateGenres] = React.useState([]);
@@ -107,24 +105,23 @@ const SearchList = (props) => {
                 <h6>Genres</h6>
                 <p id="selectedGen"></p>
                 <form>
-                <select onChange={Filter} id="genreSelectEl">
-                    {genres.map(genre => (<option value={genre} id={genre}>{genre}</option>))}
-                </select>
+                    <select onChange={Filter} id="genreSelectEl">
+                        {genres.map(genre => (<option value={genre} id={genre}>{genre}</option>))}
+                    </select>
                 </form>
                 <br></br>
-                <h6>Runtimes</h6>
-                <select onChange={FilterRuntime} id="runtimeSelect">
-                    <option value="---">---</option>
+                <h6>Max Runtime</h6>
+                <select onChange={Filter} id="runtimeSelect">
                     <option value="All">All</option>
+                    <option value="90">60</option>
                     <option value="90">90</option>
                     <option value="120">120</option>
                     <option value="150">150</option>
                     <option value="180">180</option>
                     <option value="210">210</option>
-                    <option value="240">240</option>
                 </select>
             </section>
-            <Watchlist club_id={club_id}/>
+            <Watchlist club_id={club_id} />
         </React.Fragment>
 
     )
