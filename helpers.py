@@ -8,11 +8,12 @@ from datetime import datetime
 key = os.environ.get('API_KEY')
 
 def add_film_schedule_to_film_dict(film_dict, scheduled_films):
-    for sch_film in scheduled_films:
-        id = sch_film.film_id
+    """Adds any scheduled films to film_dict"""
+    for scheduled_film in scheduled_films:
+        id = scheduled_film.film_id
         if id in film_dict:
             inner = film_dict[id]
-            inner['view_date'] = datetime.strftime(sch_film.view_schedule, "%a, %m/%d/%Y")
+            inner['view_date'] = datetime.strftime(scheduled_film.view_schedule, "%a, %m/%d/%Y")
     
     return film_dict
 
@@ -163,6 +164,27 @@ def get_user_recommendations(ratings, user_id):
     recs = generate_recommendations(url, user_id)
 
     return recs
+
+
+def get_watched_status(result, users_watch_history):
+    """Updates search results to indicate if user has watched/already saved"""
+    # Add all watched films to films 
+    watched_films = {}
+    for item in users_watch_history:
+        watched_films[item.tmdb_id] = item.watched
+
+    # Loop over search results
+    for item in result:
+        # If film is in watched_films dict
+        if item['id'] in watched_films:
+            # If film has not been watched, status is on a list
+            if watched_films[item['id']] == False:
+                item['db_status'] = 'On a List'
+            # Else status is watched
+            else:
+                item['db_status'] = 'Watched'
+
+    return result
 
 
 def get_watchlist_genres(watchlist):

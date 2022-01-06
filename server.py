@@ -85,27 +85,13 @@ def fetch_api():
     url = 'https://api.themoviedb.org/3/search/movie?api_key='+str(key)+'&query='+user_search
     res = requests.get(url)
     search_results = res.json()
-
     result = search_results['results']
 
-    # Get user's films
+    # Get user's watched films
     user_id = session['user_id']
-
     users_watch_history = helpers.get_users_clubs_watchlists(user_id)
 
-    ### REWORK WITH GET
-    films = {}
-    for item in users_watch_history:
-        films[item.tmdb_id] = item.watched
-
-    for item in result:
-        if item['id'] in films:
-            if films[item['id']] == False:
-                item['db_status'] = 'On a List'
-            else:
-                item['db_status'] = 'Watched'
-
-    return jsonify(result)
+    return jsonify(helpers.get_watched_status(result, users_watch_history))
 
 
 @app.route('/api-details')
