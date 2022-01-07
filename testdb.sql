@@ -303,6 +303,7 @@ COPY public.users (user_id, fname, lname, email, phone, notifications, username,
 1	Danaerys	Targaryen	dt@gmail.com	1234567890	f	dragonmum	pbkdf2:sha256:260000$giF5tb4Br3viS40v$3e192a41bd341b8561f302f6b19a7dee36a55c88f17cb1038a756a793238d570
 2	Jon	Snow	js@gmail.com	1234567890	t	crowboy	pbkdf2:sha256:260000$BtYWLR6luw002GWL$f20bebe248196f99e1537bc341d15e69dfb743ce09a55aec7b16e6e80c63cf04
 3	Khal	Drogo	kd@gmail.com	1234567890	f	khalD	pbkdf2:sha256:260000$j9ZAXsP0896cirgi$30b1cda494f9ce103c7c745415c4e238ed060808c9bd6e78ab9a54729c5466d4
+4	Test	Test	test	0123456789	f	testuser	pbkdf2:sha256:260000$ZApDfQGqiX9zt5Rw$5380c975f994bd836e7a8e442257124c376ea0b78506d376e0bf02e6ca8232a5
 \.
 
 
