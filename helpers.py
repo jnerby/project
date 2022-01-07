@@ -154,10 +154,10 @@ def get_user_recommendations(ratings, user_id):
             # get all highly rated movies
             if item.rating > 7:
                 high_ratings.append(item)
-            # get similar movies for each highly rated movie
+            # get recommendations based on user's highly rated movies
             for film in high_ratings:
                 tmdb_id = crud.get_film(film.film_id).tmdb_id
-                url = 'https://api.themoviedb.org/3/movie/'+ str(tmdb_id) + '/similar?api_key='+ str(key) + '&language=en-US&page=1'
+                url = f"https://api.themoviedb.org/3/movie/{str(tmdb_id)}/recommendations?api_key={str(key)}&language=en-US&page=1"
     else:      
         url = 'https://api.themoviedb.org/3/movie/popular?api_key='+str(key)+'&language=en-US&page=1'
     
