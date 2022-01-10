@@ -19,9 +19,26 @@ content .form-control
     width: auto;
 }
 
+
+/* Notifications */
+.topcorner {
+  position:absolute;
+  top: 10px;
+  right: 10px;
+  padding-top: 60px;
+}
+
+/* Join Requests */
+.topcorner-second {
+  position:absolute;
+  top: 10px;
+  right: 10px;
+  padding-top: 100px;
+}
+
 .search-result {
     width: 80%;
-    margin: 100px auto 50px;
+    margin: 10px auto 50px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     grid-gap: 10px;
@@ -68,7 +85,7 @@ content .form-control
 
 .watchlist {
   width: 80%;
-  margin: 100px auto 50px;
+  margin: 10px auto 50px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   grid-gap: 10px;
@@ -79,6 +96,29 @@ content .form-control
   border-radius: 4px;
   padding: 5px;
   width: 150px;
+}
+
+.scheduled {
+  width: 80%;
+  margin: 0px auto 50px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-gap: 10px;
+  justify-items: center;
+}
+
+.flex-container{
+  width: 80%;
+  min-height: 50px;
+  margin: 0 auto;
+  display: -webkit-flex; /* Safari */     
+  display: flex; /* Standard syntax */
+}
+.flex-container .column{
+  padding: 10px;
+  -webkit-flex: 1; /* Safari */
+  -ms-flex: 1; /* IE 10 */
+  flex: 1; /* Standard syntax */
 }
 
 

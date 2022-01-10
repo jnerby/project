@@ -101,25 +101,30 @@ const SearchList = (props) => {
     return (
         <React.Fragment>
             <section className="word-container">
-                <h5>Filters</h5>
-                <h6>Genres</h6>
-                <p id="selectedGen"></p>
-                <form>
-                    <select onChange={Filter} id="genreSelectEl">
-                        {genres.map(genre => (<option value={genre} id={genre}>{genre}</option>))}
-                    </select>
-                </form>
-                <br></br>
-                <h6>Max Runtime</h6>
-                <select onChange={Filter} id="runtimeSelect">
-                    <option value="All">All</option>
-                    <option value="90">60</option>
-                    <option value="90">90</option>
-                    <option value="120">120</option>
-                    <option value="150">150</option>
-                    <option value="180">180</option>
-                    <option value="210">210</option>
-                </select>
+                <div className="flex-container">
+                    {/* <h5>Filters</h5> */}
+                    <div className="column">
+                        <h6>Genres</h6>
+                        <form>
+                            <select onChange={Filter} id="genreSelectEl">
+                                {genres.map(genre => (<option value={genre} id={genre}>{genre}</option>))}
+                            </select>
+                        </form>
+                    </div>
+                    {/* <p id="selectedGen"></p> */}
+                    <div className="column">
+                        <h6>Max Runtime</h6>
+                        <select onChange={Filter} id="runtimeSelect">
+                            <option value="All">All</option>
+                            <option value="90">60</option>
+                            <option value="90">90</option>
+                            <option value="120">120</option>
+                            <option value="150">150</option>
+                            <option value="180">180</option>
+                            <option value="210">210</option>
+                        </select>
+                    </div>
+                </div>
             </section>
             <Watchlist club_id={club_id} />
         </React.Fragment>
