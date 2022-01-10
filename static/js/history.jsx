@@ -63,8 +63,8 @@ const History = () => {
 
     return (
         <React.Fragment>
-            {/* <div><section className="word-container">{history}</section></div> */}
-            <div id="root">{history}</div>
+            {history}
+            {/* <div id="root">{history}</div> */}
 
         </React.Fragment>
     );

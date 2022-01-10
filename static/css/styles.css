@@ -11,6 +11,7 @@ body {
     width: 100%;
     height: 100%;
     background: #ecf4fb;
+    margin-top: 10px;
 }
 
 content .form-control
@@ -19,16 +20,21 @@ content .form-control
     width: auto;
 }
 
+/* .recs {
+  margin: 10px auto 50px;
+  padding-top: 10px;
+} */
 
-/* Notifications */
+
+/* Home Notifications */
 .topcorner {
   position:absolute;
   top: 10px;
   right: 10px;
-  padding-top: 60px;
+  padding-top: 80px;
 }
 
-/* Join Requests */
+/* Home Join Requests */
 .topcorner-second {
   position:absolute;
   top: 10px;
@@ -36,6 +42,7 @@ content .form-control
   padding-top: 100px;
 }
 
+/* Search Result Grid */
 .search-result {
     width: 80%;
     margin: 10px auto 50px;
@@ -78,11 +85,11 @@ content .form-control
 }
 
 .search-result img:hover {
-    /* transform: scale(0.8) rotate(-5deg); */
     border-radius: 20px;
     box-shadow: 0 32px 75px rgba(68,77,136,0.2);
 }
 
+/* Watchlist grid and images */
 .watchlist {
   width: 80%;
   margin: 10px auto 50px;
@@ -91,13 +98,14 @@ content .form-control
   grid-gap: 10px;
   justify-items: center;
 }
+
 .watchlist img {
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;
   width: 150px;
 }
-
+/* 
 .scheduled {
   width: 80%;
   margin: 0px auto 50px;
@@ -105,7 +113,7 @@ content .form-control
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   grid-gap: 10px;
   justify-items: center;
-}
+} */
 
 .flex-container{
   width: 80%;
