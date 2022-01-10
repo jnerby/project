@@ -22,43 +22,11 @@
     </form>
   </div>
 
-<!-- 
-  {% if user['notifications'] == False %}
-    <div class="topcorner">
-    <a href="/user-notifications">Turn <strong>on</strong> notifications</a>
-    </div>
-  {% else %}
-    <div class="topcorner">
-    <a href="/user-notifications">Turn <strong>off</strong> notifications</a>
-    </div>
-  {% endif %} -->
-
 <div id=list-modal class=modal></div>
 
 <div id="root">
   {% if films %}
   <h3>{{ user['username'] }}'s Upcoming Films</h3>
-  <!-- <div class="card">
-    {% for film in films %}
-        <div class="card" style="width: 18rem; margin: 10px; padding: 5 px 5px 5px 5px">
-          <img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{ film[3] }}" alt="Card image cap">
-          <div class="card-body">
-            <p class="card-text">{{ film[2] }}</p>
-            <p class="card-text">{{ film[1] }}, {{ film[0] }}</p>
-          </div>
-        </div>
-    {% endfor %}
-  </div> -->
-  <!-- <div class="card mb-3">    
-    {% for film in films %}
-      <img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{ film[3] }}" alt="Card image cap">
-      <div class="card-body">
-        <h5 class="card-title">{{ film[2] }}</h5>
-        <p class="card-text">{{ film[1] }}, {{ film[0] }}</p>
-        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-      </div>
-    {% endfor %}
-  </div> -->
 
     <div class="card-deck">
       {% for film in films %}

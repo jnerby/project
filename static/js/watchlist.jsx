@@ -102,7 +102,6 @@ const SearchList = (props) => {
         <React.Fragment>
             <section className="word-container">
                 <div className="flex-container">
-                    {/* <h5>Filters</h5> */}
                     <div className="column">
                         <h6>Genres</h6>
                         <form>
@@ -111,7 +110,6 @@ const SearchList = (props) => {
                             </select>
                         </form>
                     </div>
-                    {/* <p id="selectedGen"></p> */}
                     <div className="column">
                         <h6>Max Runtime</h6>
                         <select onChange={Filter} id="runtimeSelect">
@@ -145,7 +143,7 @@ const Watchlist = (props) => {
                     helper.push(
                         <div id={`div${key}`} className="watchDiv">
                             <div>
-                                <img id={`img${key}`} name={value['title']} src={`https://image.tmdb.org/t/p/w500/${value['poster_path']}`} onClick={Modal}></img>
+                                <img id={`img${key}`} name={value['title']} src={`https://image.tmdb.org/t/p/w500/${value['poster_path']}`} onClick={Modal} hover={value['overview']}></img>
                             </div>
                             <h4>{value['title']}</h4>
                             <h5>View Date: {value['view_date']}</h5>

@@ -20,18 +20,12 @@ content .form-control
     width: auto;
 }
 
-/* .recs {
-  margin: 10px auto 50px;
-  padding-top: 10px;
-} */
-
-
 /* Home Notifications */
 .topcorner {
   position:absolute;
   top: 10px;
   right: 10px;
-  padding-top: 80px;
+  padding-top: 70px;
 }
 
 /* Home Join Requests */
@@ -39,7 +33,7 @@ content .form-control
   position:absolute;
   top: 10px;
   right: 10px;
-  padding-top: 100px;
+  padding-top: 115px;
 }
 
 /* Search Result Grid */
@@ -92,7 +86,7 @@ content .form-control
 /* Watchlist grid and images */
 .watchlist {
   width: 80%;
-  margin: 10px auto 50px;
+  margin: 10px auto 10px auto;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   grid-gap: 10px;
@@ -105,15 +99,6 @@ content .form-control
   padding: 5px;
   width: 150px;
 }
-/* 
-.scheduled {
-  width: 80%;
-  margin: 0px auto 50px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  grid-gap: 10px;
-  justify-items: center;
-} */
 
 .flex-container{
   width: 80%;

@@ -62,11 +62,8 @@ const History = () => {
     }, []);
 
     return (
-        <React.Fragment>
-            {history}
-            {/* <div id="root">{history}</div> */}
-
-        </React.Fragment>
+        <React.Fragment>{history}
+</React.Fragment>
     );
 }
 
