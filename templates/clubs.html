@@ -3,42 +3,51 @@
 
 {% block content %}
 <h1>Clubs</h1>
+<br>
+
 <h3>Start a Club</h3>
     <div class="container-fluid">
         <form id="new-club-form" action="/clubs" method="POST">
             <input placeholder="Club Name" autofocus required name="club-name">
             <button class="btn btn-outline-secondary" type="submit">Create Club</button>
         </form>
-    </div>    
+    </div>  
+
+<br>
 
 <h3>Join a Club</h3>
 
     <div>
-        <table>
-            <tr>
-                <th>Club Name</th>
-                <th>Owner</th>
-                <th>Members</th>
-                <th>ID</th>
-            </tr>
+        <table class="table">
+            <caption>List of clubs</caption>
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Club Name</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">Members</th>
+                    <th scope="col">Club ID</th>
+                </tr>
+            </thead>
+            <tbody>
             {% if clubs %}
                 {% for club in clubs %}
                 <tr>
-                    <td>{{ club['name'] }}</td>
+                    <td scope="row">{{ club['name'] }}</td>
                     <td>{{ club['owner'] }}</td>
                     <td>{{ club['members'] }}</td>
                     <td>{{ club['club_id'] }}</td>
-                    <td>{{ club['status'] }}</td>
+                    <!-- <td>{{ club['status'] }}</td> -->
                     {% if club['status'] == "True" %}
                     <td><button class="btn btn-outline-secondary club-request" disabled id={{ club['club_id'] }}>Enrolled</button></td>
                     {% elif club['status'] == "False" %}
-                    <td><button class="btn btn-outline-secondary club-request" disabled id={{ club['club_id'] }}>Request Sent</button></td>
+                    <td><button class="btn btn-secondary club-request" disabled id={{ club['club_id'] }}>Request Sent</button></td>
                     {% else %}
-                    <td><button class="btn btn-outline-secondary club-request" id={{ club['club_id'] }}>Join</button></td>
+                    <td align="center"><button class="btn btn-secondary club-request" id={{ club['club_id'] }}>Join</button></td>
                     {% endif %}
                 </tr>
                 {% endfor %}
             {% endif %}
+            </tbody>
         </table>
     </div>
 {% endblock %}

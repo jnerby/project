@@ -1,7 +1,7 @@
 * {
     margin: 0;
     padding: 0;
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Oswald', 'Raleway', sans-serif;
     /* font-family: 'PT Mono', monospace, sans-serif; */
     /* font-family: 'Arvo', serif; */
     /* font-family: 'Quando', serif; */
@@ -81,11 +81,6 @@ content .form-control
   width: 150px;
 }
 
-
-table, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-  }
 
 /* Modal CSS: https://www.w3schools.com/howto/howto_css_modals.asp */
  /* The Modal (background) */

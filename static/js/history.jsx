@@ -31,7 +31,7 @@ const History = () => {
                     }
                     if (rated_users.has(username)) {
                         newHistory.push(
-                            <div className="card-group">
+                            <div className="cont">
                                 <div id={`div${item['db_id']}`} className="card" style={{ width: '18rem' }}>
                                     <img id={`img${item['db_id']}`} name={item['title']} className="card-img-top" src={`https://image.tmdb.org/t/p/w500/${item['poster_path']}`} alt="Card image cap"></img>
                                     <div className="card-body">
@@ -44,7 +44,7 @@ const History = () => {
                     }
                     else {
                         newHistory.push(
-                            <div className="card-group">
+                            <div className="cont">
                                 <div id={`div${item['db_id']}`} className="card" style={{ width: '18rem' }}>
                                     <img onClick={rateFilm} id={`img${item['db_id']}`} name={item['title']} className="card-img-top" src={`https://image.tmdb.org/t/p/w500/${item['poster_path']}`} alt="Card image cap"></img>
                                     <div className="card-body">
@@ -63,7 +63,9 @@ const History = () => {
 
     return (
         <React.Fragment>
-            <div><section className="word-container">{history}</section></div>
+            {/* <div><section className="word-container">{history}</section></div> */}
+            <div id="root">{history}</div>
+
         </React.Fragment>
     );
 }
