@@ -3,6 +3,12 @@
 
 {% block clubnav %}
 
+
+
+{% endblock %}
+
+{% block content %}
+<h1 id="user-lists">{{ user['username'] }}'s Profile</h1>
   {% if join_requests == 1 %}
     <div>
       <a href="/join-requests">{{ join_requests }} Join Request</a>
@@ -14,19 +20,14 @@
   {% endif %}
 
   {% if user['notifications'] == False %}
-  <div>
-    <a href="/user-notifications">Turn on notifications.</a>
-  </div>
+    <div>
+    <a href="/user-notifications">Turn <strong>on</strong> notifications</a>
+    </div>
   {% else %}
-  <div>
-    <a href="/user-notifications">Turn off notifications.</a>
-  </div>
+    <div>
+    <a href="/user-notifications">Turn <strong>off</strong> notifications</a>
+    </div>
   {% endif %}
-
-{% endblock %}
-
-{% block content %}
-<h1 id="user-lists">{{ user['username'] }}'s Profile</h1>
 
 <div id=list-modal class=modal></div>
 
@@ -44,6 +45,9 @@
         </div>
     {% endfor %}
   </div>
+  {% else %}
+  <h3>You have no scehduled viewings. <a href="/mylists">Schedule a viewing</a> or <a href="/search">view your recommended films!</a></h3>
+
   {% endif %}
 
 </div>    

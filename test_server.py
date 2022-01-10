@@ -43,7 +43,6 @@ class FlaskTests(unittest.TestCase):
         self.assertEqual(result.status_code, 200)
         self.assertIn(b'Search', result.data)
         self.assertIn(b'history', result.data)
-        # Test that search page returns 8 images, one for each movie recommendation
         self.assertIn(b'<img', result.data)
 
 
