@@ -5,9 +5,9 @@
   <div class="topcorner-second">
     <form action="/join-requests">
       {% if join_requests == 1 %}
-        <button type="submit" class="btn btn-info"><strong>{{ join_requests }} Join Request</strong></button>
+        <button type="submit" class="btn btn-warning"><strong>{{ join_requests }} Join Request</strong></button>
       {% elif join_requests > 1 %}
-        <button type="submit" class="btn btn-info"><strong>{{ join_requests }} Join Requests</strong></button>
+        <button type="submit" class="btn btn-warning"><strong>{{ join_requests }} Join Requests</strong></button>
       {% endif %}
     </form>
   </div>
@@ -15,9 +15,9 @@
   <div class="topcorner">
     <form action="/user-notifications">
       {% if user['notifications'] == False %}
-        <button type="submit" class="btn btn-info"><strong>Turn on notifications</strong></button>
+        <button type="submit" class="btn btn-warning"><strong>Turn on notifications</strong></button>
       {% else %}
-        <button type="submit" class="btn btn-info"><strong>Turn off notifications</strong></button>
+        <button type="submit" class="btn btn-warning"><strong>Turn off notifications</strong></button>
       {% endif %}
     </form>
   </div>

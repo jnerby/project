@@ -14,7 +14,7 @@ const ClubButtons = () => {
                     btns.push(
                         // Use club_id as button key
                         <div id={`btn_div${key}`}>
-                            <button className="removeBtn btn btn-outline-info" onClick={() => updateClub(key)}>{value}</button>
+                            <button className="removeBtn btn btn-warning" onClick={() => updateClub(key)}>{value}</button>
                         </div>
                     );
                 }
@@ -150,8 +150,9 @@ const Watchlist = (props) => {
                                 <div className="mylists-text">
                                     <h5>{value['title']}</h5>
                                     <h6>View Date: {value['view_date']}</h6>
-                                    <ul id="genreList">Genres
-                                        {value['genres'].map(genre => (<li className="genreItem">{genre['name']}</li>))}
+                                    <ul id="genreList">Genres:  
+                                        {value['genres'].map(genre => (<span className="badge badge-pill badge-warning genreItem">{genre['name']}</span>))}
+                                        {/* {value['genres'].map(genre => (<li className="genreItem">{genre['name']}</li>))} */}
                                     </ul>
                                     <p id="runtime">Runtime: {value['runtime']}</p>
                                     <p>Voter Average: {value['vote_average']}</p>

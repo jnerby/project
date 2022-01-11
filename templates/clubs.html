@@ -16,7 +16,6 @@
 <br>
 
 <h3>Join a Club</h3>
-
     <div>
         <table class="table">
             <caption>List of clubs</caption>
@@ -39,9 +38,9 @@
                     {% if club['status'] == "True" %}
                     <td><button class="btn btn-outline-secondary club-request" disabled id={{ club['club_id'] }}>Enrolled</button></td>
                     {% elif club['status'] == "False" %}
-                    <td><button class="btn btn-secondary club-request" disabled id={{ club['club_id'] }}>Request Sent</button></td>
+                    <td><button class="btn btn-warning club-request" disabled id={{ club['club_id'] }}>Request Sent</button></td>
                     {% else %}
-                    <td><button class="btn btn-secondary club-request" id={{ club['club_id'] }}>Join</button></td>
+                    <td><button class="btn btn-warning club-request" id={{ club['club_id'] }}>Join</button></td>
                     {% endif %}
                 </tr>
                 {% endfor %}
