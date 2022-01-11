@@ -38,10 +38,10 @@ function Result(props) {
                     if (result['db_status']) {
                         return (
                                 <div className="cont">
-                                <h1 className="text-block">{result['db_status']}</h1>
-                                <img className="modal-btn gray-img" key={result['id']} id={result['id']} alt={result['db-status']} 
-                                src={'https://image.tmdb.org/t/p/w500/' + result['poster_path']} 
-                                onClick={Modal}></img>
+                                    <h1 className="text-block">{result['db_status']}</h1>
+                                    <img className="modal-btn gray-img" key={result['id']} id={result['id']} alt={result['db-status']} 
+                                    src={'https://image.tmdb.org/t/p/w500/' + result['poster_path']}>
+                                    </img>
                                 </div>
                         );
                     }

@@ -7,11 +7,18 @@
     /* font-family: 'Quando', serif; */
 }
 
+.nav.navbar-nav li a {
+  color: #fff;
+}
+
+
+
 body {
     width: 100%;
     height: 100%;
-    /* background: #ecf4fb; */
+    background: rgb(65, 64, 64);
     margin-top: 10px;
+    color: white;
 }
 
 #search-form {
@@ -63,7 +70,7 @@ content .form-control
   position: absolute;
   bottom: 20px;
   right: 20px;
-  background-color: black;
+  /* background-color: black; */
   color: white;
   padding-left: 20px;
   padding-right: 20px;
@@ -129,7 +136,8 @@ content .form-control
   height: 400px;
   border: darkgrey;
   border-width: thin;
-  background-color: #ecf4fb;
+  background-color:gray;
+  color: white;
   padding: 10px 10px 10px 10px;
 }
 
