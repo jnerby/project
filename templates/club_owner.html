@@ -4,21 +4,26 @@
 {% block content %}
 <div>
     <h1>Join Requests</h1>
-    <table>
-        <tr>
-            <th>Club Name</th>
-            <th>Name</th>
-            <th>Username</th>
-        </tr>
-        {% for item in result %}
-        <tr>
-            <td>{{ item['club_name'] }}</td>
-            <td>{{ item['full_name'] }}</td>
-            <td>{{ item['username'] }}</td>
-            <td><button class="btn btn-outline-secondary club-approval" id={{ item['club_user_id'] }}>Approve</button></td>
-        </tr>
-        {% endfor %}
-    </table>
+        <table class="table">
+            <caption>Join Requests</caption>
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Club Name</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Username</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in result %}
+                <tr>
+                    <td scope="row">{{ item['club_name'] }}</td>
+                    <td>{{ item['full_name'] }}</td>
+                    <td>{{ item['username'] }}</td>
+                    <td><button class="btn btn-outline-secondary club-approval" id={{ item['club_user_id'] }}>Approve</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 </div>
 {% endblock %}
 

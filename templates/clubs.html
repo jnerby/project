@@ -36,7 +36,6 @@
                     <td>{{ club['owner'] }}</td>
                     <td>{{ club['members'] }}</td>
                     <td>{{ club['club_id'] }}</td>
-                    <!-- <td>{{ club['status'] }}</td> -->
                     {% if club['status'] == "True" %}
                     <td><button class="btn btn-outline-secondary club-request" disabled id={{ club['club_id'] }}>Enrolled</button></td>
                     {% elif club['status'] == "False" %}
