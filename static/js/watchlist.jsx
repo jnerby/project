@@ -14,7 +14,7 @@ const ClubButtons = () => {
                     btns.push(
                         // Use club_id as button key
                         <div id={`btn_div${key}`}>
-                            <button className="removeBtn btn btn-warning" onClick={() => updateClub(key)}>{value}</button>
+                            <button className="removeBtn btn btn-outline-warning" onClick={() => updateClub(key)}>{value}</button>
                         </div>
                     );
                 }

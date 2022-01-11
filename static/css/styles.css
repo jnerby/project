@@ -149,6 +149,11 @@
   grid-gap: 10px;
   justify-items: center
 }
+.blockquote.mb-0 p{
+  background-color: #ffc107;
+  color: rgba(0,0,0,.5);
+}
+
 /*** SEARCH ***/
 #search-form {
   width: 25%;
