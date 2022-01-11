@@ -19,8 +19,8 @@ function SearchForm() {
     }
     return (
         <React.Fragment>
-            <form onSubmit={queryAPI} className="container-fluid text-right" id="search-form">
-                <input type="search" placeholder="Title" aria-label="Search" name="search" id="search"></input>
+            <form onSubmit={queryAPI} className="container-fluid text-right topcorner" id="search-form">
+                <input type="search" size="100" className="form-control" placeholder="Title" aria-label="Search" name="search" id="search"></input>
                 <button className="btn btn-outline-secondary" type="submit">Search</button>
             </form>
             {/* call Result w/ searchResults state as prop */}

@@ -42,7 +42,7 @@
                     {% elif club['status'] == "False" %}
                     <td><button class="btn btn-secondary club-request" disabled id={{ club['club_id'] }}>Request Sent</button></td>
                     {% else %}
-                    <td align="center"><button class="btn btn-secondary club-request" id={{ club['club_id'] }}>Join</button></td>
+                    <td><button class="btn btn-secondary club-request" id={{ club['club_id'] }}>Join</button></td>
                     {% endif %}
                 </tr>
                 {% endfor %}

@@ -14,7 +14,7 @@ const ClubButtons = () => {
                     btns.push(
                         // Use club_id as button key
                         <div id={`btn_div${key}`}>
-                            <button className="removeBtn btn btn-dark" onClick={() => updateClub(key)}>{value}</button>
+                            <button className="removeBtn btn btn-outline-info" onClick={() => updateClub(key)}>{value}</button>
                         </div>
                     );
                 }
@@ -23,7 +23,8 @@ const ClubButtons = () => {
     }, []);
     return (
         <React.Fragment>
-            <section className="word-container watchlist">{buttons}</section>
+            {/* <section className="word-container watchlist">{buttons}</section> */}
+            {buttons}
             <SearchList club_id={club_id} />
         </React.Fragment>
     )
@@ -142,17 +143,21 @@ const Watchlist = (props) => {
                 for (const [key, value] of Object.entries(films)) {
                     helper.push(
                         <div id={`div${key}`} className="watchDiv">
-                            <div>
-                                <img id={`img${key}`} name={value['title']} src={`https://image.tmdb.org/t/p/w500/${value['poster_path']}`} onClick={Modal} hover={value['overview']}></img>
+                            <div className="mylists">
+                                <div className="mylists-pic">
+                                    <img id={`img${key}`} name={value['title']} src={`https://image.tmdb.org/t/p/w500/${value['poster_path']}`} onClick={Modal}></img>
+                                </div>
+                                <div className="mylists-text">
+                                    <h5>{value['title']}</h5>
+                                    <h6>View Date: {value['view_date']}</h6>
+                                    <ul id="genreList">Genres
+                                        {value['genres'].map(genre => (<li className="genreItem">{genre['name']}</li>))}
+                                    </ul>
+                                    <p id="runtime">Runtime: {value['runtime']}</p>
+                                    <p>Voter Average: {value['vote_average']}</p>
+                                    <p>{value['overview']}</p>
+                                </div>
                             </div>
-                            <h4>{value['title']}</h4>
-                            <h5>View Date: {value['view_date']}</h5>
-                            <p>{value['overview']}</p>
-                            <p>Voter Average: {value['vote_average']}</p>
-                            <p id="runtime">Runtime: {value['runtime']}</p>
-                            <ul id="genreList">Genres
-                                {value['genres'].map(genre => (<li className="genreItem">{genre['name']}</li>))}
-                            </ul>
                         </div>
                     );
                 }
