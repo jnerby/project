@@ -123,7 +123,7 @@
     padding: 20px;
     border: 1px solid #888;
     color: rgb(55, 55, 55);
-    width: 80%; /* Could be more or less, depending on screen size */
+    width: 60%; /* Could be more or less, depending on screen size */
   }
   /* Close Button */
   .close {
