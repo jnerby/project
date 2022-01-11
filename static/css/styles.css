@@ -167,25 +167,25 @@
 /* FORMATTING FOR GRAYED OUT PICS IN SEARCH RESULTS */
 /* Container holding the image and the text */
 .cont {
-position: relative;
-margin: 10px 10px 10px 10px;
-/* background-color: rgb(55, 55, 55);
-color: white; */
+  position: relative;
+  margin: 10px 10px 10px 10px;
+  /* background-color: rgb(55, 55, 55);
+  color: white; */
 }
 /* Bottom right text */
 .text-block {
-position: absolute;
-bottom: 20px;
-right: 20px;
-/* background-color: black; */
-color: white;
-padding-left: 20px;
-padding-right: 20px;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  /* background-color: black; */
+  color: white;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .gray-img {
-opacity: 0.4;
-filter: alpha(opacity=40); /* msie */
+  opacity: 0.4;
+  filter: alpha(opacity=40); /* msie */
 }
 
 /* Search Result Imges */
@@ -235,6 +235,8 @@ cursor: pointer;
 .card.mb-3 {
   background-color: rgb(55, 55, 55);
   color: white;
+  border: none;
+
 }
 .card ul {
   background-color: rgb(55, 55, 55);
