@@ -17,12 +17,16 @@ const History = () => {
                     // sum all ratings for a film
                     let ratings_sum = 0;
                     let ave_ratings = 0;
+                    let ave_ratings_literal;
                     for (const val of item['db_ratings']) {
                         ratings_sum += val[0]
                     }
                     // get film's ave rating
                     if (item['db_ratings'].length > 0) {
                         ave_ratings = ratings_sum / item['db_ratings'].length;
+                        ave_ratings_literal = `Average Rating: ${ave_ratings}`
+                    } else {
+                        ave_ratings_literal = `No Ratings. Click to rate!`
                     }
                     // Check if user has already reviewed
                     const rated_users = new Set();
@@ -35,7 +39,7 @@ const History = () => {
                                 <div id={`div${item['db_id']}`} name={item['title']} className="card mb-3" style={{ width: '18rem' }}>
                                     <img id={`img${item['db_id']}`} name={item['title']} className="card-img-top" src={`https://image.tmdb.org/t/p/w500/${item['poster_path']}`} alt="Card image cap"></img>
                                     <div class="card-title">
-                                        <h6>Average Rating: {ave_ratings}</h6>
+                                        <h6>{ave_ratings_literal}</h6>
                                     </div>
                                     <div class="card-body">
                                         <ul class="list-group list-group-flust">
@@ -52,7 +56,7 @@ const History = () => {
                                 <div id={`div${item['db_id']}`} name={item['title']} className="card mb-3" style={{ width: '18rem' }}>
                                     <img onClick={rateFilm} id={`img${item['db_id']}`} name={item['title']} className="card-img-top" src={`https://image.tmdb.org/t/p/w500/${item['poster_path']}`} alt="Card image cap"></img>
                                     <div class="card-title">
-                                        <h6>Average Rating: {ave_ratings}</h6>
+                                        <h6>{ave_ratings_literal}</h6>
                                     </div>
                                     <div class="card-body">
                                         <ul class="list-group list-group-flust">

@@ -173,7 +173,6 @@ def get_club_filters():
         # Convert genres to list, alphabetize, add "All" option for dropdown    
         gen = list(genres)
         gen.sort()
-        gen.insert(0, "All")
 
     return jsonify(gen)
 

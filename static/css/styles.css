@@ -44,10 +44,8 @@
 /*** WATCHLIST GRID AND IMAGES ***/
 .watchlist {
   width: 80%;
-  margin: 10px auto 10px auto;
+  /* margin: 10px auto 10px auto; */
   display: grid;
-  /* grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); */
-  /* grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); */
   grid-gap: 10px;
   justify-items: center;
 }
@@ -72,6 +70,7 @@
 }
 .watchlist-root {
   float: left;
+  width: 100%;
 }
 
 

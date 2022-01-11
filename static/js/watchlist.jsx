@@ -13,8 +13,8 @@ const ClubButtons = () => {
                 for (const [key, value] of Object.entries(clubs)) {
                     btns.push(
                         // Use club_id as button key
-                        <div id={`btn_div${key}`}>
-                            <button className="removeBtn btn btn-outline-warning" onClick={() => updateClub(key)}>{value}</button>
+                        <div className="column" id={`btn_div${key}`}>
+                            <button type="button" className="removeBtn btn btn-outline-warning mr-2" onClick={() => updateClub(key)}>{value}</button>
                         </div>
                     );
                 }
@@ -24,7 +24,7 @@ const ClubButtons = () => {
     return (
         <React.Fragment>
             {/* <section className="word-container watchlist">{buttons}</section> */}
-            {buttons}
+            <div id="button-div" class="btn-group mb-2" role="group">{buttons}</div>
             <SearchList club_id={club_id} />
         </React.Fragment>
     )
@@ -102,18 +102,19 @@ const SearchList = (props) => {
     return (
         <React.Fragment>
             <section className="word-container">
-                <div className="flex-container">
-                    <div className="column">
+                <div className="row">
+                    <div className="column col-2">
                         <h6>Genres</h6>
                         <form>
-                            <select onChange={Filter} id="genreSelectEl">
+                            <select className="form-control" onChange={Filter} id="genreSelectEl">
+                                <option>All</option>
                                 {genres.map(genre => (<option value={genre} id={genre}>{genre}</option>))}
                             </select>
                         </form>
                     </div>
-                    <div className="column">
+                    <div className="column col-2">
                         <h6>Max Runtime</h6>
-                        <select onChange={Filter} id="runtimeSelect">
+                        <select className="form-control" onChange={Filter} id="runtimeSelect">
                             <option value="All">All</option>
                             <option value="90">60</option>
                             <option value="90">90</option>
@@ -141,6 +142,12 @@ const Watchlist = (props) => {
                 const helper = [];
                 // Loop over film objects
                 for (const [key, value] of Object.entries(films)) {
+                    let scheduled_date;
+                    if (value['view_date']){
+                        scheduled_date = value['view_date'];
+                    } else {
+                        scheduled_date = "Not Scheduled";
+                    }
                     helper.push(
                         <div id={`div${key}`} className="watchDiv">
                             <div className="mylists">
@@ -149,10 +156,9 @@ const Watchlist = (props) => {
                                 </div>
                                 <div className="mylists-text">
                                     <h5>{value['title']}</h5>
-                                    <h6>View Date: {value['view_date']}</h6>
-                                    <ul id="genreList">Genres:  
+                                    <h6>View Date: {scheduled_date}</h6>
+                                    <ul id="genreList">Genres:<br></br>   
                                         {value['genres'].map(genre => (<span className="badge badge-pill badge-warning genreItem">{genre['name']}</span>))}
-                                        {/* {value['genres'].map(genre => (<li className="genreItem">{genre['name']}</li>))} */}
                                     </ul>
                                     <p id="runtime">Runtime: {value['runtime']}</p>
                                     <p>Voter Average: {value['vote_average']}</p>
@@ -282,3 +288,4 @@ function Modal(evt) {
 }
 
 ReactDOM.render(<ClubButtons />, document.querySelector('#root'));
+// ReactDOM.render(<ClubButtons />, document.querySelector('#button-div'));
