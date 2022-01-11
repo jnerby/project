@@ -9,7 +9,7 @@
     <div class="container-fluid">
         <form id="new-club-form" action="/clubs" method="POST">
             <input placeholder="Club Name" autofocus required name="club-name">
-            <button class="btn btn-outline-secondary" type="submit">Create Club</button>
+            <button class="btn btn-warning" type="submit">Create Club</button>
         </form>
     </div>  
 
@@ -19,24 +19,25 @@
     <div>
         <table class="table">
             <caption>List of clubs</caption>
-            <thead class="thead-dark">
+            <thead class="thead-light" color="text-white">
                 <tr>
                     <th scope="col">Club Name</th>
+                    <th scope="col">Club ID</th>
                     <th scope="col">Owner</th>
                     <th scope="col">Members</th>
-                    <th scope="col">Club ID</th>
+                    <th scope="col">Membership</th>
                 </tr>
             </thead>
             <tbody>
             {% if clubs %}
                 {% for club in clubs %}
                 <tr>
-                    <td scope="row">{{ club['name'] }}</td>
+                    <td scope="row">{{ club['name'] }}</td>                    
+                    <td>{{ club['club_id'] }}</td>
                     <td>{{ club['owner'] }}</td>
                     <td>{{ club['members'] }}</td>
-                    <td>{{ club['club_id'] }}</td>
                     {% if club['status'] == "True" %}
-                    <td><button class="btn btn-outline-secondary club-request" disabled id={{ club['club_id'] }}>Enrolled</button></td>
+                    <td><button class="btn btn-outline-warning club-request" disabled id={{ club['club_id'] }}>Enrolled</button></td>
                     {% elif club['status'] == "False" %}
                     <td><button class="btn btn-warning club-request" disabled id={{ club['club_id'] }}>Request Sent</button></td>
                     {% else %}
