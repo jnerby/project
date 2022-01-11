@@ -7,44 +7,24 @@
     /* font-family: 'Quando', serif; */
 }
 
+/*** NAVIGATION ***/
 .nav.navbar-nav li a {
   color: #fff;
 }
 
-table {
-  color: white;
-}
-.card-body {
+/*** HOME ***/
+/* Home cards */
+.card.home-card {
+  width: 80%;
+  margin: 10px 10px 10px 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-gap: 10px;
+  justify-items: center;
   background-color: rgb(55, 55, 55);
-}
-
-td {
   color: white;
+  border: none;
 }
-
-thead {
-  background-color: beige;
-}
-
-body {
-    width: 100%;
-    height: 100%;
-    background: rgb(55, 55, 55);
-    margin-top: 10px;
-    color: white;
-}
-
-#search-form {
-  width: 25%;
-  white-space: nowrap;
-}
-
-content .form-control
-{
-    display: inline-block;
-    width: auto;
-}
-
 /* Home Notifications */
 .topcorner {
   position:absolute;
@@ -52,7 +32,6 @@ content .form-control
   right: 10px;
   padding-top: 70px;
 }
-
 /* Home Join Requests */
 .topcorner-second {
   position:absolute;
@@ -61,55 +40,8 @@ content .form-control
   padding-top: 115px;
 }
 
-/* Search Result Grid */
-.search-result {
-    width: 80%;
-    margin: 10px auto 50px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    grid-gap: 10px;
-    justify-items: center;
-}
 
-/* FORMATTING FOR GRAYED OUT PICS IN SEARCH RESULTS */
-/* Container holding the image and the text */
-.cont {
-  position: relative;
-  margin: 10px 10px 10px 10px;
-}
-
-/* Bottom right text */
-.text-block {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  /* background-color: black; */
-  color: white;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-.gray-img {
-  opacity: 0.4;
-  filter: alpha(opacity=40); /* msie */
-}
-
-.search-result img {
-    width: 100%;
-    cursor: pointer;
-}
-
-.search-result img {
-  width: 100%;
-  cursor: pointer;
-}
-
-.search-result img:hover {
-    border-radius: 20px;
-    box-shadow: 0 32px 75px rgba(68,77,136,0.2);
-}
-
-/* Watchlist grid and images */
+/*** WATCHLIST GRID AND IMAGES ***/
 .watchlist {
   width: 80%;
   margin: 10px auto 10px auto;
@@ -119,14 +51,12 @@ content .form-control
   grid-gap: 10px;
   justify-items: center;
 }
-
 .watchlist img {
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 5px;
   width: 150px;
 }
-
 .flex-container{
   width: 80%;
   min-height: 50px;
@@ -134,15 +64,18 @@ content .form-control
   display: -webkit-flex; /* Safari */     
   display: flex; /* Standard syntax */
 }
-
 .flex-container .column{
   padding: 10px;
   -webkit-flex: 1; /* Safari */
   -ms-flex: 1; /* IE 10 */
   flex: 1; /* Standard syntax */
 }
+.watchlist-root {
+  float: left;
+}
 
-/* MyList Containers */
+
+/*** MYLISTS CONTAINERS ***/
 .mylists {
   display: flex;
   width: 100%;
@@ -153,32 +86,23 @@ content .form-control
   color: white;
   padding: 10px 10px 10px 10px;
 }
-
 .mylists p {
  font-size: smaller;
 }
-
 .mylists ul {
   font-size: smaller;
 }
-
 .mylists-pic {
   float: left;
   padding: 10px 10px 10px 10px;
 }
-
 .mylists-text {
   float: right;
   overflow: auto;
   padding: 10px 10px 10px 10px;
 }
 
-.watchlist-root {
-  float: left;
-}
-
-
-/* Modal CSS: https://www.w3schools.com/howto/howto_css_modals.asp */
+/*** MODAL: https://www.w3schools.com/howto/howto_css_modals.asp ***/
  /* The Modal (background) */
  .modal {
     display: none; /* Hidden by default */
@@ -192,24 +116,22 @@ content .form-control
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   }
-  
   /* Modal Content/Box */
   .modal-content {
     background-color: #fefefe;
     margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
+    color: rgb(55, 55, 55);
     width: 80%; /* Could be more or less, depending on screen size */
   }
-  
-  /* The Close Button */
+  /* Close Button */
   .close {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
   }
-  
   .close:hover,
   .close:focus {
     color: black;
@@ -217,14 +139,8 @@ content .form-control
     cursor: pointer;
   } 
 
-  /* .club-nav {
-    display: inline-block;
-    vertical-align: middle;
-    float: left;
-    padding-left: 10px;
-    padding-top: 50px;
-    } */
 
+/*** SEARCH RECS ***/
 .card {
   width: 80%;
   margin: 10px 10px 10px 10px;
@@ -233,11 +149,117 @@ content .form-control
   grid-gap: 10px;
   justify-items: center
 }
+/*** SEARCH ***/
+#search-form {
+  width: 25%;
+  white-space: nowrap;
+}
+/* Search Result Grid */
+.search-result {
+  width: 80%;
+  margin: 10px auto 50px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-gap: 10px;
+  justify-items: center;
+}
 
+/* FORMATTING FOR GRAYED OUT PICS IN SEARCH RESULTS */
+/* Container holding the image and the text */
+.cont {
+position: relative;
+margin: 10px 10px 10px 10px;
+/* background-color: rgb(55, 55, 55);
+color: white; */
+}
+/* Bottom right text */
+.text-block {
+position: absolute;
+bottom: 20px;
+right: 20px;
+/* background-color: black; */
+color: white;
+padding-left: 20px;
+padding-right: 20px;
+}
+
+.gray-img {
+opacity: 0.4;
+filter: alpha(opacity=40); /* msie */
+}
+
+/* Search Result Imges */
+.search-result img {
+  width: 100%;
+  cursor: pointer;
+}
+.search-result img {
+width: 100%;
+cursor: pointer;
+}
+.search-result img:hover {
+  border-radius: 20px;
+  box-shadow: 0 32px 75px rgba(68,77,136,0.2);
+}
+
+
+/*** HISTORY ***/
 .card ul {
   margin: 10px 10px 10px 10px;
 }
-
 .card-header {
   margin-bottom: 10px;
+}
+.card-title {
+  margin-bottom: 0;
+}
+.card-body {
+  background-color: rgb(55, 55, 55);
+  color: white;
+}
+.list-group-item {
+  background-color: rgb(55, 55, 55);
+  color: white;
+  border: none;
+  padding: 0;
+}
+.card-body.list-group-flust {
+  background-color: rgb(55, 55, 55);
+  color: white;
+}
+.card h6 {
+  background-color: rgb(55, 55, 55);
+  color: #ffc107;
+  margin-bottom: 0;
+}
+.card.mb-3 {
+  background-color: rgb(55, 55, 55);
+  color: white;
+}
+.card ul {
+  background-color: rgb(55, 55, 55);
+  color: white;
+}
+
+/*** CLUB AND JOIN REQUEST TABLES ***/
+table {
+  color: white;
+}
+thead {
+  background-color: beige;
+}
+td {
+  color: white;
+}
+body {
+    width: 100%;
+    height: 100%;
+    background: rgb(55, 55, 55);
+    margin-top: 10px;
+    color: white;
+}
+content .form-control
+{
+    display: inline-block;
+    width: auto;
 }

@@ -6,11 +6,12 @@
     <h1>Join Requests</h1>
         <table class="table">
             <caption>Join Requests</caption>
-            <thead class="thead-dark">
+            <thead class="thead-light">
                 <tr>
                     <th scope="col">Club Name</th>
                     <th scope="col">Name</th>
                     <th scope="col">Username</th>
+                    <th scope="col">Approve</th>
                 </tr>
             </thead>
             <tbody>
@@ -19,7 +20,7 @@
                     <td scope="row">{{ item['club_name'] }}</td>
                     <td>{{ item['full_name'] }}</td>
                     <td>{{ item['username'] }}</td>
-                    <td><button class="btn btn-outline-secondary club-approval" id={{ item['club_user_id'] }}>Approve</button></td>
+                    <td><button class="btn btn-warning club-approval" id={{ item['club_user_id'] }}>Approve</button></td>
                 </tr>
                 {% endfor %}
             </tbody>

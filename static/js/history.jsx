@@ -32,14 +32,16 @@ const History = () => {
                     if (rated_users.has(username)) {
                         newHistory.push(
                             <div className="cont">
-                                <div id={`div${item['db_id']}`} className="card" style={{ width: '18rem' }}>
+                                <div id={`div${item['db_id']}`} name={item['title']} className="card mb-3" style={{ width: '18rem' }}>
                                     <img id={`img${item['db_id']}`} name={item['title']} className="card-img-top" src={`https://image.tmdb.org/t/p/w500/${item['poster_path']}`} alt="Card image cap"></img>
-                                    <div class="card-header">
+                                    <div class="card-title">
                                         <h6>Average Rating: {ave_ratings}</h6>
                                     </div>
-                                    <ul class="list-group list-group-flust">
-                                        {item['db_ratings'].map(rating => (<li class="list-group-item">{rating[1]}: {rating[0]}</li>))}
-                                    </ul>
+                                    <div class="card-body">
+                                        <ul class="list-group list-group-flust">
+                                            {item['db_ratings'].map(rating => (<li class="list-group-item">{rating[1]}: {rating[0]}</li>))}
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         );
@@ -47,10 +49,15 @@ const History = () => {
                     else {
                         newHistory.push(
                             <div className="cont">
-                                <div id={`div${item['db_id']}`} className="card" style={{ width: '18rem' }}>
+                                <div id={`div${item['db_id']}`} name={item['title']} className="card mb-3" style={{ width: '18rem' }}>
                                     <img onClick={rateFilm} id={`img${item['db_id']}`} name={item['title']} className="card-img-top" src={`https://image.tmdb.org/t/p/w500/${item['poster_path']}`} alt="Card image cap"></img>
-                                    <div class="card-header">
+                                    <div class="card-title">
                                         <h6>Average Rating: {ave_ratings}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-group list-group-flust">
+                                            {item['db_ratings'].map(rating => (<li class="list-group-item">{rating[1]}: {rating[0]}</li>))}
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -64,7 +71,7 @@ const History = () => {
 
     return (
         <React.Fragment>{history}
-</React.Fragment>
+        </React.Fragment>
     );
 }
 

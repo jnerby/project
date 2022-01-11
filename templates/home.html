@@ -26,11 +26,11 @@
 
 <div id="root">
   {% if films %}
-  <h3>{{ user['username'] }}'s Upcoming Films</h3>
+  <h3>{{ user['username'] }}'s upcoming films</h3>
 
     <div class="card-deck">
       {% for film in films %}
-        <div class="card" style="margin-top: 25px">
+        <div class="home-card card" style="margin-top: 25px">
           <img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{ film[3] }}"s alt="Card image cap">
           <div class="card-body">
             <h5 class="card-title">{{ film[2] }}</h5>
