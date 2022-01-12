@@ -31,7 +31,11 @@
     <div class="card-deck">
       {% for film in films %}
         <div class="home-card card" style="margin-top: 25px">
+          {% if film[3] %}
           <img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{ film[3] }}"s alt="Card image cap">
+          {% else %}
+          <img class="card-img-top" src="/static/css/no_poster.jpeg">
+          {% endif %}
           <div class="card-body">
             <h5 class="card-title">{{ film[2] }}</h5>
             <p class="card-text">{{ film[1] }}, {{ film[0] }}</p>

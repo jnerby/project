@@ -148,11 +148,17 @@ const Watchlist = (props) => {
                     } else {
                         scheduled_date = "Not Scheduled";
                     }
+                    let movie_poster_src;
+                    if (value['poster_path']){
+                        movie_poster_src = `https://image.tmdb.org/t/p/w500/${value['poster_path']}`;
+                    } else {
+                        movie_poster_src = "/static/css/no_poster.jpeg";
+                    }
                     helper.push(
                         <div id={`div${key}`} className="watchDiv">
                             <div className="mylists">
                                 <div className="mylists-pic">
-                                    <img id={`img${key}`} name={value['title']} src={`https://image.tmdb.org/t/p/w500/${value['poster_path']}`} onClick={Modal}></img>
+                                    <img id={`img${key}`} name={value['title']} src={movie_poster_src} onClick={Modal}></img>
                                 </div>
                                 <div className="mylists-text">
                                     <h5>{value['title']}</h5>

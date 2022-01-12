@@ -35,12 +35,20 @@ function Result(props) {
         <React.Fragment>
             <div className="container-fluid search-result">
                 {props.searchResults.map((result) => {
+                    let movie_poster;
+                    if (result['poster_path']) {
+                        movie_poster = 'https://image.tmdb.org/t/p/w500/' + result['poster_path'];
+                    } else {
+                        movie_poster = '/static/css/no_poster.jpeg';
+                    }
                     if (result['db_status']) {
                         return (
                                 <div className="cont">
                                     <h1 className="text-block">{result['db_status']}</h1>
                                     <img className="modal-btn gray-img" key={result['id']} id={result['id']} alt={result['db-status']} 
-                                    src={'https://image.tmdb.org/t/p/w500/' + result['poster_path']}>
+                                    src={movie_poster}>
+                                    {/* <img className="modal-btn gray-img" key={result['id']} id={result['id']} alt={result['db-status']} 
+                                    src={'https://image.tmdb.org/t/p/w500/' + result['poster_path']}></img> */}
                                     </img>
                                 </div>
                         );
@@ -48,8 +56,11 @@ function Result(props) {
                     else {
                         return (
                             <img className="modal-btn" key={result['id']} id={result['id']} alt={result['db-status']}
-                                src={'https://image.tmdb.org/t/p/w500/' + result['poster_path']}
+                                src={movie_poster}
                                 onClick={Modal}></img>
+                            // <img className="modal-btn" key={result['id']} id={result['id']} alt={result['db-status']}
+                            //     src={'https://image.tmdb.org/t/p/w500/' + result['poster_path']}
+                            //     onClick={Modal}></img>
                         );
                     }
                 })
