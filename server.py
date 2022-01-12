@@ -29,11 +29,10 @@ app.jinja_env.auto_reload = True
 key = os.environ.get('API_KEY')
 
 
-@app.route('/upcoming')
-# @app.route('/')
+@app.route('/')
 @crud.login_required
-def render_homepage():
-    """Displays a user's scheduled films"""
+def render_user_lists():
+    """Renders watchlist.jsx in homepage"""
     user_id = session['user_id']
     if user_id:
         user = crud.get_user_by_id(user_id)
@@ -56,7 +55,7 @@ def render_homepage():
         # Sort films with scheduled view date by closest view date
         films.sort()
 
-        return render_template('upcoming.html', user=user, films=films)
+        return render_template('mylists.html', user=user, join_requests=join_requests, films=films)
     else:
         return redirect('/login')
 
@@ -315,37 +314,6 @@ def logout():
 
     return redirect('/')
 
-@app.route('/')
-# @app.route('/mylists')
-@crud.login_required
-def render_user_lists():
-    """Renders watchlist.jsx in homepage"""
-    user_id = session['user_id']
-    if user_id:
-        user = crud.get_user_by_id(user_id)
-
-        # Clubs for which user is the owner
-        owner_clubs = crud.get_clubs_by_owner(user_id)
-
-        # Get all join requests for clubs for which user is owner
-        join_requests = 0
-        for club in owner_clubs:
-            if crud.get_join_requests(club.club_id):
-                join_requests += 1
-
-        # Get all films with a scheduled view date
-        scheduled_films = helpers.get_users_scheduled_films(user_id)
-
-        # Get film details for all films with a scheduled view date as tuples
-        films = helpers.get_details_scheduled_films(scheduled_films)
-
-        # Sort films with scheduled view date by closest view date
-        films.sort()
-
-        return render_template('mylists.html', user=user, join_requests=join_requests, films=films)
-    else:
-        return redirect('/login')
-
 
 @app.route('/rate')
 @crud.login_required
@@ -478,6 +446,14 @@ def search():
     return render_template('search.html', recs=recs)
 
 
+@app.route('/watched-film')
+@crud.login_required
+def update_film_to_watched():
+    film_id = request.args.get('id')
+    crud.update_watched_status(film_id)
+    return 'updated'
+
+
 @app.route('/watchlist')
 @crud.login_required
 def render_watchlists():
@@ -497,12 +473,26 @@ def render_watchlists():
     return jsonify(result)
 
 
-@app.route('/watched-film')
+@app.route('/upcoming')
 @crud.login_required
-def update_film_to_watched():
-    film_id = request.args.get('id')
-    crud.update_watched_status(film_id)
-    return 'updated'
+def render_homepage():
+    """Displays a user's upcoming scheduled films"""
+    user_id = session['user_id']
+    if user_id:
+        user = crud.get_user_by_id(user_id)
+
+        # Get all films with a scheduled view date
+        scheduled_films = helpers.get_users_scheduled_films(user_id)
+
+        # Get film details for all films with a scheduled view date as tuples
+        films = helpers.get_details_scheduled_films(scheduled_films)
+
+        # Sort films with scheduled view date by closest view date
+        films.sort()
+
+        return render_template('upcoming.html', user=user, films=films)
+    else:
+        return redirect('/login')
 
 
 @app.route('/user-notifications')
