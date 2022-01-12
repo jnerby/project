@@ -29,10 +29,11 @@ app.jinja_env.auto_reload = True
 key = os.environ.get('API_KEY')
 
 
-@app.route('/')
+@app.route('/upcoming')
+# @app.route('/')
 @crud.login_required
 def render_homepage():
-    """Display join requests and recommendations"""
+    """Displays a user's scheduled films"""
     user_id = session['user_id']
     if user_id:
         user = crud.get_user_by_id(user_id)
@@ -55,7 +56,7 @@ def render_homepage():
         # Sort films with scheduled view date by closest view date
         films.sort()
 
-        return render_template('home.html', user=user, join_requests=join_requests, films=films)
+        return render_template('upcoming.html', user=user, films=films)
     else:
         return redirect('/login')
 
@@ -232,7 +233,7 @@ def join_club():
     return render_template('clubs.html', clubs=clubs)
 
 
-@app.route('/history', methods=['GET','POST'])
+@app.route('/log', methods=['GET','POST'])
 @crud.login_required
 def view_history():
     """View all movies a user's club(s) have watched"""
@@ -314,15 +315,36 @@ def logout():
 
     return redirect('/')
 
-
-@app.route('/mylists')
+@app.route('/')
+# @app.route('/mylists')
 @crud.login_required
 def render_user_lists():
-    """Renders watchlist.jsx in My Lists page"""
+    """Renders watchlist.jsx in homepage"""
     user_id = session['user_id']
-    user = crud.get_user_by_id(user_id)
+    if user_id:
+        user = crud.get_user_by_id(user_id)
 
-    return render_template('mylists.html', user=user)
+        # Clubs for which user is the owner
+        owner_clubs = crud.get_clubs_by_owner(user_id)
+
+        # Get all join requests for clubs for which user is owner
+        join_requests = 0
+        for club in owner_clubs:
+            if crud.get_join_requests(club.club_id):
+                join_requests += 1
+
+        # Get all films with a scheduled view date
+        scheduled_films = helpers.get_users_scheduled_films(user_id)
+
+        # Get film details for all films with a scheduled view date as tuples
+        films = helpers.get_details_scheduled_films(scheduled_films)
+
+        # Sort films with scheduled view date by closest view date
+        films.sort()
+
+        return render_template('mylists.html', user=user, join_requests=join_requests, films=films)
+    else:
+        return redirect('/login')
 
 
 @app.route('/rate')

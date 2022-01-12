@@ -4,7 +4,7 @@ const History = () => {
     const username = document.querySelector('h1').id;
 
     React.useEffect(() => {
-        fetch('/history', {
+        fetch('/log', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
