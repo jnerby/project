@@ -82,7 +82,8 @@ def fetch_api():
     user_search = request.args.get('search')
 
     # Add user_search to query string
-    url = 'https://api.themoviedb.org/3/search/movie?api_key='+str(key)+'&query='+user_search
+    url = f"https://api.themoviedb.org/3/search/movie?api_key={str(key)}&query={user_search}&include_adult=false"
+
     res = requests.get(url)
     search_results = res.json()
     result = search_results['results']
