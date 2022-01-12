@@ -1,15 +1,19 @@
 * {
     margin: 0;
     padding: 0;
-    font-family: 'Oswald', 'Raleway', sans-serif;
-    /* font-family: 'PT Mono', monospace, sans-serif; */
+    font-family: 'PT Sans Caption' 'Titillium Web' 'Roboto Mono' monospace sans-serif;
+
+    /* font-family: 'Oswald', 'Raleway', sans-serif; */
+    /* font-family: 'Be Vietnam Pro'; */
+    /* font-family: 'Source Sans Pro'; */
+    /* font-family: 'Roboto Mono', monospace, sans-serif; */
     /* font-family: 'Arvo', serif; */
     /* font-family: 'Quando', serif; */
 }
 
 /*** NAVIGATION ***/
 .nav.navbar-nav li a {
-  color: #fff;
+  color: #fff;    
 }
 
 
@@ -203,7 +207,21 @@ input:focus {
 #search-form {
   width: 25%;
   white-space: nowrap;
+  /* display: inline; */
 }
+
+#search-form input {
+  width: 60%;
+  display: inline;
+  margin-right: 10px;
+  /* margin-top: 10px; */
+}
+#search-form button {
+  width: 40%;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
 /* Search Result Grid */
 .search-result {
   width: 80%;
