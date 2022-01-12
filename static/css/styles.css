@@ -1,7 +1,8 @@
 * {
     margin: 0;
     padding: 0;
-    font-family: 'PT Sans Caption' 'Titillium Web' 'Roboto Mono' monospace sans-serif;
+  
+    font-family: 'Titillium Web' 'Roboto Mono' monospace sans-serif;
 
     /* font-family: 'Oswald', 'Raleway', sans-serif; */
     /* font-family: 'Be Vietnam Pro'; */
@@ -207,14 +208,11 @@ input:focus {
 #search-form {
   width: 25%;
   white-space: nowrap;
-  /* display: inline; */
 }
-
 #search-form input {
   width: 60%;
   display: inline;
   margin-right: 10px;
-  /* margin-top: 10px; */
 }
 #search-form button {
   width: 40%;
@@ -330,4 +328,13 @@ content .form-control
 {
     display: inline-block;
     width: auto;
+}
+#new-club-form {
+  width: 25%;
+  white-space: nowrap;
+}
+#new-club-form input {
+  width: 60%;
+  display: inline;
+  margin-right: 10px;
 }
