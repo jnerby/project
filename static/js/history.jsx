@@ -33,11 +33,17 @@ const History = () => {
                     for (const rat of item['db_ratings']) {
                         rated_users.add(rat[1]);
                     }
+                    let movie_poster_src;
+                    if (item['poster_path']){
+                        movie_poster_src = `https://image.tmdb.org/t/p/w500/${item['poster_path']}`;
+                    } else {
+                        movie_poster_src = "/static/css/no_poster.jpeg";
+                    }
                     if (rated_users.has(username)) {
                         newHistory.push(
                             <div className="cont">
                                 <div id={`div${item['db_id']}`} name={item['title']} className="card mb-3" style={{ width: '18rem' }}>
-                                    <img id={`img${item['db_id']}`} name={item['title']} className="card-img-top" src={`https://image.tmdb.org/t/p/w500/${item['poster_path']}`} alt="Card image cap"></img>
+                                    <img id={`img${item['db_id']}`} name={item['title']} className="card-img-top" src={movie_poster_src} alt="Card image cap"></img>
                                     <div class="card-title">
                                         <h6>{ave_ratings_literal}</h6>
                                     </div>
@@ -54,7 +60,7 @@ const History = () => {
                         newHistory.push(
                             <div className="cont">
                                 <div id={`div${item['db_id']}`} name={item['title']} className="card mb-3" style={{ width: '18rem' }}>
-                                    <img onClick={rateFilm} id={`img${item['db_id']}`} name={item['title']} className="card-img-top" src={`https://image.tmdb.org/t/p/w500/${item['poster_path']}`} alt="Card image cap"></img>
+                                    <img onClick={rateFilm} id={`img${item['db_id']}`} name={item['title']} className="card-img-top" src={movie_poster_src} alt="Card image cap"></img>
                                     <div class="card-title">
                                         <h6>{ave_ratings_literal}</h6>
                                     </div>
