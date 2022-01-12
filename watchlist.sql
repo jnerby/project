@@ -16,12 +16,40 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE ONLY public.ratings DROP CONSTRAINT ratings_user_id_fkey;
+ALTER TABLE ONLY public.ratings DROP CONSTRAINT ratings_film_id_fkey;
+ALTER TABLE ONLY public.films DROP CONSTRAINT films_club_id_fkey;
+ALTER TABLE ONLY public.films DROP CONSTRAINT films_added_by_fkey;
+ALTER TABLE ONLY public.clubs DROP CONSTRAINT clubs_owner_id_fkey;
+ALTER TABLE ONLY public.club_users DROP CONSTRAINT club_users_user_id_fkey;
+ALTER TABLE ONLY public.club_users DROP CONSTRAINT club_users_club_id_fkey;
+ALTER TABLE ONLY public.users DROP CONSTRAINT users_username_key;
+ALTER TABLE ONLY public.users DROP CONSTRAINT users_pkey;
+ALTER TABLE ONLY public.ratings DROP CONSTRAINT ratings_pkey;
+ALTER TABLE ONLY public.films DROP CONSTRAINT films_pkey;
+ALTER TABLE ONLY public.clubs DROP CONSTRAINT clubs_pkey;
+ALTER TABLE ONLY public.club_users DROP CONSTRAINT club_users_pkey;
+ALTER TABLE public.users ALTER COLUMN user_id DROP DEFAULT;
+ALTER TABLE public.ratings ALTER COLUMN rating_id DROP DEFAULT;
+ALTER TABLE public.films ALTER COLUMN film_id DROP DEFAULT;
+ALTER TABLE public.clubs ALTER COLUMN club_id DROP DEFAULT;
+ALTER TABLE public.club_users ALTER COLUMN club_user_id DROP DEFAULT;
+DROP SEQUENCE public.users_user_id_seq;
+DROP TABLE public.users;
+DROP SEQUENCE public.ratings_rating_id_seq;
+DROP TABLE public.ratings;
+DROP SEQUENCE public.films_film_id_seq;
+DROP TABLE public.films;
+DROP SEQUENCE public.clubs_club_id_seq;
+DROP TABLE public.clubs;
+DROP SEQUENCE public.club_users_club_user_id_seq;
+DROP TABLE public.club_users;
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: club_users; Type: TABLE; Schema: public; Owner: jnerby
+-- Name: club_users; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.club_users (
@@ -32,10 +60,8 @@ CREATE TABLE public.club_users (
 );
 
 
-ALTER TABLE public.club_users OWNER TO jnerby;
-
 --
--- Name: club_users_club_user_id_seq; Type: SEQUENCE; Schema: public; Owner: jnerby
+-- Name: club_users_club_user_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.club_users_club_user_id_seq
@@ -47,17 +73,15 @@ CREATE SEQUENCE public.club_users_club_user_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.club_users_club_user_id_seq OWNER TO jnerby;
-
 --
--- Name: club_users_club_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jnerby
+-- Name: club_users_club_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.club_users_club_user_id_seq OWNED BY public.club_users.club_user_id;
 
 
 --
--- Name: clubs; Type: TABLE; Schema: public; Owner: jnerby
+-- Name: clubs; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.clubs (
@@ -67,10 +91,8 @@ CREATE TABLE public.clubs (
 );
 
 
-ALTER TABLE public.clubs OWNER TO jnerby;
-
 --
--- Name: clubs_club_id_seq; Type: SEQUENCE; Schema: public; Owner: jnerby
+-- Name: clubs_club_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.clubs_club_id_seq
@@ -82,17 +104,15 @@ CREATE SEQUENCE public.clubs_club_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.clubs_club_id_seq OWNER TO jnerby;
-
 --
--- Name: clubs_club_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jnerby
+-- Name: clubs_club_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.clubs_club_id_seq OWNED BY public.clubs.club_id;
 
 
 --
--- Name: films; Type: TABLE; Schema: public; Owner: jnerby
+-- Name: films; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.films (
@@ -106,10 +126,8 @@ CREATE TABLE public.films (
 );
 
 
-ALTER TABLE public.films OWNER TO jnerby;
-
 --
--- Name: films_film_id_seq; Type: SEQUENCE; Schema: public; Owner: jnerby
+-- Name: films_film_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.films_film_id_seq
@@ -121,17 +139,15 @@ CREATE SEQUENCE public.films_film_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.films_film_id_seq OWNER TO jnerby;
-
 --
--- Name: films_film_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jnerby
+-- Name: films_film_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.films_film_id_seq OWNED BY public.films.film_id;
 
 
 --
--- Name: ratings; Type: TABLE; Schema: public; Owner: jnerby
+-- Name: ratings; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.ratings (
@@ -142,10 +158,8 @@ CREATE TABLE public.ratings (
 );
 
 
-ALTER TABLE public.ratings OWNER TO jnerby;
-
 --
--- Name: ratings_rating_id_seq; Type: SEQUENCE; Schema: public; Owner: jnerby
+-- Name: ratings_rating_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.ratings_rating_id_seq
@@ -157,17 +171,15 @@ CREATE SEQUENCE public.ratings_rating_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.ratings_rating_id_seq OWNER TO jnerby;
-
 --
--- Name: ratings_rating_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jnerby
+-- Name: ratings_rating_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.ratings_rating_id_seq OWNED BY public.ratings.rating_id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: jnerby
+-- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.users (
@@ -182,10 +194,8 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO jnerby;
-
 --
--- Name: users_user_id_seq; Type: SEQUENCE; Schema: public; Owner: jnerby
+-- Name: users_user_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.users_user_id_seq
@@ -197,52 +207,50 @@ CREATE SEQUENCE public.users_user_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.users_user_id_seq OWNER TO jnerby;
-
 --
--- Name: users_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: jnerby
+-- Name: users_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.users_user_id_seq OWNED BY public.users.user_id;
 
 
 --
--- Name: club_users club_user_id; Type: DEFAULT; Schema: public; Owner: jnerby
+-- Name: club_users club_user_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.club_users ALTER COLUMN club_user_id SET DEFAULT nextval('public.club_users_club_user_id_seq'::regclass);
 
 
 --
--- Name: clubs club_id; Type: DEFAULT; Schema: public; Owner: jnerby
+-- Name: clubs club_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.clubs ALTER COLUMN club_id SET DEFAULT nextval('public.clubs_club_id_seq'::regclass);
 
 
 --
--- Name: films film_id; Type: DEFAULT; Schema: public; Owner: jnerby
+-- Name: films film_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.films ALTER COLUMN film_id SET DEFAULT nextval('public.films_film_id_seq'::regclass);
 
 
 --
--- Name: ratings rating_id; Type: DEFAULT; Schema: public; Owner: jnerby
+-- Name: ratings rating_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.ratings ALTER COLUMN rating_id SET DEFAULT nextval('public.ratings_rating_id_seq'::regclass);
 
 
 --
--- Name: users user_id; Type: DEFAULT; Schema: public; Owner: jnerby
+-- Name: users user_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN user_id SET DEFAULT nextval('public.users_user_id_seq'::regclass);
 
 
 --
--- Data for Name: club_users; Type: TABLE DATA; Schema: public; Owner: jnerby
+-- Data for Name: club_users; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.club_users (club_user_id, user_id, club_id, approved) FROM stdin;
@@ -257,11 +265,12 @@ COPY public.club_users (club_user_id, user_id, club_id, approved) FROM stdin;
 9	5	5	t
 10	6	6	t
 11	5	6	t
+12	7	7	t
 \.
 
 
 --
--- Data for Name: clubs; Type: TABLE DATA; Schema: public; Owner: jnerby
+-- Data for Name: clubs; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.clubs (club_id, name, owner_id) FROM stdin;
@@ -271,11 +280,12 @@ COPY public.clubs (club_id, name, owner_id) FROM stdin;
 4	NightsWatch	1
 6	WolfWatch	6
 5	underFoot	5
+7	Another Pick in the Wall	7
 \.
 
 
 --
--- Data for Name: films; Type: TABLE DATA; Schema: public; Owner: jnerby
+-- Data for Name: films; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.films (film_id, club_id, tmdb_id, date_added, added_by, view_schedule, watched) FROM stdin;
@@ -313,11 +323,20 @@ COPY public.films (film_id, club_id, tmdb_id, date_added, added_by, view_schedul
 43	5	49636	2022-01-12 13:05:09.804445	5	\N	t
 42	5	11841	2022-01-12 13:04:36.664243	5	\N	t
 44	5	13481	2022-01-12 13:05:42.931531	5	\N	t
+46	7	435	2022-01-12 13:24:26.975462	7	\N	f
+48	7	950	2022-01-12 13:24:33.838444	7	\N	f
+49	7	57800	2022-01-12 13:24:34.997486	7	\N	f
+50	7	278154	2022-01-12 13:24:37.505557	7	\N	f
+51	7	8355	2022-01-12 13:24:40.932257	7	\N	f
+52	7	664	2022-01-12 13:24:51.0479	7	\N	f
+53	7	281957	2022-01-12 13:25:41.180932	7	\N	f
+45	7	14161	2022-01-12 13:24:19.269806	7	\N	t
+47	7	425	2022-01-12 13:24:32.690142	7	\N	t
 \.
 
 
 --
--- Data for Name: ratings; Type: TABLE DATA; Schema: public; Owner: jnerby
+-- Data for Name: ratings; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.ratings (rating_id, user_id, film_id, rating) FROM stdin;
@@ -340,7 +359,7 @@ COPY public.ratings (rating_id, user_id, film_id, rating) FROM stdin;
 
 
 --
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: jnerby
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.users (user_id, fname, lname, email, phone, notifications, username, password_hash) FROM stdin;
@@ -350,46 +369,47 @@ COPY public.users (user_id, fname, lname, email, phone, notifications, username,
 2	Jon	Snow	js@gmail.com	1234567890	f	crowboy	pbkdf2:sha256:260000$BtYWLR6luw002GWL$f20bebe248196f99e1537bc341d15e69dfb743ce09a55aec7b16e6e80c63cf04
 5	Arya	Stark	as@gmail.com	1234567890	t	aGirlHasNoUsername	pbkdf2:sha256:260000$FN1rLXGE6tOnvCVq$081a571f2f56a9448930d050a3bb0f6c5ef4753cfbe8078ca6e60477d9ad6a85
 6	Ned	Stark	ns@gmail.com	0123456789	t	neds_dead	pbkdf2:sha256:260000$zp45RhNQPSLuMZba$9800e4f233ba632a138ae63f07646295687b44513c58da7d2059d4cc25119f02
+7	Night	King	nk@gmail.com	2345678901	f	blueSteel	pbkdf2:sha256:260000$CGqRoZeFRcdB5pSs$7de847d842942a1d40bf98a662db5b036a30b5fca9e76832b2a905359f0e5980
 \.
 
 
 --
--- Name: club_users_club_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: jnerby
+-- Name: club_users_club_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.club_users_club_user_id_seq', 11, true);
-
-
---
--- Name: clubs_club_id_seq; Type: SEQUENCE SET; Schema: public; Owner: jnerby
---
-
-SELECT pg_catalog.setval('public.clubs_club_id_seq', 6, true);
+SELECT pg_catalog.setval('public.club_users_club_user_id_seq', 12, true);
 
 
 --
--- Name: films_film_id_seq; Type: SEQUENCE SET; Schema: public; Owner: jnerby
+-- Name: clubs_club_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.films_film_id_seq', 44, true);
+SELECT pg_catalog.setval('public.clubs_club_id_seq', 7, true);
 
 
 --
--- Name: ratings_rating_id_seq; Type: SEQUENCE SET; Schema: public; Owner: jnerby
+-- Name: films_film_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.films_film_id_seq', 53, true);
+
+
+--
+-- Name: ratings_rating_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
 SELECT pg_catalog.setval('public.ratings_rating_id_seq', 15, true);
 
 
 --
--- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: jnerby
+-- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.users_user_id_seq', 6, true);
+SELECT pg_catalog.setval('public.users_user_id_seq', 7, true);
 
 
 --
--- Name: club_users club_users_pkey; Type: CONSTRAINT; Schema: public; Owner: jnerby
+-- Name: club_users club_users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.club_users
@@ -397,7 +417,7 @@ ALTER TABLE ONLY public.club_users
 
 
 --
--- Name: clubs clubs_pkey; Type: CONSTRAINT; Schema: public; Owner: jnerby
+-- Name: clubs clubs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.clubs
@@ -405,7 +425,7 @@ ALTER TABLE ONLY public.clubs
 
 
 --
--- Name: films films_pkey; Type: CONSTRAINT; Schema: public; Owner: jnerby
+-- Name: films films_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.films
@@ -413,7 +433,7 @@ ALTER TABLE ONLY public.films
 
 
 --
--- Name: ratings ratings_pkey; Type: CONSTRAINT; Schema: public; Owner: jnerby
+-- Name: ratings ratings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.ratings
@@ -421,7 +441,7 @@ ALTER TABLE ONLY public.ratings
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: jnerby
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users
@@ -429,7 +449,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: jnerby
+-- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users
@@ -437,7 +457,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: club_users club_users_club_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jnerby
+-- Name: club_users club_users_club_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.club_users
@@ -445,7 +465,7 @@ ALTER TABLE ONLY public.club_users
 
 
 --
--- Name: club_users club_users_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jnerby
+-- Name: club_users club_users_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.club_users
@@ -453,7 +473,7 @@ ALTER TABLE ONLY public.club_users
 
 
 --
--- Name: clubs clubs_owner_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jnerby
+-- Name: clubs clubs_owner_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.clubs
@@ -461,7 +481,7 @@ ALTER TABLE ONLY public.clubs
 
 
 --
--- Name: films films_added_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jnerby
+-- Name: films films_added_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.films
@@ -469,7 +489,7 @@ ALTER TABLE ONLY public.films
 
 
 --
--- Name: films films_club_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jnerby
+-- Name: films films_club_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.films
@@ -477,7 +497,7 @@ ALTER TABLE ONLY public.films
 
 
 --
--- Name: ratings ratings_film_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jnerby
+-- Name: ratings ratings_film_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.ratings
@@ -485,7 +505,7 @@ ALTER TABLE ONLY public.ratings
 
 
 --
--- Name: ratings ratings_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jnerby
+-- Name: ratings ratings_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.ratings
