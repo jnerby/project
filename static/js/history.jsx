@@ -88,7 +88,6 @@ function rateFilm(evt) {
 
     modal.innerHTML = `<div class=modal-content><span id="close" align="right" class=close>&times;</span>
                         <h1>${evt.target.name}</h1>
-                        <label>Rate</label>
                         <select name="rating" id="ratingDD">
                             <option value="1">1</option>
                             <option value="2">2</option>

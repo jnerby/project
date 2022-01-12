@@ -52,14 +52,9 @@
 
     {% for message in get_flashed_messages() %}
     <div class=flashes>
-      <p>{{ message }}</p>
+      <p style="margin: 15px;">{{ message }}</p>
     </div>
     {% endfor %}
-
-    <!-- <div class="club-nav">
-      {% block clubnav %}
-      {% endblock %}
-    </div> -->
 
     <div class="container p-5" id="content">
       {% block content %}

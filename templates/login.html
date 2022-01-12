@@ -4,9 +4,15 @@
 {% block content %}
     <div class="form-group">
         <form id="login-form" action="/login" method="POST">
-            <input placeholder="Username" class="form-control" autofocus required name="login-username">
-            <input placeholder="Password" class="form-control" required type="password" name="login-password">
-            <button class="btn btn-outline-secondary" type="submit">Login</button>
+            <div>
+                <input placeholder="Username" class="form-control" autofocus required name="login-username">
+            </div>
+            <div>
+                <input placeholder="Password" class="form-control" required type="password" name="login-password">
+            </div>
+            <div>            
+                <button class="btn btn-outline-warning" type="submit">Login</button>
+            </div>
         </form>
     </div>
 {% endblock %}

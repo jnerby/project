@@ -12,6 +12,36 @@
   color: #fff;
 }
 
+
+/*** LOGIN ***/
+.form-group {
+  background-color: rgb(55, 55, 55);
+  color: white;
+  width: 25%;
+  margin: 25px auto auto auto;
+}
+
+.form-group form {
+  margin: auto;
+}
+
+.form-group input {
+  background-color: rgb(55, 55, 55);
+  color: white;
+  margin: 5px auto 5px auto;
+}
+
+input:focus { 
+    outline: none !important;
+    border-color: green;
+    box-shadow: 0 0 10px #719ECE;
+}
+
+.form-group button {
+  display: flex;
+  margin: auto;
+}
+
 /*** HOME ***/
 /* Home cards */
 .card.home-card {
@@ -123,6 +153,15 @@
     border: 1px solid #888;
     color: rgb(55, 55, 55);
     width: 60%; /* Could be more or less, depending on screen size */
+  }
+  .modal-content button {
+    width: 50%;
+    margin: 15px auto 15px auto;
+  }
+  .modal-content select {
+    width: 50%;
+    height: 35px;
+    margin: auto auto auto auto;
   }
   /* Close Button */
   .close {
