@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/static/css/styles.css">
 
     <!-- FAVICON LINK: https://www.flaticon.com/free-icon/popcorn_976275 -->
-    <link href="/static/css/favicon.ico" rel="icon"> 
+    <link href="/static/images/favicon.ico" rel="icon"> 
 
     <!-- JAVASCRIPT -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
@@ -25,7 +25,7 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-md navbar-light bg-warning">
-      <a href="/"><img src="/static/css/favicon.ico" width="35" height="35" style="margin-bottom: 11px;"></a>
+      <a href="/"><img src="/static/images/favicon.ico" width="35" height="35" style="margin-bottom: 11px;"></a>
       <a class="navbar-brand" href="/" style="margin-top: 9px;">watchList</a>
       <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-toggle="collapse" type="button">
           <span class="navbar-toggler-icon"></span>
@@ -64,4 +64,7 @@
     {% block scripts %}
     {% endblock %}
   </body>
+  <div id="footer">
+    <span class="text-muted"><span>&copy</span> Jen Nerby 2022</span><span class="text-muted"> | </span><a href="https://www.linkedin.com/in/jennerby/">LinkedIn</a><span class="text-muted"> | </span><a href="https://github.com/jnerby">Github</a></span>
+  </div>
 </html>

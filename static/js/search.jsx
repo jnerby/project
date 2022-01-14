@@ -40,7 +40,7 @@ function Result(props) {
                     if (result['poster_path']) {
                         movie_poster = 'https://image.tmdb.org/t/p/w500/' + result['poster_path'];
                     } else {
-                        movie_poster = '/static/css/no_poster.jpeg';
+                        movie_poster = '/static/images/no_poster.jpeg';
                     }
                     
                     if (result['db_status']) {

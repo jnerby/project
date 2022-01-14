@@ -37,7 +37,7 @@ const History = () => {
                     if (item['poster_path']){
                         movie_poster_src = `https://image.tmdb.org/t/p/w500/${item['poster_path']}`;
                     } else {
-                        movie_poster_src = "/static/css/no_poster.jpeg";
+                        movie_poster_src = "/static/images/no_poster.jpeg";
                     }
                     if (rated_users.has(username)) {
                         newHistory.push(

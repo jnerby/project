@@ -152,7 +152,7 @@ const Watchlist = (props) => {
                     if (value['poster_path']){
                         movie_poster_src = `https://image.tmdb.org/t/p/w500/${value['poster_path']}`;
                     } else {
-                        movie_poster_src = "/static/css/no_poster.jpeg";
+                        movie_poster_src = "/static/images/no_poster.jpeg";
                     }
                     helper.push(
                         <div id={`div${key}`} className="watchDiv">
