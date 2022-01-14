@@ -411,7 +411,7 @@ def schedule_viewing():
     # reformat view date
     view_date_obj = datetime.strptime(view_date, "%Y-%m-%d").strftime("%A, %m/%d/%Y")
 
-    # send notifications for users with notifications turned on
+    # # send notifications for users with notifications turned on
     # for item in to_notify:
     #     message = client.messages.create(
     #         to=my_num,
