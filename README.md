@@ -22,7 +22,7 @@ The home page shows a user’s clubs and saved films. When a user clicks on a fi
 Recommendations
 ![Recs](https://github.com/jnerby/watchlist/static/images/recs.png?raw=true)
 ![Recs](https://github.com/jnerby/watchlist/static/images/recs.png)
-
+<img src="https://github.com/jnerby/watchlist/static/images/recs.png"></img>
 watchList’s search page is populated with recommendations based on a user’s film ratings. 
 
 INSTALL
