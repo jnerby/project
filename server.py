@@ -377,13 +377,13 @@ def remove_film_from_list():
     film = crud.get_film(film_id)
     
     # only notify if viewing has been scheduled
-    # if film.view_schedule:
-    #     # send notifications for users with notifications turned on
-    #     for item in to_notify:
-    #         message = client.messages.create(
-    #             to=my_num,
-    #             from_=twilio_number,
-    #             body=f"Hi {item[1]}! {username} removed {film_name} from your club's Watchlist.")
+    if film.view_schedule:
+        # send notifications for users with notifications turned on
+        for item in to_notify:
+            message = client.messages.create(
+                to=my_num,
+                from_=twilio_number,
+                body=f"Hi {item[1]}! {username} removed {film_name} from your club's Watchlist.")
 
     crud.remove_film_from_list(film_id)
 
@@ -411,12 +411,12 @@ def schedule_viewing():
     # reformat view date
     view_date_obj = datetime.strptime(view_date, "%Y-%m-%d").strftime("%A, %m/%d/%Y")
 
-    # # send notifications for users with notifications turned on
-    # for item in to_notify:
-    #     message = client.messages.create(
-    #         to=my_num,
-    #         from_=twilio_number,
-    #         body=f"Hi {item[1]}! {username} scheduled {film_name} for {view_date_obj}.")
+    # send notifications for users with notifications turned on
+    for item in to_notify:
+        message = client.messages.create(
+            to=my_num,
+            from_=twilio_number,
+            body=f"Hi {item[1]}! {username} scheduled {film_name} for {view_date_obj}.")
 
     #return success - in AJAX promise, if success then disable
     return 'Success'
