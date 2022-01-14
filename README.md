@@ -14,8 +14,11 @@ This app uses React to render the following pages the home page, Upcoming, and L
 FEATURES
 
 Home page
+![Recs](/static/home/recs.png)
 
 The home page shows a user’s clubs and saved films. When a user clicks on a film’s cover art, a modal window appears so a user can remove the film, mark the film as watched, or schedule a date to watch it. Users can turn notifications on and off and review join requests for their clubs. When a user has their notifications turned on, they receive text messages whenever another club member schedules or cancels a film viewing.
+![Recs](/static/images/twilio.jpg)
+
 
 
 
