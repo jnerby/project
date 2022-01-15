@@ -11,14 +11,14 @@ from model import db, User, Club, ClubUser, Film, Rating, connect_to_db
 
 
 #TWILIO
-from twilio.rest import Client
+# from twilio.rest import Client
 
-twilio_account_sid = os.environ['TWILIO_ACCOUNT_SID']
-twilio_auth_token = os.environ['TWILIO_AUTH_TOKEN']
-twilio_number = os.environ['TWILIO_NUMBER']
-my_num = os.environ['ME']
+# twilio_account_sid = os.environ['TWILIO_ACCOUNT_SID']
+# twilio_auth_token = os.environ['TWILIO_AUTH_TOKEN']
+# twilio_number = os.environ['TWILIO_NUMBER']
+# my_num = os.environ['ME']
 
-client = Client(twilio_account_sid, twilio_auth_token)
+# client = Client(twilio_account_sid, twilio_auth_token)
 
 app = Flask(__name__)
 app.secret_key = "dev"
