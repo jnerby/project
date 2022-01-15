@@ -66,15 +66,13 @@ input:focus {
   position:absolute;
   top: 90px;
   right: 10px;
-  /* padding-top: 80px; */
 
 }
 /* Home Join Requests */
 .topcorner-second {
   position:absolute;
-  top: 10px;
+  top: 130px;
   right: 10px;
-  padding-top: 120px;
 }
 
 
