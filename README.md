@@ -27,12 +27,12 @@ The search page indicates which search results a user has already watched or sav
 When a user clicks on a search result, a modal window opens with additional details about the film. The user can select a club from a dropdown and add the film to the club's list.
 
 ## INSTALL
--Install homebrew
--Install git
--In VS Code, run "git clone https://github.com/jnerby/watchlist"
--Cd into the watchlist directory
--Run "pip3 install -r requirements.txt"
--Add a new file to your cloned directory called "secrets.sh"
--Follow these instructions to set up a TMDB API key [TMDB API] (https://developers.themoviedb.org/3/getting-started/authentication). Save your key to secrets.sh by adding this line of code: "export API_KEY={	YOUR KEY }"
--Run "source secrets.sh"
--Run "python3 server.py" to launch the app in your browser
+- Install homebrew
+- Install git
+- In VS Code, run "git clone https://github.com/jnerby/watchlist"
+- Cd into the watchlist directory
+- Run "pip3 install -r requirements.txt"
+- Add a new file to your cloned directory called "secrets.sh"
+- Follow these instructions to set up a TMDB API key [TMDB API] (https://developers.themoviedb.org/3/getting-started/authentication). Save your key to secrets.sh by adding this line of code: "export API_KEY={	YOUR KEY }"
+- Run "source secrets.sh"
+- Run "python3 server.py" to launch the app in your browser
