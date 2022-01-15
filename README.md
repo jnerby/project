@@ -33,6 +33,6 @@ When a user clicks on a search result, a modal window opens with additional deta
 - Cd into the watchlist directory
 - Run "pip3 install -r requirements.txt"
 - Add a new file to your cloned directory called "secrets.sh"
-- Follow these instructions to set up a TMDB API key [TMDB API] (https://developers.themoviedb.org/3/getting-started/authentication). Save your key to secrets.sh by adding this line of code: "export API_KEY={	YOUR KEY }"
+- Follow these instructions to set up a TMDB API key [TMDB API] (https://developers.themoviedb.org/3/getting-started/authentication). Save your key to secrets.sh by adding this line of code: export API_KEY="KEY". Paste your TMDB API key in quotations after the "="
 - Run "source secrets.sh"
 - Run "python3 server.py" to launch the app in your browser
