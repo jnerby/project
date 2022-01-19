@@ -54,6 +54,11 @@ def get_club_details(all_clubs, user_id):
 
     return clubs
 
+def get_club_search_details(club_name, user_id):
+    """Gets all clubs, club owners, and current user's enrollment status in clubs that meet search criteria"""
+    search_results = crud.get_club_by_search_name(club_name)
+    return get_club_details(search_results, user_id)
+    
 
 def get_details_scheduled_films(scheduled_films):
     """Takes in list of film objects and returns film details from TMDB API call"""

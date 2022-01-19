@@ -197,6 +197,8 @@ def return_club_details():
     return clubs
 
 
+
+
 @app.route('/clubrequest', methods=['POST'])
 @crud.login_required
 def create_request():
@@ -231,6 +233,25 @@ def join_club():
 
     return render_template('clubs.html', clubs=clubs)
 
+
+@app.route('/club-search', methods=['POST'])
+@crud.login_required
+def search_clubs():
+    """Searches club by owner or name"""
+    user_id = session['user_id']
+
+    # Get all clubs in db
+    all_clubs = crud.get_all_clubs()
+
+    # Get club name, owner, and user enrollment status for each club
+    clubs = helpers.get_club_details(all_clubs, user_id)
+
+    if request.method == 'POST':
+        club_name = request.form['search-club-name']
+        # club_owner = request.form['search-club-owner']
+        clubs = helpers.get_club_search_details(club_name, user_id)
+
+    return render_template('clubs.html', clubs=clubs)
 
 @app.route('/log', methods=['GET','POST'])
 @crud.login_required

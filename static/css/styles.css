@@ -338,3 +338,14 @@ content .form-control
   display: inline;
   margin-right: 10px;
 }
+
+#club-search-form {
+  width: 25%;
+  white-space: nowrap;
+}
+
+#club-search-form input {
+  width: 60%;
+  display: inline;
+  margin-right: 10px;
+}

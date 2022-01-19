@@ -6,6 +6,7 @@ from functools import wraps
 import datetime
 
 
+
 def add_film_to_list(tmdb_id, club_id, user_id):
     """Add new film to club list"""
     new_film = Film(club_id=club_id,tmdb_id=tmdb_id, date_added=datetime.datetime.now(), added_by=user_id)
@@ -61,6 +62,10 @@ def get_club_by_id(club_id):
 def get_clubs_by_owner(owner_id):
     """Return all clubs owned by user"""
     return Club.query.filter(Club.owner_id==owner_id).all()
+
+def get_club_by_search_name(club_name):
+    """Returns all search results based on club name"""
+    return Club.query.filter(Club.name.ilike(f'%{club_name}%')).all()
 
 def get_club_members(club):
     """Returns all members of a club"""

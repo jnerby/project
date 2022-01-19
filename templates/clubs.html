@@ -8,7 +8,7 @@
 <h3>Start a Film Club</h3>
     <div class="container-fluid">
         <form id="new-club-form" action="/clubs" method="POST">
-            <input placeholder="Club Name" class="form-control" autofocus required name="club-name">
+            <input placeholder="Club Name" class="form-control" autofocus name="club-name">
             <button class="btn btn-warning" type="submit">Create Club</button>
         </form>
     </div>  
@@ -16,6 +16,14 @@
 <br>
 
 <h3>Join a Film Club</h3>
+    <div class="container-fluid">
+        <form id="club-search-form" action="/club-search" method="POST">
+            <input placeholder="Club Name" class="form-control" autofocus name="search-club-name">
+            <!-- <input placeholder="Club Owner" class="form-control" autofocus name="search-club-owner"> -->
+            <button class="btn btn-warning" type="submit">Search Clubs</button>
+        </form>
+    </div>  
+    <br>
     <div>
         <table class="table">
             <caption>List of clubs</caption>
