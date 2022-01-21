@@ -4,8 +4,6 @@
 {% block content %}
 
 
-<div id=list-modal class=modal></div>
-
 <div id="root">
   {% if films %}
   <h3>{{ user['username'] }}'s Upcoming Films</h3>
@@ -18,13 +16,12 @@
           {% else %}
           <img class="card-img-top" src="/static/css/no_poster.jpeg">
           {% endif %}
-          <div class="card-body">
+          <div class="card-body" id="{{ film[5] }}">
             <h5 class="card-title">{{ film[2] }}</h5>
             <p class="card-text">{{ film[1] }}, {{ film[0] }}</p>
             <p class="card-text badge badge-warning">{{ film[4]}}</p>
-
+            <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo>">Edit</button> -->
           </div>
-        </div>
       {% endfor %}
     </div>
   </div>

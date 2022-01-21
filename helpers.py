@@ -74,7 +74,7 @@ def get_details_scheduled_films(scheduled_films):
         club_name = crud.get_club_by_id(club_id).name
 
         # Add date, weekday, title, and poster path to tuple
-        tup = (datetime.strftime(film.view_schedule, "%m/%d/%Y"), datetime.strftime(film.view_schedule, "%a"), details['title'], details['poster_path'], club_name)
+        tup = (datetime.strftime(film.view_schedule, "%m/%d/%Y"), datetime.strftime(film.view_schedule, "%a"), details['title'], details['poster_path'], club_name, film.film_id)
         films.append(tup)
 
     return films
